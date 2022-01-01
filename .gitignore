@@ -1,0 +1,7 @@
+
+#ignore all compiled stuff
+**/target
+
+#ignore the TODO.md file
+TODO.md
+
