@@ -1,7 +1,6 @@
 package com.assanguino;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -52,6 +51,16 @@ public class App {
         execute(12, Part.second);
     }
 
+    protected static Path getFilePath(String fileName) throws Exception {
+        URL resource = App.class.getClassLoader().getResource(fileName);
+
+        if (resource == null) {
+            throw new IllegalArgumentException("file not found! " + fileName);
+        }
+
+        return Path.of(resource.getPath());
+    }
+    
     protected static void execute(int day, Part part) throws Exception {
 
         try {
@@ -76,53 +85,44 @@ public class App {
 
     protected static void depth_measurement_increments() throws Exception {
 
-        final String fileName = "AoC_01_input.txt";
-
-        Integer current, last;
+        Integer current, last = -1;
         Integer measurements = 0;
         Integer increments = 0;
 
         // read file
-        BufferedReader br = new BufferedReader(new FileReader(fileName));
-        try {
-            String line = br.readLine();
-            if(line == null)
+        for (String string : Files.readAllLines(getFilePath("AoC_01_input.txt"))) {
+
+            if(measurements == 0) {
+                if(string == null)
                 throw new Exception("Not enough measurements to compare with.");
 
-            last = Integer.parseInt(line);
-            measurements++;
-
-            line = br.readLine();
-            while (line != null) {
-                current = Integer.parseInt(line);
+                last = Integer.parseInt(string);
+                measurements++;
+            }
+            else
+            {
+                current = Integer.parseInt(string);
                 measurements++;
 
                 if(current > last)
                     increments++;
 
                 last = current;
-                line = br.readLine();
             }
 
-            // Output
-            System.out.println("measurements: " + measurements);
-            System.out.println("increments: " + increments);
-
-        } catch(NumberFormatException nfe) {
-            // bad input
-        } finally {
-            br.close();
         }
+
+        // Output
+        System.out.println("measurements: " + measurements);
+        System.out.println("increments: " + increments);
     }
 
     protected static void three_measurements_sliding_window() throws Exception {
 
-        final String fileName = "AoC_01_input.txt";
-
         var measures = new ArrayList<Integer>();
         int index = 0;
 
-        for (String string : Files.readAllLines(Path.of(fileName))) {
+        for (String string : Files.readAllLines(getFilePath("AoC_01_input.txt"))) {
             int current = Integer.parseInt(string);
 
             // three-measurement sliding window
@@ -150,14 +150,12 @@ public class App {
 
     protected static void day_02_basic_method(Part part) throws Exception {
 
-        final String fileName = "AoC_02_input.txt";
-
         int measurements = 0;
         int horizontal = 0;
         int depth = 0;
         int aim = 0;
 
-        for (String string : Files.readAllLines(Path.of(fileName))) {
+        for (String string : Files.readAllLines(getFilePath("AoC_02_input.txt"))) {
 
             String[] chains = string.split(" ");
             if(chains.length != 2)
@@ -206,14 +204,12 @@ public class App {
 
     protected static void binary_diagnostic_power_consumption() throws Exception {
 
-        final String fileName = "AoC_03_input.txt";
-
         int measurements = 0;
         int binaryLength = 0;
         ArrayList<Integer> zeros = new ArrayList<>();
         ArrayList<Integer> ones = new ArrayList<>();
 
-        for (String string : Files.readAllLines(Path.of(fileName))) {
+        for (String string : Files.readAllLines(getFilePath("AoC_03_input.txt"))) {
 
             // initialize arrays if this is first iteration
             if(binaryLength == 0)
@@ -258,15 +254,13 @@ public class App {
 
     protected static void life_support_rating() throws Exception {
 
-        final String fileName = "AoC_03_input.txt";
-
         int measurements = 0;
         int binaryLength = 0;
         ArrayList<String> oxygen_generator_list = new ArrayList<>();
         ArrayList<String> CO2_scrubber_list = new ArrayList<>();
 
         // Get the '0' and '1' counters for each position
-        for (String string : Files.readAllLines(Path.of(fileName))) {
+        for (String string : Files.readAllLines(getFilePath("AoC_03_input.txt"))) {
 
             // initialize arrays if this is first iteration
             if(binaryLength == 0)
@@ -356,14 +350,12 @@ public class App {
 
     protected static void playing_bingo_with_giant_squid(Part part) throws Exception {
 
-        final String fileName = "AoC_04_input.txt";
-
         List<Integer> random_numbers = new ArrayList<>();
         List<BingoBoard> boardList = new ArrayList<>();
         int board_row_counter = 0;
 
         // Get the random numbers, and all the bingo boards from the input file
-        for (String string : Files.readAllLines(Path.of(fileName))) {
+        for (String string : Files.readAllLines(getFilePath("AoC_04_input.txt"))) {
 
             // Populate the random numbers list
             if(random_numbers.size() == 0) {
@@ -441,11 +433,9 @@ public class App {
 
     protected static void hydrothermal_venture(Part part) throws Exception {
 
-        final String fileName = "AoC_05_input.txt";
-
         int maximum = 0;
         List<Integer[]> ventList = new ArrayList<Integer[]>();
-        for (String string : Files.readAllLines(Path.of(fileName))) {
+        for (String string : Files.readAllLines(getFilePath("AoC_05_input.txt"))) {
             Integer[] coordinates = VentsMap.getCoordinatesFromString(string);
             ventList.add(coordinates);
 
@@ -481,8 +471,6 @@ public class App {
 
     protected static void lanternfish(Integer number_of_days) throws Exception { 
 
-        final String fileName = "AoC_06_input.txt";
-
         int initial_lanternfishes = 0;
 
         // There is a way to codify this.
@@ -492,8 +480,8 @@ public class App {
         List<Long> lanternfish_day = new ArrayList<>();
         lanternfish_day.addAll(Collections.nCopies(9, (long)0));
 
-        for (String string : Files.readAllLines(Path.of(fileName))) {
-            for(String c : string.split(",")) {
+        for (String string : Files.readAllLines(getFilePath("AoC_06_input.txt"))) {
+                for(String c : string.split(",")) {
                 int value = Integer.parseInt(c);
                 lanternfish_day.set(value, lanternfish_day.get(value)+1);
                 initial_lanternfishes++;
@@ -537,10 +525,8 @@ public class App {
 
     protected static void crabs_horizontal_positioning(Part part) throws Exception { 
 
-        final String fileName = "AoC_07_input.txt";
-
         List<Integer> crabs_input = new ArrayList<>();
-        for (String string : Files.readAllLines(Path.of(fileName))) {
+        for (String string : Files.readAllLines(getFilePath("AoC_07_input.txt"))) {
             for(String c : string.split(",")) {
                 crabs_input.add(Integer.parseInt(c));
             }
@@ -615,11 +601,9 @@ public class App {
 
     protected static void seven_segment_search() throws Exception {
 
-        final String fileName = "AoC_08_input.txt";
-
         int counter = 0;
         int measurements = 0;
-        for (String string : Files.readAllLines(Path.of(fileName))) {
+        for (String string : Files.readAllLines(getFilePath("AoC_08_input.txt"))) {
             String[] output = string.split(" ");
 
             for(int i = output.length - 1; i > output.length - 5; i--) {
@@ -638,11 +622,9 @@ public class App {
 
     protected static void seven_segment_search_solved() throws Exception { 
 
-        final String fileName = "AoC_08_input.txt";
-
         int sum = 0;
         int measurements = 0;
-        for (String string : Files.readAllLines(Path.of(fileName))) {
+        for (String string : Files.readAllLines(getFilePath("AoC_08_input.txt"))) {
             String[] output = string.split(" ");
 
             int number = SevenSegmentDisplay.decodeOutput(output);
@@ -658,11 +640,9 @@ public class App {
 
     protected static void smoke_basin() throws Exception { 
 
-        final String fileName = "AoC_09_input.txt";
-
         int measurementsColumns = 0, measurementsRows = 0;
         HeightMap basinMap = new HeightMap();
-        for (String string : Files.readAllLines(Path.of(fileName))) {
+        for (String string : Files.readAllLines(getFilePath("AoC_09_input.txt"))) {
             basinMap.getHeightMapRow(string);
 
             if(measurementsColumns == 0) {
@@ -679,12 +659,9 @@ public class App {
 
     protected static void find_largest__basins() throws Exception { 
 
-        final String fileName = "AoC_09_input.txt";
-        // final String fileName = "test_input.txt";
-
         int measurementsColumns = 0, measurementsRows = 0;
         HeightMap basinMap = new HeightMap();
-        for (String string : Files.readAllLines(Path.of(fileName))) {
+        for (String string : Files.readAllLines(getFilePath("AoC_09_input.txt"))) {
             basinMap.getHeightMapRow(string);
 
             if(measurementsColumns == 0) {
@@ -701,11 +678,9 @@ public class App {
 
     protected static void syntax_scoring_corrupted_chunks() throws Exception { 
 
-        final String fileName = "AoC_10_input.txt";
-
         int measurements = 0;
         ChunkReader chunkReader = new ChunkReader();
-        for (String string : Files.readAllLines(Path.of(fileName))) {
+        for (String string : Files.readAllLines(getFilePath("AoC_10_input.txt"))) {
 
             chunkReader.processLine(string);
 
@@ -718,11 +693,9 @@ public class App {
 
     protected static void syntax_scoring_incomplete_chunks() throws Exception { 
 
-        final String fileName = "AoC_10_input.txt";
-
         int measurements = 0;
         ChunkReader chunkReader = new ChunkReader();
-        for (String string : Files.readAllLines(Path.of(fileName))) {
+        for (String string : Files.readAllLines(getFilePath("AoC_10_input.txt"))) {
 
             chunkReader.processLine(string);
 
@@ -735,11 +708,9 @@ public class App {
 
     protected static void dumbo_octopus() throws Exception { 
 
-        final String fileName = "AoC_11_input.txt";
-
         int measurements = 0;
         DumboOctopusMap dumboOctopusMap = new DumboOctopusMap();
-        for (String string : Files.readAllLines(Path.of(fileName))) {
+        for (String string : Files.readAllLines(getFilePath("AoC_11_input.txt"))) {
 
             dumboOctopusMap.processRow(string);
 
@@ -760,11 +731,10 @@ public class App {
 
     protected static void dumbo_octopus_sync() throws Exception { 
 
-        final String fileName = "AoC_11_input.txt";
-
         int measurements = 0;
         DumboOctopusMap dumboOctopusMap = new DumboOctopusMap();
-        for (String string : Files.readAllLines(Path.of(fileName))) {
+
+        for (String string : Files.readAllLines(getFilePath("AoC_11_input.txt"))) {
 
             dumboOctopusMap.processRow(string);
 
@@ -791,10 +761,9 @@ public class App {
     }
 
     protected static void caves_path(Part part) throws Exception { 
-        final String fileName = "AoC_12_input.txt";
 
         CavesPath cavesPath = new CavesPath(part);
-        for (String string : Files.readAllLines(Path.of(fileName))) {
+        for (String string : Files.readAllLines(getFilePath("AoC_12_input.txt"))) {
             cavesPath.processRow(string);
         }
 
@@ -802,7 +771,7 @@ public class App {
         cavesPath.getPaths();
         cavesPath.printFinalPaths(false);
     }
-    
+
 }
 
 

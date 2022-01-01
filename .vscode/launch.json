@@ -9,7 +9,7 @@
             "name": "Launch App",
             "request": "launch",
             "mainClass": "com.assanguino.App",
-            "projectName": "adventOfCode"
+            "projectName": "adventofcode2021"
         },
         {
             "type": "java",
