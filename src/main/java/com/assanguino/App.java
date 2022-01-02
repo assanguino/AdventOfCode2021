@@ -47,8 +47,10 @@ public class App {
         methodMap.put(new Pair<Integer, Part>(11, Part.second), "dumbo_octopus_sync");
         methodMap.put(new Pair<Integer, Part>(12, Part.first),  "caves_path_first");
         methodMap.put(new Pair<Integer, Part>(12, Part.second), "caves_path_second");
+        methodMap.put(new Pair<Integer, Part>(13, Part.first),  "transparent_origami_first");
+        methodMap.put(new Pair<Integer, Part>(13, Part.second), "transparent_origami_second");
 
-        execute(12, Part.second);
+        execute(13, Part.second);
     }
 
     protected static Path getFilePath(String fileName) throws Exception {
@@ -770,6 +772,27 @@ public class App {
         cavesPath.printCavesMap();
         cavesPath.getPaths();
         cavesPath.printFinalPaths(false);
+    }
+
+    protected static void transparent_origami_first() throws Exception { 
+        transparent_origami(Part.first);
+    }
+
+    protected static void transparent_origami_second() throws Exception { 
+        transparent_origami(Part.second);
+    }
+
+    protected static void transparent_origami(Part part) throws Exception { 
+
+        String fileName = part == Part.first ? "test_input.txt" : "AoC_13_input.txt";
+
+        Origami origami = new Origami();
+        for (String string : Files.readAllLines(getFilePath(fileName))) {
+            origami.processRow(string);
+        }
+
+        origami.fill();
+        origami.foldAll(part);
     }
 
 }
