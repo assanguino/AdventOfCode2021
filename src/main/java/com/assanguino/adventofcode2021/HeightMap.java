@@ -1,10 +1,10 @@
-package com.assanguino;
+package com.assanguino.adventofcode2021;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.assanguino.App.Part;
+import com.assanguino.adventofcode2021.App.Part;
 
 public class HeightMap {
     

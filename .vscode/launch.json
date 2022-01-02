@@ -8,7 +8,7 @@
             "type": "java",
             "name": "Launch App",
             "request": "launch",
-            "mainClass": "com.assanguino.App",
+            "mainClass": "com.assanguino.adventofcode2021.App",
             "projectName": "adventofcode2021"
         },
         {

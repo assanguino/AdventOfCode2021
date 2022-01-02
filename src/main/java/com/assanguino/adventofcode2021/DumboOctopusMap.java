@@ -1,4 +1,4 @@
-package com.assanguino;
+package com.assanguino.adventofcode2021;
 
 public class DumboOctopusMap {
     

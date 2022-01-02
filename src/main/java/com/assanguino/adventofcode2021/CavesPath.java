@@ -1,4 +1,4 @@
-package com.assanguino;
+package com.assanguino.adventofcode2021;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import com.assanguino.App.Part;
+import com.assanguino.adventofcode2021.App.Part;
 
 public class CavesPath {
     

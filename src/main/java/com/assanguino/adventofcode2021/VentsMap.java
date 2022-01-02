@@ -1,6 +1,6 @@
-package com.assanguino;
+package com.assanguino.adventofcode2021;
 
-import com.assanguino.App.Part;
+import com.assanguino.adventofcode2021.App.Part;
 
 public class VentsMap {
     
