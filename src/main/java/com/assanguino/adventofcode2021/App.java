@@ -13,11 +13,6 @@ import org.javatuples.Pair;
 
 public class App {
 
-    enum Part {
-        first,
-        second
-    }
-
     protected static Map<Pair<Integer, Part>, String> methodMap = new HashMap<>( );
 
     public static void main(String[] args) throws Exception {

@@ -2,8 +2,6 @@ package com.assanguino.adventofcode2021;
 
 import java.util.List;
 
-import com.assanguino.adventofcode2021.App.Part;
-
 import java.util.ArrayList;
 
 public class Path {

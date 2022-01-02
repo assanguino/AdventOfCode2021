@@ -1,7 +1,5 @@
 package com.assanguino.adventofcode2021;
 
-import com.assanguino.adventofcode2021.App.Part;
-
 public class VentsMap {
     
     // names of coordinates

@@ -3,8 +3,6 @@ package com.assanguino.adventofcode2021;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.assanguino.adventofcode2021.App.Part;
-
 import org.javatuples.Pair;
 
 public class Origami {

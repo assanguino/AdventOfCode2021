@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import com.assanguino.adventofcode2021.App.Part;
-
 public class CavesPath {
     
     protected final Part part;

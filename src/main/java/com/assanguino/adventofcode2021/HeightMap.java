@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.assanguino.adventofcode2021.App.Part;
-
 public class HeightMap {
     
     protected List<String> heightRows = new ArrayList<>();
