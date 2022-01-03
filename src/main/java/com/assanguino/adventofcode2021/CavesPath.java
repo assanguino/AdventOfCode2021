@@ -7,15 +7,17 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class CavesPath {
+public class CavesPath implements Executable {
     
-    protected final Part part;
+    protected Part part;
+    protected boolean verbose;
 
     protected Map<String, ArrayList<String>> cavesMap = new HashMap<String, ArrayList<String>>();
     protected List<Path> paths = new ArrayList<Path>();       
 
-    public CavesPath(Part part) {
-        this.part = part;
+    public CavesPath() {
+        // TODO change when log4j
+        this.verbose = false;
     }
 
     public void processRow(String string) {
@@ -48,15 +50,14 @@ public class CavesPath {
 
     }
 
-    protected Predicate<Path> getPathsOfSize(int e) {
-        return p -> p.size() == e;
-    }
+    public void execute(Part part) {
 
-    public void getPaths() {
-
+        this.part = part;
         paths.clear();
         paths.add(new Path(Path.START_CAVE));
-        
+
+        printCavesMap();
+
         int paths_size = 1;
         var paths_to_process = paths.stream().filter(getPathsOfSize(paths_size)).collect(Collectors.toList());
 
@@ -70,7 +71,7 @@ public class CavesPath {
             for(Path path : paths_to_process) {
                 List<Path> newPaths = new ArrayList<>();
                 for (String node : cavesMap.get(path.getLastCave())) {
-                    if(path.canVisitCave(node, part)) {
+                    if(path.canVisitCave(node, this.part)) {
                         var newPath = new Path(path);
                         newPath.add(node);
                         newPaths.add(newPath);
@@ -89,20 +90,34 @@ public class CavesPath {
         paths.removeIf(p -> !p.getLastCave().equals(Path.END_CAVE));
     }
 
-    public void printCavesMap() {
+    public String printDescription(Part part) {
+        return (part == Part.first) ? 
+            "Passage Pathing - How many paths ?" : 
+            "Passage Pathing - How many paths visiting small caves twice ?";
+    }
+
+    public void printResult() {
         System.out.println();
-        System.out.println("Caves map:");
-        cavesMap.entrySet().forEach(entry -> System.out.println(entry.getKey() + " -> " + String.join(",", entry.getValue()) ));
+        if(verbose) {
+            System.out.println("Final paths: ");
+            paths.forEach(p -> System.out.println(String.join(",", p.getPath())));
+        }
+        System.out.println("Final paths are (" + paths.size() + "):");
         System.out.println();
     }
 
-    public void printFinalPaths(boolean allPaths) {
+    public String getResult() {
+        return String.valueOf(paths.size());
+    }
+
+    protected Predicate<Path> getPathsOfSize(int e) {
+        return p -> p.size() == e;
+    }
+
+    protected void printCavesMap() {
         System.out.println();
-        if(allPaths) {
-            System.out.println("Final paths: ");
-            paths.forEach(p -> System.out.println(String.join(",", p.getPath())));
-            }
-        System.out.println("Final paths are (" + paths.size() + "):");
+        System.out.println("Caves map:");
+        cavesMap.entrySet().forEach(entry -> System.out.println(entry.getKey() + " -> " + String.join(",", entry.getValue()) ));
         System.out.println();
     }
 

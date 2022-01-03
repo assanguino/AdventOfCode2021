@@ -13,7 +13,10 @@ import org.javatuples.Pair;
 
 public class App {
 
+    @Deprecated
     protected static Map<Pair<Integer, Part>, String> methodMap = new HashMap<>( );
+
+    protected static Map<Integer, Class<? extends Executable>> classMap = new HashMap<>();
 
     public static void main(String[] args) throws Exception {
 
@@ -40,14 +43,19 @@ public class App {
         methodMap.put(new Pair<Integer, Part>(10, Part.second), "syntax_scoring_incomplete_chunks");
         methodMap.put(new Pair<Integer, Part>(11, Part.first),  "dumbo_octopus");
         methodMap.put(new Pair<Integer, Part>(11, Part.second), "dumbo_octopus_sync");
-        methodMap.put(new Pair<Integer, Part>(12, Part.first),  "caves_path_first");
-        methodMap.put(new Pair<Integer, Part>(12, Part.second), "caves_path_second");
+        // methodMap.put(new Pair<Integer, Part>(12, Part.first),  "caves_path_first");
+        // methodMap.put(new Pair<Integer, Part>(12, Part.second), "caves_path_second");
         methodMap.put(new Pair<Integer, Part>(13, Part.first),  "transparent_origami_first");
         methodMap.put(new Pair<Integer, Part>(13, Part.second), "transparent_origami_second");
 
-        execute(13, Part.second);
+        // execute(12, Part.second);
+
+        classMap.put(12, CavesPath.class);
+
+        execute_new_version(12, Part.first);
     }
 
+    @Deprecated
     protected static Path getFilePath(String fileName) throws Exception {
         URL resource = App.class.getClassLoader().getResource(fileName);
 
@@ -58,6 +66,7 @@ public class App {
         return Path.of(resource.getPath());
     }
     
+    @Deprecated
     protected static void execute(int day, Part part) throws Exception {
 
         try {
@@ -75,6 +84,32 @@ public class App {
             System.out.println();
             System.out.println();
             System.out.println();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    protected static void execute_new_version(int day, Part part) {
+        try {
+            Class<? extends Executable> c = classMap.get(day);
+            Executable task = c.getConstructor().newInstance();
+
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println("************************************************ Advent of Code 2021");
+            System.out.println("************************************************ Day " + day + ", " + part.toString() + " part");
+            System.out.println("************************************************ " + task.printDescription(part) );
+
+            task.processInput(Executable.getInputFile(day));
+            task.execute(part);
+            task.printResult();
+
+            System.out.println("************************************************");
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -749,6 +784,7 @@ public class App {
         System.out.println(String.format("number of flashes: %2d", dumboOctopusMap.getFlashes()));
     }
 
+    /*
     protected static void caves_path_first() throws Exception {
         caves_path(Part.first);
     }
@@ -758,16 +794,12 @@ public class App {
     }
 
     protected static void caves_path(Part part) throws Exception { 
-
-        CavesPath cavesPath = new CavesPath(part);
-        for (String string : Files.readAllLines(getFilePath("AoC_12_input.txt"))) {
-            cavesPath.processRow(string);
-        }
-
-        cavesPath.printCavesMap();
-        cavesPath.getPaths();
-        cavesPath.printFinalPaths(false);
+        CavesPath cavesPath = new CavesPath();
+        cavesPath.processInput("AoC_12_input.txt");
+        cavesPath.execute(part);
+        cavesPath.printResult();
     }
+    */
 
     protected static void transparent_origami_first() throws Exception { 
         transparent_origami(Part.first);
