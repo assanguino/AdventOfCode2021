@@ -50,5 +50,5 @@ public interface Executable {
      * Final result required to overcome the test
      * @return final result as a string
      */
-    String getResult();
+    String getResult(Part part);
 }

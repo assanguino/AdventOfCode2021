@@ -41,8 +41,8 @@ public class App {
         methodMap.put(new Pair<Integer, Part>( 9, Part.second), "find_largest__basins");
         methodMap.put(new Pair<Integer, Part>(10, Part.first),  "syntax_scoring_corrupted_chunks");
         methodMap.put(new Pair<Integer, Part>(10, Part.second), "syntax_scoring_incomplete_chunks");
-        methodMap.put(new Pair<Integer, Part>(11, Part.first),  "dumbo_octopus");
-        methodMap.put(new Pair<Integer, Part>(11, Part.second), "dumbo_octopus_sync");
+        // methodMap.put(new Pair<Integer, Part>(11, Part.first),  "dumbo_octopus");
+        // methodMap.put(new Pair<Integer, Part>(11, Part.second), "dumbo_octopus_sync");
         // methodMap.put(new Pair<Integer, Part>(12, Part.first),  "caves_path_first");
         // methodMap.put(new Pair<Integer, Part>(12, Part.second), "caves_path_second");
         methodMap.put(new Pair<Integer, Part>(13, Part.first),  "transparent_origami_first");
@@ -50,9 +50,10 @@ public class App {
 
         // execute(12, Part.second);
 
+        classMap.put(11, DumboOctopus.class);
         classMap.put(12, CavesPath.class);
 
-        execute_new_version(12, Part.first);
+        execute_new_version(11, Part.second);
     }
 
     @Deprecated
@@ -109,7 +110,7 @@ public class App {
             System.out.println();
             System.out.println();
             System.out.println();
-            
+
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -738,51 +739,55 @@ public class App {
         System.out.println(String.format("competion middle score: %2d", chunkReader.getCompletionStringScore()));
     }
 
+    /*
     protected static void dumbo_octopus() throws Exception { 
 
         int measurements = 0;
-        DumboOctopusMap dumboOctopusMap = new DumboOctopusMap();
+        DumboOctopus dumboOctopus = new DumboOctopus();
         for (String string : Files.readAllLines(getFilePath("AoC_11_input.txt"))) {
 
-            dumboOctopusMap.processRow(string);
+            dumboOctopus.processRow(string);
 
             measurements++;
         }
 
         int step = 0;
         for(; step < 100; step++) {
-            dumboOctopusMap.nextStep();
+            dumboOctopus.nextStep();
         }
 
         System.out.println("After step " + (step) + ": ");
-        dumboOctopusMap.printMap();
+        dumboOctopus.printMap();
         System.out.println();
         System.out.println(String.format("number of measurements (lines): %2d", measurements));
-        System.out.println(String.format("number of flashes: %2d", dumboOctopusMap.getFlashes()));
+        System.out.println(String.format("number of flashes: %2d", dumboOctopus.getFlashes()));
     }
+    */
 
+    /*
     protected static void dumbo_octopus_sync() throws Exception { 
 
         int measurements = 0;
-        DumboOctopusMap dumboOctopusMap = new DumboOctopusMap();
+        DumboOctopus dumboOctopus = new DumboOctopus();
 
         for (String string : Files.readAllLines(getFilePath("AoC_11_input.txt"))) {
 
-            dumboOctopusMap.processRow(string);
+            dumboOctopus.processRow(string);
 
             measurements++;
         }
 
         do {
-            dumboOctopusMap.nextStep();
-        } while(!dumboOctopusMap.isFlashSync());
+            dumboOctopus.nextStep();
+        } while(!dumboOctopus.isFlashSync());
 
-        System.out.println("After step " + dumboOctopusMap.getStepNumber() + ": ");
-        dumboOctopusMap.printMap();
+        System.out.println("After step " + dumboOctopus.getStepNumber() + ": ");
+        dumboOctopus.printMap();
         System.out.println();
         System.out.println(String.format("number of measurements (lines): %2d", measurements));
-        System.out.println(String.format("number of flashes: %2d", dumboOctopusMap.getFlashes()));
+        System.out.println(String.format("number of flashes: %2d", dumboOctopus.getFlashes()));
     }
+    */
 
     /*
     protected static void caves_path_first() throws Exception {

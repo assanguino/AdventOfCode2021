@@ -106,7 +106,7 @@ public class CavesPath implements Executable {
         System.out.println();
     }
 
-    public String getResult() {
+    public String getResult(Part part) {
         return String.valueOf(paths.size());
     }
 
