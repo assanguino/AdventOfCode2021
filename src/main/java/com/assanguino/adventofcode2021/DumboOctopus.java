@@ -2,13 +2,15 @@ package com.assanguino.adventofcode2021;
 
 public class DumboOctopus implements Executable {
     
+    protected Part part;
     protected int[][] map;
     protected int mapSize = -1;
     protected int noRows = -1;
     protected long flashes = -1;
     protected long stepNumber = -1;
 
-    public DumboOctopus() {
+    public DumboOctopus(Part part) {
+        this.part = part;
     }
 
     public void processRow(String row) {
@@ -27,7 +29,7 @@ public class DumboOctopus implements Executable {
         noRows++;
     }
 
-    public void execute(Part part) {
+    public void execute() {
         flashes = 0;
         stepNumber = 0;
         if(part == Part.first) {
@@ -42,13 +44,13 @@ public class DumboOctopus implements Executable {
         }
     }
 
-    public String printDescription(Part part) {
+    public String printDescription() {
         return (part == Part.first) ? 
             "Dumbo Octopus - How many flashes are there after 100 steps ?" : 
             "Dumbo Octopus - What is the first step during which all octopuses flash ?";
     }
 
-    public void printResult(Part part) {
+    public void printResult() {
         System.out.println("After step " + stepNumber + ": ");
         printMap();
         System.out.println();
@@ -56,7 +58,7 @@ public class DumboOctopus implements Executable {
         System.out.println(String.format("number of flashes: %2d", flashes ));
     }
 
-    public String getResult(Part part) {
+    public String getResult() {
         return part == Part.first ? 
             String.valueOf(flashes) :
             String.valueOf(stepNumber);

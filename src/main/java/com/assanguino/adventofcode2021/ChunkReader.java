@@ -11,12 +11,14 @@ public class ChunkReader implements Executable {
     protected static final int[] syntax_error_points = {3, 57, 1197, 25137};
     protected static final int[] incompletion_points = {1, 2, 3, 4};
 
+    protected Part part;
     protected int[] chunkCounter;
     protected int syntax_error_score;
     protected List<Long> completionScoreList;
     protected int noRows = 0;
 
-    public ChunkReader() {
+    public ChunkReader(Part part) {
+        this.part = part;
         syntax_error_score = 0;
         completionScoreList = new ArrayList<>();
         noRows = 0;
@@ -70,17 +72,17 @@ public class ChunkReader implements Executable {
 
     }
 
-    public void execute(Part part) {
+    public void execute() {
         // An empty method; all is done when reading the file (row by row)
     }
 
-    public String printDescription(Part part) {
+    public String printDescription() {
         return (part == Part.first) ? 
             "Syntax Scoring - What is the total syntax error ?" : 
             "Syntax Scoring - What is the middle score ?";
     }
 
-    public void printResult(Part part) {
+    public void printResult() {
         System.out.println(String.format("number of measurements (lines): %2d", noRows));
 
         if(part == Part.first) {
@@ -90,7 +92,7 @@ public class ChunkReader implements Executable {
         }
     }
 
-    public String getResult(Part part) {
+    public String getResult() {
         return part == Part.first ?
             String.valueOf(syntax_error_score) :
             String.valueOf(getCompletionStringScore());

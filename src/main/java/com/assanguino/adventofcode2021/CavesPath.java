@@ -15,8 +15,9 @@ public class CavesPath implements Executable {
     protected Map<String, ArrayList<String>> cavesMap = new HashMap<String, ArrayList<String>>();
     protected List<Path> paths = new ArrayList<Path>();       
 
-    public CavesPath() {
+    public CavesPath(Part part) {
         // TODO change when log4j
+        this.part = part;
         this.verbose = false;
     }
 
@@ -50,9 +51,8 @@ public class CavesPath implements Executable {
 
     }
 
-    public void execute(Part part) {
+    public void execute() {
 
-        this.part = part;
         paths.clear();
         paths.add(new Path(Path.START_CAVE));
 
@@ -71,7 +71,7 @@ public class CavesPath implements Executable {
             for(Path path : paths_to_process) {
                 List<Path> newPaths = new ArrayList<>();
                 for (String node : cavesMap.get(path.getLastCave())) {
-                    if(path.canVisitCave(node, this.part)) {
+                    if(path.canVisitCave(node, part)) {
                         var newPath = new Path(path);
                         newPath.add(node);
                         newPaths.add(newPath);
@@ -90,13 +90,13 @@ public class CavesPath implements Executable {
         paths.removeIf(p -> !p.getLastCave().equals(Path.END_CAVE));
     }
 
-    public String printDescription(Part part) {
+    public String printDescription() {
         return (part == Part.first) ? 
             "Passage Pathing - How many paths ?" : 
             "Passage Pathing - How many paths visiting small caves twice ?";
     }
 
-    public void printResult(Part part) {
+    public void printResult() {
         System.out.println();
         if(verbose) {
             System.out.println("Final paths: ");
@@ -106,7 +106,7 @@ public class CavesPath implements Executable {
         System.out.println();
     }
 
-    public String getResult(Part part) {
+    public String getResult() {
         return String.valueOf(paths.size());
     }
 

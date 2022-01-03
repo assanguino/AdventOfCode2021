@@ -32,25 +32,25 @@ public interface Executable {
      * Do the math indeed
      * @param part that would be executed
      */
-    void execute(Part part);
+    void execute();
 
     /**
      * 
      * @param part Exercise part
      * @return A brief description of what it is going to do
      */
-    String printDescription(Part part);
+    String printDescription();
 
     /**
      * Several lines of information that explains the final result
      * @param part
      */
-    void printResult(Part part);
+    void printResult();
 
     /**
      * Final result required to overcome the test
      * @param part
      * @return final result as a string
      */
-    String getResult(Part part);
+    String getResult();
 }

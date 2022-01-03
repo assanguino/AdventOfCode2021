@@ -54,7 +54,7 @@ public class App {
         classMap.put(11, DumboOctopus.class);
         classMap.put(12, CavesPath.class);
 
-        execute_new_version(10, Part.second);
+        execute_new_version(12, Part.second);
     }
 
     @Deprecated
@@ -93,19 +93,21 @@ public class App {
 
     protected static void execute_new_version(int day, Part part) {
         try {
-            Class<? extends Executable> c = classMap.get(day);
-            Executable task = c.getConstructor().newInstance();
+            Class<?>[] constructorParams = { Part.class };
+
+            Class<? extends Executable> dayClass = classMap.get(day);
+            Executable dayObject = dayClass.getConstructor(constructorParams).newInstance(part);
 
             System.out.println();
             System.out.println();
             System.out.println();
             System.out.println("************************************************ Advent of Code 2021");
             System.out.println("************************************************ Day " + day + ", " + part.toString() + " part");
-            System.out.println("************************************************ " + task.printDescription(part) );
+            System.out.println("************************************************ " + dayObject.printDescription() );
 
-            task.processInput(Executable.getInputFile(day));
-            task.execute(part);
-            task.printResult(part);
+            dayObject.processInput(Executable.getInputFile(day));
+            dayObject.execute();
+            dayObject.printResult();
 
             System.out.println("************************************************");
             System.out.println();
@@ -710,6 +712,7 @@ public class App {
         System.out.println("Result of multiplying the three largest basins: " + largestBasinsResult);
     }
 
+    // TODO remove
     /*
     protected static void syntax_scoring_corrupted_chunks() throws Exception { 
 
@@ -744,6 +747,7 @@ public class App {
     }
     */
 
+    // TODO remove
     /*
     protected static void dumbo_octopus() throws Exception { 
 
@@ -769,6 +773,7 @@ public class App {
     }
     */
 
+    // TODO remove
     /*
     protected static void dumbo_octopus_sync() throws Exception { 
 
@@ -794,6 +799,7 @@ public class App {
     }
     */
 
+    // TODO remove
     /*
     protected static void caves_path_first() throws Exception {
         caves_path(Part.first);
