@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class HeightMap {
+public class HeightMap implements Executable {
     
     protected List<String> heightRows = new ArrayList<>();
     protected Integer[][] heightMap;
+    protected Part part;
 
     /**
      * Check map, with several codes:
@@ -23,45 +24,15 @@ public class HeightMap {
     protected Integer riskLevelSum = -1;                // not calculated
     protected Long largestBasinsResult = (long)-1;      // not calculated
 
-    public void getHeightMapRow(String row) {
+    public HeightMap(Part part) {
+        this.part = part;
+    }
+
+    public void processRow(String row) {
         heightRows.add(row);
     }
 
-    public Integer getRiskLevelSum() {
-
-        if(riskLevelSum == -1)
-            calculateBasins(Part.first);
-        
-        return riskLevelSum;
-    }
-
-    public long getLargestBasinsResult() {
-        if(largestBasinsResult == -1)
-            calculateBasins(Part.second);
-
-        return largestBasinsResult;
-    }
-
-    protected void initHeightmap() {
-
-        noRows = heightRows.size();
-        noColumns = heightRows.get(0).length();
-
-        heightMap = new Integer[noRows][noColumns];
-        lowPointsMap = new Integer[noRows][noColumns];
-
-        for(int i = 0; i < noRows; i++) {
-            char[] temp = heightRows.get(i).toCharArray();
-            for(int j = 0; j < noColumns; j++) {
-                // from char to int
-                heightMap[i][j] = temp[j] - '0';
-                // Init 'low points' map
-                lowPointsMap[i][j] = -1;
-            }    
-        }
-    }
-
-    protected void calculateBasins(Part part) {
+    public void execute() {
 
         initHeightmap();
         riskLevelSum = 0;
@@ -114,6 +85,46 @@ public class HeightMap {
             largestBasinsResult = largestBasinsSize[0] * largestBasinsSize[1] * largestBasinsSize[2];
         }
 
+    }
+
+    public String printDescription() {
+        return (part == Part.first) ? 
+            "Smoke Basin - Sum of the risk levels of all low points" : 
+            "Smoke Basin - Multiplying the sizes of the three largest basins";
+    }
+
+    public void printResult() {
+        System.out.println(String.format("number of measurements: %2d rows - %2d columns", noRows, noColumns));
+        if(part == Part.first) {
+            System.out.println("Sum of all risk levels: " + riskLevelSum);
+        } else {
+            System.out.println("Result of multiplying the three largest basins: " + largestBasinsResult);
+        }
+    }
+
+    public String getResult() {
+        return part == Part.first ? 
+            String.valueOf(riskLevelSum) :
+            String.valueOf(largestBasinsResult);
+    }
+    
+    protected void initHeightmap() {
+
+        noRows = heightRows.size();
+        noColumns = heightRows.get(0).length();
+
+        heightMap = new Integer[noRows][noColumns];
+        lowPointsMap = new Integer[noRows][noColumns];
+
+        for(int i = 0; i < noRows; i++) {
+            char[] temp = heightRows.get(i).toCharArray();
+            for(int j = 0; j < noColumns; j++) {
+                // from char to int
+                heightMap[i][j] = temp[j] - '0';
+                // Init 'low points' map
+                lowPointsMap[i][j] = -1;
+            }    
+        }
     }
 
     // Recursive method.

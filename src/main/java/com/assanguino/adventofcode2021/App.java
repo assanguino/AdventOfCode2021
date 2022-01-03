@@ -37,8 +37,8 @@ public class App {
         methodMap.put(new Pair<Integer, Part>( 7, Part.second), "crabs_horizontal_positioning_part_second");
         methodMap.put(new Pair<Integer, Part>( 8, Part.first),  "seven_segment_search");
         methodMap.put(new Pair<Integer, Part>( 8, Part.second), "seven_segment_search_solved");
-        methodMap.put(new Pair<Integer, Part>( 9, Part.first),  "smoke_basin");
-        methodMap.put(new Pair<Integer, Part>( 9, Part.second), "find_largest__basins");
+        // methodMap.put(new Pair<Integer, Part>( 9, Part.first),  "smoke_basin");
+        // methodMap.put(new Pair<Integer, Part>( 9, Part.second), "find_largest__basins");
         // methodMap.put(new Pair<Integer, Part>(10, Part.first),  "syntax_scoring_corrupted_chunks");
         // methodMap.put(new Pair<Integer, Part>(10, Part.second), "syntax_scoring_incomplete_chunks");
         // methodMap.put(new Pair<Integer, Part>(11, Part.first),  "dumbo_octopus");
@@ -50,11 +50,12 @@ public class App {
 
         // execute(12, Part.second);
 
+        classMap.put( 9, HeightMap.class);
         classMap.put(10, ChunkReader.class);
         classMap.put(11, DumboOctopus.class);
         classMap.put(12, CavesPath.class);
 
-        execute_new_version(12, Part.second);
+        execute_new_version( 9, Part.second);
     }
 
     @Deprecated
@@ -674,12 +675,14 @@ public class App {
         System.out.println("sum of all outputs: " + sum);
     }
 
+    // TODO remove
+    /*
     protected static void smoke_basin() throws Exception { 
 
         int measurementsColumns = 0, measurementsRows = 0;
         HeightMap basinMap = new HeightMap();
         for (String string : Files.readAllLines(getFilePath("AoC_09_input.txt"))) {
-            basinMap.getHeightMapRow(string);
+            basinMap.processRow(string);
 
             if(measurementsColumns == 0) {
                 measurementsColumns = string.length();
@@ -698,7 +701,7 @@ public class App {
         int measurementsColumns = 0, measurementsRows = 0;
         HeightMap basinMap = new HeightMap();
         for (String string : Files.readAllLines(getFilePath("AoC_09_input.txt"))) {
-            basinMap.getHeightMapRow(string);
+            basinMap.processRow(string);
 
             if(measurementsColumns == 0) {
                 measurementsColumns = string.length();
@@ -711,6 +714,7 @@ public class App {
         System.out.println(String.format("number of measurements: %2d rows - %2d columns", measurementsRows, measurementsColumns));
         System.out.println("Result of multiplying the three largest basins: " + largestBasinsResult);
     }
+    */
 
     // TODO remove
     /*
