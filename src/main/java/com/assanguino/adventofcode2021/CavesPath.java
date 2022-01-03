@@ -96,7 +96,7 @@ public class CavesPath implements Executable {
             "Passage Pathing - How many paths visiting small caves twice ?";
     }
 
-    public void printResult() {
+    public void printResult(Part part) {
         System.out.println();
         if(verbose) {
             System.out.println("Final paths: ");

@@ -39,8 +39,8 @@ public class App {
         methodMap.put(new Pair<Integer, Part>( 8, Part.second), "seven_segment_search_solved");
         methodMap.put(new Pair<Integer, Part>( 9, Part.first),  "smoke_basin");
         methodMap.put(new Pair<Integer, Part>( 9, Part.second), "find_largest__basins");
-        methodMap.put(new Pair<Integer, Part>(10, Part.first),  "syntax_scoring_corrupted_chunks");
-        methodMap.put(new Pair<Integer, Part>(10, Part.second), "syntax_scoring_incomplete_chunks");
+        // methodMap.put(new Pair<Integer, Part>(10, Part.first),  "syntax_scoring_corrupted_chunks");
+        // methodMap.put(new Pair<Integer, Part>(10, Part.second), "syntax_scoring_incomplete_chunks");
         // methodMap.put(new Pair<Integer, Part>(11, Part.first),  "dumbo_octopus");
         // methodMap.put(new Pair<Integer, Part>(11, Part.second), "dumbo_octopus_sync");
         // methodMap.put(new Pair<Integer, Part>(12, Part.first),  "caves_path_first");
@@ -50,10 +50,11 @@ public class App {
 
         // execute(12, Part.second);
 
+        classMap.put(10, ChunkReader.class);
         classMap.put(11, DumboOctopus.class);
         classMap.put(12, CavesPath.class);
 
-        execute_new_version(11, Part.second);
+        execute_new_version(10, Part.second);
     }
 
     @Deprecated
@@ -104,7 +105,7 @@ public class App {
 
             task.processInput(Executable.getInputFile(day));
             task.execute(part);
-            task.printResult();
+            task.printResult(part);
 
             System.out.println("************************************************");
             System.out.println();
@@ -709,6 +710,7 @@ public class App {
         System.out.println("Result of multiplying the three largest basins: " + largestBasinsResult);
     }
 
+    /*
     protected static void syntax_scoring_corrupted_chunks() throws Exception { 
 
         int measurements = 0;
@@ -723,7 +725,9 @@ public class App {
         System.out.println(String.format("number of measurements (lines): %2d", measurements));
         System.out.println(String.format("syntax error score: %2d", chunkReader.getSyntaxErrorScore()));
     }
+    */
 
+    /*
     protected static void syntax_scoring_incomplete_chunks() throws Exception { 
 
         int measurements = 0;
@@ -738,6 +742,7 @@ public class App {
         System.out.println(String.format("number of measurements (lines): %2d", measurements));
         System.out.println(String.format("competion middle score: %2d", chunkReader.getCompletionStringScore()));
     }
+    */
 
     /*
     protected static void dumbo_octopus() throws Exception { 

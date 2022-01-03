@@ -48,7 +48,7 @@ public class DumboOctopus implements Executable {
             "Dumbo Octopus - What is the first step during which all octopuses flash ?";
     }
 
-    public void printResult() {
+    public void printResult(Part part) {
         System.out.println("After step " + stepNumber + ": ");
         printMap();
         System.out.println();

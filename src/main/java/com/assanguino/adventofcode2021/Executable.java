@@ -43,11 +43,13 @@ public interface Executable {
 
     /**
      * Several lines of information that explains the final result
+     * @param part
      */
-    void printResult();
+    void printResult(Part part);
 
     /**
      * Final result required to overcome the test
+     * @param part
      * @return final result as a string
      */
     String getResult(Part part);

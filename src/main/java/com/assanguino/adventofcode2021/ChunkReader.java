@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ChunkReader {
+public class ChunkReader implements Executable {
     
     protected static final String openChunks = "([{<";
     protected static final String closeChunks = ")]}>";
@@ -14,13 +14,15 @@ public class ChunkReader {
     protected int[] chunkCounter;
     protected int syntax_error_score;
     protected List<Long> completionScoreList;
+    protected int noRows = 0;
 
     public ChunkReader() {
         syntax_error_score = 0;
         completionScoreList = new ArrayList<>();
+        noRows = 0;
     }
 
-    public void processLine(String line) {
+    public void processRow(String row) {
 
         // It's a counter matrix
         // first row, related to ( )
@@ -34,7 +36,9 @@ public class ChunkReader {
         // It's the future chunk string, expected to be at the end ...
         String expectedChunks = "";
 
-        char [] lineArray = line.toCharArray();
+        noRows++;
+        char[] lineArray = row.toCharArray();
+
         for(int i = 0; i < lineArray.length; i++) {
 
             char c = lineArray[i];
@@ -66,6 +70,32 @@ public class ChunkReader {
 
     }
 
+    public void execute(Part part) {
+        // An empty method; all is done when reading the file (row by row)
+    }
+
+    public String printDescription(Part part) {
+        return (part == Part.first) ? 
+            "Syntax Scoring - What is the total syntax error ?" : 
+            "Syntax Scoring - What is the middle score ?";
+    }
+
+    public void printResult(Part part) {
+        System.out.println(String.format("number of measurements (lines): %2d", noRows));
+
+        if(part == Part.first) {
+            System.out.println(String.format("syntax error score: %2d", syntax_error_score ));
+        } else {
+            System.out.println(String.format("competion middle score: %2d", getCompletionStringScore()));
+        }
+    }
+
+    public String getResult(Part part) {
+        return part == Part.first ?
+            String.valueOf(syntax_error_score) :
+            String.valueOf(getCompletionStringScore());
+    }
+
     protected long addCompletionStringScore(String completion) {
         long score = 0;
 
@@ -93,10 +123,6 @@ public class ChunkReader {
 
     protected int getIncompleteCharacterScore(char c) {
         return incompletion_points[closeChunks.indexOf(c)];
-    }
-
-    public int getSyntaxErrorScore() {
-        return syntax_error_score;
     }
 
 }
