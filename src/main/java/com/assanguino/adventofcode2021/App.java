@@ -31,8 +31,8 @@ public class App {
         methodMap.put(new Pair<Integer, Part>( 4, Part.second), "playing_bingo_with_giant_squid_to_lose");
         methodMap.put(new Pair<Integer, Part>( 5, Part.first),  "hydrothermal_venture_first");
         methodMap.put(new Pair<Integer, Part>( 5, Part.second), "hydrothermal_venture_second");
-        methodMap.put(new Pair<Integer, Part>( 6, Part.first),  "lanternfish_part_1");
-        methodMap.put(new Pair<Integer, Part>( 6, Part.second), "lanternfish_part_2");
+        // methodMap.put(new Pair<Integer, Part>( 6, Part.first),  "lanternfish_part_1");
+        // methodMap.put(new Pair<Integer, Part>( 6, Part.second), "lanternfish_part_2");
         // methodMap.put(new Pair<Integer, Part>( 7, Part.first),  "crabs_horizontal_positioning_part_first");
         // methodMap.put(new Pair<Integer, Part>( 7, Part.second), "crabs_horizontal_positioning_part_second");
         // methodMap.put(new Pair<Integer, Part>( 8, Part.first),  "seven_segment_search");
@@ -50,6 +50,7 @@ public class App {
 
         // execute(12, Part.second);
 
+        classMap.put( 6, Lanternfish.class);
         classMap.put( 7, Crabs.class);
         classMap.put( 8, SevenSegmentDisplay.class);
         classMap.put( 9, HeightMap.class);
@@ -57,7 +58,7 @@ public class App {
         classMap.put(11, DumboOctopus.class);
         classMap.put(12, CavesPath.class);
 
-        execute_new_version( 7, Part.first);
+        execute_new_version( 6, Part.second);
     }
 
     @Deprecated
@@ -500,6 +501,8 @@ public class App {
         hydrothermal_venture(Part.second);
     }
 
+    // TODO remove
+    /*
     protected static void lanternfish_part_1() throws Exception { 
         lanternfish(80);
     }
@@ -534,13 +537,11 @@ public class App {
             lanternfish_day.set(6, lanternfish_day.get(6) + newFishes);
             lanternfish_day.add(newFishes);
 
-            /*
-            long totalFishes = 0;
-            for(int i = 0; i < lanternfish_day.size(); i++) {
-                totalFishes += lanternfish_day.get(i);
-            }
-            System.out.println(String.format("      day #%3d, number of lanternfishes: %d", day, totalFishes));
-            */
+            // long totalFishes = 0;
+            // for(int i = 0; i < lanternfish_day.size(); i++) {
+            //     totalFishes += lanternfish_day.get(i);
+            // }
+            // System.out.println(String.format("      day #%3d, number of lanternfishes: %d", day, totalFishes));
         }
 
         long totalFishes = 0;
@@ -553,6 +554,7 @@ public class App {
         System.out.println("number of days: " + number_of_days);
         System.out.println("number of final lanternfishes: " + totalFishes);
     }
+    */
 
     // TODO remove
     /*
