@@ -17,8 +17,9 @@ public interface Executable {
         }
     }
 
-    static String getInputFile(int day) {
-        return String.format("AoC_%02d_input.txt", day);
+    static String getInputFile(int day, boolean isTest) {
+        String prefix = isTest ? "test" : "AoC";
+        return String.format("%s_%02d_input.txt", prefix, day);
     }
 
     /**

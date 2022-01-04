@@ -5,11 +5,13 @@ import java.util.List;
 
 import org.javatuples.Pair;
 
-public class Origami {
+public class Origami implements Executable {
     
     protected final char EMPTY_CHAR = '.';
     protected final char MARK_CHAR = '#';
+    protected final String HARDCODED_RESULT_SECOND = "PGHRKLKL";
 
+    protected Part part;
     protected int noX = -1;
     protected int noY = -1;
 
@@ -17,6 +19,10 @@ public class Origami {
     protected List<String> foldList = new ArrayList<String>();
 
     protected char[][] paper;
+
+    public Origami(Part part) {
+        this.part = part;
+    }
 
     public void processRow(String row) {
 
@@ -39,7 +45,29 @@ public class Origami {
         }
     }
 
-    public void fill() {
+    public void execute() {
+        fill();
+        foldAll();
+    }
+
+    public String printDescription() {
+        return (part == Part.first) ? 
+            "Transparent Origami - How many visible dots after completing the first fold instruction ?" : 
+            "Transparent Origami - What code do you use to activate the infrared thermal imaging camera system ?";
+    }
+
+    public void printResult() {
+        System.out.println(String.format("After folding there are %2d dots:", getDots()));
+        printPaper(part == Part.second);
+    }
+
+    public String getResult() {
+        return part == Part.first ? 
+            String.valueOf(getDots()) :
+            String.valueOf(HARDCODED_RESULT_SECOND);
+    }
+
+    protected void fill() {
 
         // create an empty origami
         paper = new char[noY+1][noX+1];
@@ -56,11 +84,11 @@ public class Origami {
             paper[y][x] = MARK_CHAR;
         }
 
-        System.out.println(String.format("Initial paper:"));
-        printPaper(false);
+        // System.out.println(String.format("Initial paper:"));
+        // printPaper(false);
     }
 
-    public void foldAll(Part part) {
+    protected void foldAll() {
 
         int noFolds = 0;
 
@@ -95,8 +123,8 @@ public class Origami {
                 noY = value-1;
             }
 
-            System.out.println(String.format("After folding as follows: (%s)", f));
-            printPaper(part == Part.second);
+            // System.out.println(String.format("After folding as follows: (%s)", f));
+            // printPaper(part == Part.second);
 
             // Cut the iterations
             noFolds++;
@@ -105,7 +133,7 @@ public class Origami {
         }
     }
 
-    public Integer getDots() {
+    protected Integer getDots() {
 
         Integer no = 0;
         for(int i = 0; i <= noY; i++) {

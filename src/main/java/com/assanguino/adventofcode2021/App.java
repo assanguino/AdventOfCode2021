@@ -1,7 +1,6 @@
 package com.assanguino.adventofcode2021;
 
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,8 +17,8 @@ public class App {
     public static void main(String[] args) throws Exception {
 
         // Populate the methods map
-        methodMap.put(new Pair<Integer, Part>(13, Part.first),  "transparent_origami_first");
-        methodMap.put(new Pair<Integer, Part>(13, Part.second), "transparent_origami_second");
+        // methodMap.put(new Pair<Integer, Part>(13, Part.first),  "transparent_origami_first");
+        // methodMap.put(new Pair<Integer, Part>(13, Part.second), "transparent_origami_second");
 
         // execute(12, Part.second);
 
@@ -35,8 +34,9 @@ public class App {
         classMap.put(10, ChunkReader.class);
         classMap.put(11, DumboOctopus.class);
         classMap.put(12, CavesPath.class);
+        classMap.put(13, Origami.class);
 
-        execute_new_version( 1, Part.second);
+        execute_new_version(13, Part.second);
     }
 
     @Deprecated
@@ -87,7 +87,7 @@ public class App {
             System.out.println("************************************************ Day " + day + ", " + part.toString() + " part");
             System.out.println("************************************************ " + dayObject.printDescription() );
 
-            dayObject.processInput(Executable.getInputFile(day));
+            dayObject.processInput(Executable.getInputFile(day, isTestFile(day, part)));
             dayObject.execute();
             dayObject.printResult();
 
@@ -101,6 +101,12 @@ public class App {
         }
     }
 
+    protected static boolean isTestFile(int day, Part part) {
+        return (day == 13 && part == Part.first);
+    }
+
+    // TODO remove
+    /*
     protected static void transparent_origami_first() throws Exception { 
         transparent_origami(Part.first);
     }
@@ -113,14 +119,15 @@ public class App {
 
         String fileName = part == Part.first ? "test_input.txt" : "AoC_13_input.txt";
 
-        Origami origami = new Origami();
-        for (String string : Files.readAllLines(getFilePath(fileName))) {
-            origami.processRow(string);
+        Origami origami = new Origami(part);
+        for (String row : Files.readAllLines(getFilePath(fileName))) {
+            origami.processRow(row);
         }
 
         origami.fill();
         origami.foldAll(part);
     }
+    */
 
 }
 
