@@ -24,8 +24,8 @@ public class App {
         methodMap.put(new Pair<Integer, Part>( 1, Part.second), "three_measurements_sliding_window");
         methodMap.put(new Pair<Integer, Part>( 2, Part.first),  "horizontal_and_depth");
         methodMap.put(new Pair<Integer, Part>( 2, Part.second), "horizontal_and_depth_with_aim");
-        methodMap.put(new Pair<Integer, Part>( 3, Part.first),  "binary_diagnostic_power_consumption");
-        methodMap.put(new Pair<Integer, Part>( 3, Part.second), "life_support_rating");
+        // methodMap.put(new Pair<Integer, Part>( 3, Part.first),  "binary_diagnostic_power_consumption");
+        // methodMap.put(new Pair<Integer, Part>( 3, Part.second), "life_support_rating");
         // methodMap.put(new Pair<Integer, Part>( 4, Part.first),  "playing_bingo_with_giant_squid_to_win");
         // methodMap.put(new Pair<Integer, Part>( 4, Part.second), "playing_bingo_with_giant_squid_to_lose");
         // methodMap.put(new Pair<Integer, Part>( 5, Part.first),  "hydrothermal_venture_first");
@@ -49,6 +49,7 @@ public class App {
 
         // execute(12, Part.second);
 
+        classMap.put( 3, BinaryDiagnostic.class);
         classMap.put( 4, GiantSquidBingo.class);
         classMap.put( 5, VentsMap.class);
         classMap.put( 6, Lanternfish.class);
@@ -59,7 +60,7 @@ public class App {
         classMap.put(11, DumboOctopus.class);
         classMap.put(12, CavesPath.class);
 
-        execute_new_version( 4, Part.second);
+        execute_new_version( 3, Part.second);
     }
 
     @Deprecated
@@ -243,6 +244,8 @@ public class App {
         day_02_basic_method(Part.second);
     }
 
+    // TODO remove
+    /*
     protected static void binary_diagnostic_power_consumption() throws Exception {
 
         int measurements = 0;
@@ -388,6 +391,7 @@ public class App {
         System.out.println("CO2_scrubber_rating:     " + CO2_scrubber_rating);
         System.out.println("life_support_rating (multiplication): " + oxygen_generator_rating*CO2_scrubber_rating);    
     }
+    */
 
     // TODO remove
     /*
