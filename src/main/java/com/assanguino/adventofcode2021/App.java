@@ -3,7 +3,6 @@ package com.assanguino.adventofcode2021;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,8 +18,8 @@ public class App {
     public static void main(String[] args) throws Exception {
 
         // Populate the methods map
-        methodMap.put(new Pair<Integer, Part>( 1, Part.first),  "depth_measurement_increments");
-        methodMap.put(new Pair<Integer, Part>( 1, Part.second), "three_measurements_sliding_window");
+        // methodMap.put(new Pair<Integer, Part>( 1, Part.first),  "depth_measurement_increments");
+        // methodMap.put(new Pair<Integer, Part>( 1, Part.second), "three_measurements_sliding_window");
         // methodMap.put(new Pair<Integer, Part>( 2, Part.first),  "horizontal_and_depth");
         // methodMap.put(new Pair<Integer, Part>( 2, Part.second), "horizontal_and_depth_with_aim");
         // methodMap.put(new Pair<Integer, Part>( 3, Part.first),  "binary_diagnostic_power_consumption");
@@ -48,6 +47,7 @@ public class App {
 
         // execute(12, Part.second);
 
+        classMap.put( 1, SonarSweep.class);
         classMap.put( 2, Diving.class);
         classMap.put( 3, BinaryDiagnostic.class);
         classMap.put( 4, GiantSquidBingo.class);
@@ -60,7 +60,7 @@ public class App {
         classMap.put(11, DumboOctopus.class);
         classMap.put(12, CavesPath.class);
 
-        execute_new_version( 2, Part.second);
+        execute_new_version( 1, Part.second);
     }
 
     @Deprecated
@@ -125,6 +125,8 @@ public class App {
         }
     }
 
+    // TODO remove
+    /*
     protected static void depth_measurement_increments() throws Exception {
 
         Integer current, last = -1;
@@ -189,6 +191,7 @@ public class App {
         System.out.println("measurements: " + index);
         System.out.println("increments: " + increments);
     }
+    */
 
     // TODO remove
     /*
