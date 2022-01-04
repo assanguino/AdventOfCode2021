@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.javatuples.Pair;
@@ -27,8 +26,8 @@ public class App {
         methodMap.put(new Pair<Integer, Part>( 2, Part.second), "horizontal_and_depth_with_aim");
         methodMap.put(new Pair<Integer, Part>( 3, Part.first),  "binary_diagnostic_power_consumption");
         methodMap.put(new Pair<Integer, Part>( 3, Part.second), "life_support_rating");
-        methodMap.put(new Pair<Integer, Part>( 4, Part.first),  "playing_bingo_with_giant_squid_to_win");
-        methodMap.put(new Pair<Integer, Part>( 4, Part.second), "playing_bingo_with_giant_squid_to_lose");
+        // methodMap.put(new Pair<Integer, Part>( 4, Part.first),  "playing_bingo_with_giant_squid_to_win");
+        // methodMap.put(new Pair<Integer, Part>( 4, Part.second), "playing_bingo_with_giant_squid_to_lose");
         // methodMap.put(new Pair<Integer, Part>( 5, Part.first),  "hydrothermal_venture_first");
         // methodMap.put(new Pair<Integer, Part>( 5, Part.second), "hydrothermal_venture_second");
         // methodMap.put(new Pair<Integer, Part>( 6, Part.first),  "lanternfish_part_1");
@@ -50,6 +49,7 @@ public class App {
 
         // execute(12, Part.second);
 
+        classMap.put( 4, GiantSquidBingo.class);
         classMap.put( 5, VentsMap.class);
         classMap.put( 6, Lanternfish.class);
         classMap.put( 7, Crabs.class);
@@ -59,7 +59,7 @@ public class App {
         classMap.put(11, DumboOctopus.class);
         classMap.put(12, CavesPath.class);
 
-        execute_new_version( 5, Part.second);
+        execute_new_version( 4, Part.second);
     }
 
     @Deprecated
@@ -389,6 +389,8 @@ public class App {
         System.out.println("life_support_rating (multiplication): " + oxygen_generator_rating*CO2_scrubber_rating);    
     }
 
+    // TODO remove
+    /*
     protected static void playing_bingo_with_giant_squid(Part part) throws Exception {
 
         List<Integer> random_numbers = new ArrayList<>();
@@ -471,6 +473,7 @@ public class App {
     protected static void playing_bingo_with_giant_squid_to_lose() throws Exception {
         playing_bingo_with_giant_squid(Part.second);
     }
+    */
 
     // TODO remove
     /*
