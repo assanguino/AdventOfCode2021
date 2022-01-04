@@ -6,39 +6,89 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class SevenSegmentDisplay {
+public class SevenSegmentDisplay implements Executable {
     
     protected static final int INPUT_NUMBERS = 10;
     protected static final int OUTPUT_NUMBERS = 4;
 
-    protected static List<String> decodedDigits = new ArrayList<String>();
+    protected Part part;
+    protected List<String> decodedDigits = new ArrayList<String>();
+    protected int noRows = 0;
+    protected long counterFirst = 0;
+    protected long outputSum = 0;
 
-    public static int decodeOutput(String[] strings) {
-
-        List<String> input = new ArrayList<>();
-
-        for(int i = 0; i < INPUT_NUMBERS; i++) {
-            input.add(strings[i]);
-        }
-
-        // decoded digits
-        decodeDigits(input);
-
-        String number_str = "";
-        for(int i = 0; i < OUTPUT_NUMBERS; i++) {
-            String sorted = sortCharacters(strings[strings.length - 1 - i]);
-
-            for(int j = 0; j < decodedDigits.size(); j++) {
-                if(decodedDigits.get(j).equals(sorted)) {
-                    number_str = String.format("%d%s", j, number_str);
-                }
-            }
-        }
-
-        return Integer.parseInt(number_str);
+    public SevenSegmentDisplay(Part part) {
+        this.part = part;
     }
 
-    protected static void decodeDigits(List<String> input) {
+    public void processRow(String row) {
+
+        noRows++;
+        String[] strings = row.split(" ");
+
+        if(part == Part.first) {
+
+            for(int i = strings.length - 1; i > strings.length - 5; i--) {
+                int len = strings[i].length();
+                if(len == 2 || len == 3 || len == 4 || len == 7) {
+                    counterFirst++;
+                }
+            }
+        } else {
+
+            List<String> input = new ArrayList<>();
+    
+            for(int i = 0; i < INPUT_NUMBERS; i++) {
+                input.add(strings[i]);
+            }
+
+            // decoded digits
+            decodeDigits(input);
+    
+            String number_str = "";
+            for(int i = 0; i < OUTPUT_NUMBERS; i++) {
+                String sorted = sortCharacters(strings[strings.length - 1 - i]);
+    
+                for(int j = 0; j < decodedDigits.size(); j++) {
+                    if(decodedDigits.get(j).equals(sorted)) {
+                        number_str = String.format("%d%s", j, number_str);
+                    }
+                }
+            }
+    
+            outputSum += Integer.parseInt(number_str);
+    
+            // System.out.println("Decoding each number. Measure #" + noRows + ". Number: " + number_str + ". Sum: " + outputSum);
+        }
+
+    }
+
+    public void execute() {
+        // No thing to do here; all is done in the processRow() method.
+    }
+
+    public String printDescription() {
+        return (part == Part.first) ? 
+            "Seven Segment Search - How many times do digits 1, 4, 7, or 8 appear ?" : 
+            "Seven Segment Search - What do you get if you add up all of the output values ?";
+    }
+
+    public void printResult() {
+        System.out.println("number of measurements: " + noRows);
+        if(part == Part.first) {
+            System.out.println("number of 1, 4, 7 and 8 outputs: " + counterFirst);
+        } else {
+            System.out.println("sum of all outputs: " + outputSum);
+        }
+    }
+
+    public String getResult() {
+        return part == Part.first ? 
+            String.valueOf(counterFirst) :
+            String.valueOf(outputSum);
+    }
+    
+    protected void decodeDigits(List<String> input) {
         // init the decodification result
         decodedDigits.clear();
         decodedDigits.addAll(Collections.nCopies(10, ""));
@@ -102,7 +152,7 @@ public class SevenSegmentDisplay {
         input.removeIf(n -> n.length() == 6);
     }
 
-    protected static String sortCharacters(String in) {
+    protected String sortCharacters(String in) {
 
         char[] chars = in.toCharArray();
         Arrays.sort(chars);
@@ -111,7 +161,7 @@ public class SevenSegmentDisplay {
         return out;
     }
 
-    protected static boolean containsAllCharacters(String lessCharacters, String moreCharacters) {
+    protected boolean containsAllCharacters(String lessCharacters, String moreCharacters) {
         for(int i = 0; i < lessCharacters.length(); i++) {
             if(!moreCharacters.contains(lessCharacters.substring(i, i+1))) {
                 return false;

@@ -35,8 +35,8 @@ public class App {
         methodMap.put(new Pair<Integer, Part>( 6, Part.second), "lanternfish_part_2");
         methodMap.put(new Pair<Integer, Part>( 7, Part.first),  "crabs_horizontal_positioning_part_first");
         methodMap.put(new Pair<Integer, Part>( 7, Part.second), "crabs_horizontal_positioning_part_second");
-        methodMap.put(new Pair<Integer, Part>( 8, Part.first),  "seven_segment_search");
-        methodMap.put(new Pair<Integer, Part>( 8, Part.second), "seven_segment_search_solved");
+        // methodMap.put(new Pair<Integer, Part>( 8, Part.first),  "seven_segment_search");
+        // methodMap.put(new Pair<Integer, Part>( 8, Part.second), "seven_segment_search_solved");
         // methodMap.put(new Pair<Integer, Part>( 9, Part.first),  "smoke_basin");
         // methodMap.put(new Pair<Integer, Part>( 9, Part.second), "find_largest__basins");
         // methodMap.put(new Pair<Integer, Part>(10, Part.first),  "syntax_scoring_corrupted_chunks");
@@ -50,12 +50,13 @@ public class App {
 
         // execute(12, Part.second);
 
+        classMap.put( 8, SevenSegmentDisplay.class);
         classMap.put( 9, HeightMap.class);
         classMap.put(10, ChunkReader.class);
         classMap.put(11, DumboOctopus.class);
         classMap.put(12, CavesPath.class);
 
-        execute_new_version( 9, Part.second);
+        execute_new_version( 8, Part.second);
     }
 
     @Deprecated
@@ -636,6 +637,8 @@ public class App {
         return total_distance;
     }
 
+    // TODO remove
+    /*
     protected static void seven_segment_search() throws Exception {
 
         int counter = 0;
@@ -661,10 +664,10 @@ public class App {
 
         int sum = 0;
         int measurements = 0;
+        SevenSegmentDisplay sevenSegmentDisplay = new SevenSegmentDisplay(Part.second);
         for (String string : Files.readAllLines(getFilePath("AoC_08_input.txt"))) {
-            String[] output = string.split(" ");
 
-            int number = SevenSegmentDisplay.decodeOutput(output);
+            int number = sevenSegmentDisplay.processRow(string);
             sum += number;
             measurements++;
 
@@ -674,6 +677,7 @@ public class App {
         System.out.println("number of measurements: " + measurements);
         System.out.println("sum of all outputs: " + sum);
     }
+    */
 
     // TODO remove
     /*
