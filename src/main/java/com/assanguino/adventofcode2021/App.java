@@ -33,8 +33,8 @@ public class App {
         methodMap.put(new Pair<Integer, Part>( 5, Part.second), "hydrothermal_venture_second");
         methodMap.put(new Pair<Integer, Part>( 6, Part.first),  "lanternfish_part_1");
         methodMap.put(new Pair<Integer, Part>( 6, Part.second), "lanternfish_part_2");
-        methodMap.put(new Pair<Integer, Part>( 7, Part.first),  "crabs_horizontal_positioning_part_first");
-        methodMap.put(new Pair<Integer, Part>( 7, Part.second), "crabs_horizontal_positioning_part_second");
+        // methodMap.put(new Pair<Integer, Part>( 7, Part.first),  "crabs_horizontal_positioning_part_first");
+        // methodMap.put(new Pair<Integer, Part>( 7, Part.second), "crabs_horizontal_positioning_part_second");
         // methodMap.put(new Pair<Integer, Part>( 8, Part.first),  "seven_segment_search");
         // methodMap.put(new Pair<Integer, Part>( 8, Part.second), "seven_segment_search_solved");
         // methodMap.put(new Pair<Integer, Part>( 9, Part.first),  "smoke_basin");
@@ -50,13 +50,14 @@ public class App {
 
         // execute(12, Part.second);
 
+        classMap.put( 7, Crabs.class);
         classMap.put( 8, SevenSegmentDisplay.class);
         classMap.put( 9, HeightMap.class);
         classMap.put(10, ChunkReader.class);
         classMap.put(11, DumboOctopus.class);
         classMap.put(12, CavesPath.class);
 
-        execute_new_version( 8, Part.second);
+        execute_new_version( 7, Part.first);
     }
 
     @Deprecated
@@ -553,6 +554,8 @@ public class App {
         System.out.println("number of final lanternfishes: " + totalFishes);
     }
 
+    // TODO remove
+    /*
     protected static void crabs_horizontal_positioning_part_first() throws Exception { 
         crabs_horizontal_positioning(Part.first);
     }
@@ -636,6 +639,7 @@ public class App {
 
         return total_distance;
     }
+    */
 
     // TODO remove
     /*
