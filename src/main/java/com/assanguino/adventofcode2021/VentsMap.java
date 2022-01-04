@@ -1,6 +1,9 @@
 package com.assanguino.adventofcode2021;
 
-public class VentsMap {
+import java.util.ArrayList;
+import java.util.List;
+
+public class VentsMap implements Executable {
     
     // names of coordinates
     protected static final int X1 = 0;
@@ -8,26 +11,58 @@ public class VentsMap {
     protected static final int X2 = 2;
     protected static final int Y2 = 3;
 
+    protected Part part;
+    protected List<Integer[]> ventList = new ArrayList<Integer[]>();
     protected Integer[][] map;
+    protected int maximum = 0;
+    protected int dangerousAreas = -1;
 
-    public VentsMap(Integer dim) {
-        map = new Integer[dim][dim];
+    public VentsMap(Part part) {
+        this.part = part;
     }
 
-    public static Integer[] getCoordinatesFromString(String string) {
-        String[] vent_coordinates_str = string.split(" -> ");
+    public void processRow(String row) {
+        String[] vent_coordinates_str = row.split(" -> ");
         String[] vent_end_1 = vent_coordinates_str[0].split(",");
         String[] vent_end_2 = vent_coordinates_str[1].split(",");
-        Integer[] vent_coordinates = new Integer[4];
-        vent_coordinates[X1] = Integer.parseInt(vent_end_1[0]);
-        vent_coordinates[Y1] = Integer.parseInt(vent_end_1[1]);
-        vent_coordinates[X2] = Integer.parseInt(vent_end_2[0]);
-        vent_coordinates[Y2] = Integer.parseInt(vent_end_2[1]);
 
-        return vent_coordinates;
+        Integer[] coordinates = new Integer[4];
+        coordinates[X1] = Integer.parseInt(vent_end_1[0]);
+        coordinates[Y1] = Integer.parseInt(vent_end_1[1]);
+        coordinates[X2] = Integer.parseInt(vent_end_2[0]);
+        coordinates[Y2] = Integer.parseInt(vent_end_2[1]);
+        ventList.add(coordinates);
+
+        // calculate maximum
+        int currentMax = Math.max(Math.max(coordinates[0], coordinates[1]), 
+                                  Math.max(coordinates[2], coordinates[3]));
+        if(currentMax > maximum)
+            maximum = currentMax;
     }
 
-    public void addVent(Integer[] c, Part part) {
+    public void execute() {
+        maximum++;
+        map = new Integer[maximum][maximum];
+
+        ventList.forEach(c -> addVent(c));
+        dangerousAreas = getDangerousAreas();
+    }
+
+    public String printDescription() {
+        return "Hydrothermal Venture - At how many points do at least two lines overlap ?";
+    }
+
+    public void printResult() {
+        System.out.println("number of vents: " + ventList.size());
+        System.out.println("size of the map: " + maximum);
+        System.out.println("number of dangerous areas: " + dangerousAreas);
+    }
+
+    public String getResult() {
+        return String.valueOf(dangerousAreas);
+    }
+
+    protected void addVent(Integer[] c) {
         if(c[X1].equals(c[X2])) {
 
             // case of horizontal vent
@@ -92,7 +127,7 @@ public class VentsMap {
         }
     }
 
-    public int getDangerousAreas() {
+    protected int getDangerousAreas() {
         int areas = 0;
         for(int i = 0; i < map.length; i++) {
             for(int j = 0; j < map.length; j++) {
@@ -104,7 +139,7 @@ public class VentsMap {
         return areas;
     }
 
-    public void printMap() {
+    protected void printMap() {
         for(int i = 0; i < map.length; i++) {
             for(int j = 0; j < map.length; j++) {
                 String c = ".";

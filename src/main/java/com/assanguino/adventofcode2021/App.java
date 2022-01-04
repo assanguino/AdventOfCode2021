@@ -29,8 +29,8 @@ public class App {
         methodMap.put(new Pair<Integer, Part>( 3, Part.second), "life_support_rating");
         methodMap.put(new Pair<Integer, Part>( 4, Part.first),  "playing_bingo_with_giant_squid_to_win");
         methodMap.put(new Pair<Integer, Part>( 4, Part.second), "playing_bingo_with_giant_squid_to_lose");
-        methodMap.put(new Pair<Integer, Part>( 5, Part.first),  "hydrothermal_venture_first");
-        methodMap.put(new Pair<Integer, Part>( 5, Part.second), "hydrothermal_venture_second");
+        // methodMap.put(new Pair<Integer, Part>( 5, Part.first),  "hydrothermal_venture_first");
+        // methodMap.put(new Pair<Integer, Part>( 5, Part.second), "hydrothermal_venture_second");
         // methodMap.put(new Pair<Integer, Part>( 6, Part.first),  "lanternfish_part_1");
         // methodMap.put(new Pair<Integer, Part>( 6, Part.second), "lanternfish_part_2");
         // methodMap.put(new Pair<Integer, Part>( 7, Part.first),  "crabs_horizontal_positioning_part_first");
@@ -50,6 +50,7 @@ public class App {
 
         // execute(12, Part.second);
 
+        classMap.put( 5, VentsMap.class);
         classMap.put( 6, Lanternfish.class);
         classMap.put( 7, Crabs.class);
         classMap.put( 8, SevenSegmentDisplay.class);
@@ -58,7 +59,7 @@ public class App {
         classMap.put(11, DumboOctopus.class);
         classMap.put(12, CavesPath.class);
 
-        execute_new_version( 6, Part.second);
+        execute_new_version( 5, Part.second);
     }
 
     @Deprecated
@@ -471,6 +472,8 @@ public class App {
         playing_bingo_with_giant_squid(Part.second);
     }
 
+    // TODO remove
+    /*
     protected static void hydrothermal_venture(Part part) throws Exception {
 
         int maximum = 0;
@@ -500,6 +503,7 @@ public class App {
     protected static void hydrothermal_venture_second() throws Exception { 
         hydrothermal_venture(Part.second);
     }
+    */
 
     // TODO remove
     /*
