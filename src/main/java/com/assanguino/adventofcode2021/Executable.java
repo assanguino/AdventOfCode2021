@@ -18,8 +18,8 @@ public interface Executable {
     }
 
     static String getInputFile(int day, boolean isTest) {
-        String prefix = isTest ? "test" : "AoC";
-        return String.format("%s_%02d_input.txt", prefix, day);
+        String sufix = isTest ? "test" : "AofC";
+        return String.format("input_%02d_%s.txt", day, sufix);
     }
 
     /**
