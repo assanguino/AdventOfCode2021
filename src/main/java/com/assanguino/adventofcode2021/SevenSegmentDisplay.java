@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
+import org.apache.logging.log4j.Level;
+
 public class SevenSegmentDisplay implements Executable {
     
     protected static final int INPUT_NUMBERS = 10;
@@ -58,7 +60,7 @@ public class SevenSegmentDisplay implements Executable {
     
             outputSum += Integer.parseInt(number_str);
     
-            // System.out.println("Decoding each number. Measure #" + noRows + ". Number: " + number_str + ". Sum: " + outputSum);
+            logger.printf(Level.INFO, "Decoding each number. Measure #" + noRows + ". Number: " + number_str + ". Sum: " + outputSum);
         }
 
     }

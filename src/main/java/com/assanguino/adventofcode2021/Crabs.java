@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.logging.log4j.Level;
+
 public class Crabs implements Executable {
     
     protected Part part;
@@ -29,7 +31,7 @@ public class Crabs implements Executable {
         min_value = crabs_input.get(middle_index);
         min_distance = calculate_distance(crabs_input, min_value);
 
-        // System.out.println(String.format("Iterating MIDDLE position %d, fuel cost %d", min_value, min_distance));
+        logger.printf(Level.INFO, "Iterating MIDDLE position %d, fuel cost %d", min_value, min_distance);
 
         // going up
         int upper_value = crabs_input.get(middle_index);
@@ -37,7 +39,7 @@ public class Crabs implements Executable {
             upper_value++;
             long upper_distance = calculate_distance(crabs_input, upper_value);
 
-            // System.out.println(String.format("Iterating UP position %d, fuel cost %d", upper_value, upper_distance));
+            logger.printf(Level.DEBUG, "Iterating UP position %d, fuel cost %d", upper_value, upper_distance);
 
             if(upper_distance <= min_distance) {
                 min_value = upper_value;
@@ -54,7 +56,7 @@ public class Crabs implements Executable {
             lower_value--;
             long lower_distance = calculate_distance(crabs_input, lower_value);
 
-            // System.out.println(String.format("Iterating DOWN position %d, fuel cost %d", lower_value, lower_distance));
+            logger.printf(Level.DEBUG, "Iterating DOWN position %d, fuel cost %d", lower_value, lower_distance);
 
             if(lower_distance <= min_distance) {
                 min_value = lower_value;

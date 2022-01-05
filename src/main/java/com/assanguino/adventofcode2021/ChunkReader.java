@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.logging.log4j.Level;
+
 public class ChunkReader implements Executable {
     
     protected static final String openChunks = "([{<";
@@ -56,7 +58,8 @@ public class ChunkReader implements Executable {
                     expectedChunks = expectedChunks.substring(1);
                 } else {
                     // Corrupted
-                    // System.out.println(String.format("Expected %c, but found %c instead", expectedChunks.charAt(0), c));
+                    logger.printf(Level.DEBUG, "Expected %c, but found %c instead", expectedChunks.charAt(0), c);
+
                     syntax_error_score += getIllegarCharacterScore(c);
 
                     return;
@@ -67,7 +70,7 @@ public class ChunkReader implements Executable {
         // Here there are no corrupted lines, but maybe incompletes
         if(expectedChunks.length() > 0) {
             addCompletionStringScore(expectedChunks);
-            // System.out.println(String.format("Incomplete line - %s - Complete by adding %s.", line, expectedChunks));
+            logger.printf(Level.DEBUG, "Incomplete line - Complete by adding %s.", expectedChunks);
         }
 
     }

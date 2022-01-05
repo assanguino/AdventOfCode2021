@@ -3,6 +3,8 @@ package com.assanguino.adventofcode2021;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.Level;
+
 public class VentsMap implements Executable {
     
     // names of coordinates
@@ -141,13 +143,14 @@ public class VentsMap implements Executable {
 
     protected void printMap() {
         for(int i = 0; i < map.length; i++) {
+            String line = "";
             for(int j = 0; j < map.length; j++) {
                 String c = ".";
                 if(map[j][i] != null)
                     c = (map[j][i]).toString();
-                System.out.print(c);
+                line = line + c;
             }
-            System.out.println();
+            logger.log(Level.DEBUG, line);
         }
     }
 

@@ -3,6 +3,8 @@ package com.assanguino.adventofcode2021;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.apache.logging.log4j.Level;
+
 public class BinaryDiagnostic implements Executable {
 
     protected Part part;
@@ -133,16 +135,16 @@ public class BinaryDiagnostic implements Executable {
             }
 
             // Iteration
-            // System.out.println("oxygen_generator_list - Iteration #" + index + " list size " + oxygen_generator_list.size() + " elements.");
+            logger.printf(Level.INFO, "oxygen_generator_list - Iteration #" + index + " list size " + oxygen_generator_list.size() + " elements.");
 
             index++;
 
         } while(oxygen_generator_list.size() > 1 && index < binaryLength);
 
         // Middle report
-        // System.out.println("oxygen_generator_list size: " + oxygen_generator_list.size());
-        // System.out.println("oxygen_generator_list first value: " + (oxygen_generator_list.size() > 0 ? oxygen_generator_list.get(0) : "[No value]"));
-        // System.out.println("index reached: " + index + " / " + binaryLength + " bits.");
+        logger.printf(Level.INFO, "oxygen_generator_list size: " + oxygen_generator_list.size());
+        logger.printf(Level.INFO, "oxygen_generator_list first value: " + (oxygen_generator_list.size() > 0 ? oxygen_generator_list.get(0) : "[No value]"));
+        logger.printf(Level.INFO, "index reached: " + index + " / " + binaryLength + " bits.");
 
         index = 0;
         do {
@@ -164,7 +166,7 @@ public class BinaryDiagnostic implements Executable {
             }
 
             // Iteration
-            // System.out.println("CO2_scrubber_list - Iteration #" + index + " list size " + CO2_scrubber_list.size() + " elements.");
+            logger.printf(Level.INFO, "CO2_scrubber_list - Iteration #" + index + " list size " + CO2_scrubber_list.size() + " elements.");
 
             index++;
 
@@ -172,9 +174,9 @@ public class BinaryDiagnostic implements Executable {
         } while(CO2_scrubber_list.size() > 1 && index < binaryLength);
 
         // Middle report
-        // System.out.println("CO2_scrubber_list size: " + CO2_scrubber_list.size());
-        // System.out.println("CO2_scrubber_list first value: " + (CO2_scrubber_list.size() > 0 ? CO2_scrubber_list.get(0) : "[No value]"));
-        // System.out.println("index reached: " + index + " / " + binaryLength + " bits.");
+        logger.printf(Level.INFO, "CO2_scrubber_list size: " + CO2_scrubber_list.size());
+        logger.printf(Level.INFO, "CO2_scrubber_list first value: " + (CO2_scrubber_list.size() > 0 ? CO2_scrubber_list.get(0) : "[No value]"));
+        logger.printf(Level.INFO, "index reached: " + index + " / " + binaryLength + " bits.");
 
         oxygen_generator_rating = Integer.parseInt(oxygen_generator_list.get(0), 2);
         CO2_scrubber_rating = Integer.parseInt(CO2_scrubber_list.get(0), 2);

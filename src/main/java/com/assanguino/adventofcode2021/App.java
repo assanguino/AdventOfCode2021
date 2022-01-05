@@ -3,7 +3,13 @@ package com.assanguino.adventofcode2021;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class App {
+
+    public static final Logger logger = LogManager.getLogger(App.class.getName());
 
     protected static Map<Integer, Class<? extends Executable>> classMap = new HashMap<>();
 
@@ -57,7 +63,7 @@ public class App {
             System.out.println();
 
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            logger.log(Level.FATAL, ex.getMessage());
         }
     }
 

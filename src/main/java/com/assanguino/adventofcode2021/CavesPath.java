@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.Level;
+
 public class CavesPath implements Executable {
     
     protected Part part;
@@ -16,7 +18,6 @@ public class CavesPath implements Executable {
     protected List<Path> paths = new ArrayList<Path>();       
 
     public CavesPath(Part part) {
-        // TODO change when log4j
         this.part = part;
         this.verbose = false;
     }
@@ -63,10 +64,8 @@ public class CavesPath implements Executable {
 
         do
         {
-            /*
-            System.out.println(String.format("Processing paths of size [%2d]; a total of [%2d] different paths to process.", 
+            logger.log(Level.INFO, String.format("Processing paths of size [%2d]; a total of [%2d] different paths to process.", 
                 paths_size, paths_to_process.size()));
-            */
 
             for(Path path : paths_to_process) {
                 List<Path> newPaths = new ArrayList<>();
@@ -76,7 +75,7 @@ public class CavesPath implements Executable {
                         newPath.add(node);
                         newPaths.add(newPath);
 
-                        // System.out.println("   path: " + String.join(",", newPath.getPath() ));
+                        logger.printf(Level.DEBUG, "   path: " + String.join(",", newPath.getPath()));
                     }
                 }
                 paths.addAll(newPaths);
@@ -115,10 +114,10 @@ public class CavesPath implements Executable {
     }
 
     protected void printCavesMap() {
-        System.out.println();
-        System.out.println("Caves map:");
-        cavesMap.entrySet().forEach(entry -> System.out.println(entry.getKey() + " -> " + String.join(",", entry.getValue()) ));
-        System.out.println();
+        logger.printf(Level.INFO, "");
+        logger.printf(Level.INFO, "Caves map:");
+        cavesMap.entrySet().forEach(entry -> logger.printf(Level.INFO , entry.getKey() + " -> " + String.join(",", entry.getValue()) ));
+        logger.printf(Level.INFO, "");
     }
 
 }

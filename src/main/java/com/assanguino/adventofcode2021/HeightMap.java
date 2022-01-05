@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.logging.log4j.Level;
+
 public class HeightMap implements Executable {
     
     protected List<String> heightRows = new ArrayList<>();
@@ -42,7 +44,7 @@ public class HeightMap implements Executable {
         for(int i = 0; i < noRows; i++) {
             for(int j = 0; j < noColumns; j++) {
 
-                // System.out.println(String.format("calculateBasins over [%d][%d]", i, j));
+                logger.printf(Level.DEBUG, "calculateBasins over [%d][%d]", i, j);
 
                 int mapPoint = heightMap[i][j];
                 lowPointsMap[i][j] = 0;
@@ -62,7 +64,7 @@ public class HeightMap implements Executable {
                 if(lowPointsMap[i][j] == 0) {
                     riskLevelSum += heightMap[i][j] + 1;
                     
-                    // System.out.println(String.format("Found minimum height. Coordinates [%2d][%2d], height [%2d], risk level [%2d]", i, j, heightMap[i][j], riskLevelSum));
+                    logger.printf(Level.INFO, "Found minimum height. Coordinates [%2d][%2d], height [%2d], risk level [%2d]", i, j, heightMap[i][j], riskLevelSum);
 
                     if(part == Part.second) {
                         long thisBasinSize = calculateBasinSize(i, j, mapPoint);
@@ -72,10 +74,8 @@ public class HeightMap implements Executable {
 
                         Arrays.sort(largestBasinsSize);
 
-                        /*
-                        System.out.println(String.format("Calculated basin size of [%2d]. So the 3 largest are [%2d][%2d][%2d]", 
-                                thisBasinSize, largestBasinsSize[0], largestBasinsSize[1], largestBasinsSize[2]));
-                        */
+                        logger.printf(Level.INFO, "Calculated basin size of [%2d]. So the 3 largest are [%2d][%2d][%2d]", 
+                                thisBasinSize, largestBasinsSize[0], largestBasinsSize[1], largestBasinsSize[2]);
                     }
                 }
             }
@@ -149,7 +149,7 @@ public class HeightMap implements Executable {
             noLocations++;
             lowPointsMap[i][j] = -2;
 
-            // System.out.println(String.format("      ... calculateBasinSize of [%2d][%2d] height [%2d] - noLocations [%2d]", i, j, currentHeight, noLocations));
+            logger.printf(Level.DEBUG, "      ... calculateBasinSize of [%2d][%2d] height [%2d] - noLocations [%2d]", i, j, currentHeight, noLocations);
 
             if(i-1 >= 0) 
                 noLocations += calculateBasinSize(i-1, j, currentHeight);

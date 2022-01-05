@@ -3,7 +3,13 @@ package com.assanguino.adventofcode2021;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public interface Executable {
+
+    public static final Logger logger = LogManager.getLogger(App.class.getName());
 
     default void processInput(String input) {
 
@@ -13,7 +19,7 @@ public interface Executable {
             Files.readAllLines(path).forEach(row -> processRow(row));
 
         } catch (Exception e) {
-            System.out.println(String.format("Exception while reading [%s] file: ", input, e.getMessage()));
+            logger.printf(Level.FATAL, "Exception while reading [%s] file: ", input, e.getMessage());
         }
     }
 

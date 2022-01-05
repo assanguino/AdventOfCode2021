@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.Level;
+
 public class Polymerization implements Executable {
     
     protected Part part;
@@ -13,7 +15,6 @@ public class Polymerization implements Executable {
     protected Map<String, ArrayList<String>> occurrencesGrowthRules = new HashMap<String, ArrayList<String>>();
     protected Map<String, Long> occurrencesMap = new HashMap<String, Long>();
 
-    protected Map<String, Long> occurrences = new HashMap<String, Long>();
     protected long occurrencesDisparity = -1;
     protected long mostCommon = -1;
     protected long lessCommon = -1;
@@ -38,18 +39,18 @@ public class Polymerization implements Executable {
 
     public void execute() {
 
-        // printInsertionRules();
+        printInsertionRules();
 
         generateOccurrencesGrowthRules();
-        // printOccurrencesGrowthRules();
+        printOccurrencesGrowthRules();
 
         populateOccurrencesMap();
-        // printOccurrencesMap(0);
+        printOccurrencesMap(0);
 
         // Iterations
         for(int i = 1; i < getSteps() + 1; i++) {
             iteratePolymer();
-            // printOccurrencesMap(i);
+            printOccurrencesMap(i);
         }
 
         countOccurrences();
@@ -146,7 +147,7 @@ public class Polymerization implements Executable {
                 letterMap.put(first, entry.getValue());
             }
 
-            // System.out.println(String.format("     occurrences of %s: %d", entry.getKey(), entry.getValue()));
+            logger.printf(Level.DEBUG, "     occurrences of %s: %d", entry.getKey(), entry.getValue());
         }
 
         // Add at the end the last letter of the polymer:
@@ -170,24 +171,24 @@ public class Polymerization implements Executable {
     }
 
     protected void printInsertionRules() {
-        System.out.println("Insertion rules: ");
+        logger.log(Level.INFO, "\n Insertion rules: ");
         for(var entry : insertionRules.entrySet()) {
-            System.out.println(String.format("     insertion rule: %s -> %s", entry.getKey(), entry.getValue()));
+            logger.printf(Level.INFO, "     insertion rule: %s -> %s", entry.getKey(), entry.getValue());
         }
     }
 
     protected void printOccurrencesGrowthRules() {
-        System.out.println("occurrences growth rules (A total of %d rules): " + occurrencesGrowthRules.size() );
+        logger.printf(Level.INFO, "\n Occurrences growth rules (A total of %d rules): ", occurrencesGrowthRules.size());
         for(var entry : occurrencesGrowthRules.entrySet()) {
-            System.out.println(String.format("     key [%s] values [%s %s]", entry.getKey(), entry.getValue().get(0), entry.getValue().get(1)));
+            logger.printf(Level.INFO, "     key [%s] values [%s %s]", entry.getKey(), entry.getValue().get(0), entry.getValue().get(1));
         }
     }
 
     protected void printOccurrencesMap(int step) {
         String title = step == 0 ? "Template" : "After iterating " + step + " times:";
-        System.out.println(title);
+        logger.log(Level.DEBUG, title);
         for(var entry : occurrencesMap.entrySet()) {
-            System.out.println(String.format("     occurrencesMap [%s] -> repeated [%5d] times.", entry.getKey(), entry.getValue()));
+            logger.printf(Level.DEBUG, "     occurrencesMap [%s] -> repeated [%5d] times.", entry.getKey(), entry.getValue());
         }
     }
 

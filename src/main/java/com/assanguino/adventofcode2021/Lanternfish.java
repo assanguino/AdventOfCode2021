@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.logging.log4j.Level;
+
 public class Lanternfish implements Executable {
     
     protected final int DAYS_PROCESSED_FIRST = 80;
@@ -43,13 +45,12 @@ public class Lanternfish implements Executable {
             lanternfish_day.set(6, lanternfish_day.get(6) + newFishes);
             lanternfish_day.add(newFishes);
 
-            /*
             long totalFishes = 0;
             for(int i = 0; i < lanternfish_day.size(); i++) {
                 totalFishes += lanternfish_day.get(i);
             }
-            System.out.println(String.format("      day #%3d, number of lanternfishes: %d", day, totalFishes));
-            */
+
+            logger.printf(Level.INFO, "      day #%3d, number of lanternfishes: %d", day, totalFishes);
         }
 
         totalFishes = 0;

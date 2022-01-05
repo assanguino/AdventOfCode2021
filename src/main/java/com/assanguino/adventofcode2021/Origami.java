@@ -3,6 +3,7 @@ package com.assanguino.adventofcode2021;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.Level;
 import org.javatuples.Pair;
 
 public class Origami implements Executable {
@@ -58,7 +59,7 @@ public class Origami implements Executable {
 
     public void printResult() {
         System.out.println(String.format("After folding there are %2d dots:", getDots()));
-        printPaper(part == Part.second);
+        printPaper(part == Part.second, "");
     }
 
     public String getResult() {
@@ -84,8 +85,7 @@ public class Origami implements Executable {
             paper[y][x] = MARK_CHAR;
         }
 
-        // System.out.println(String.format("Initial paper:"));
-        // printPaper(false);
+        printPaper(false, "Initial paper:");
     }
 
     protected void foldAll() {
@@ -123,8 +123,7 @@ public class Origami implements Executable {
                 noY = value-1;
             }
 
-            // System.out.println(String.format("After folding as follows: (%s)", f));
-            // printPaper(part == Part.second);
+            printPaper(part == Part.second, String.format("After folding as follows: (%s)", f));
 
             // Cut the iterations
             noFolds++;
@@ -145,19 +144,20 @@ public class Origami implements Executable {
         return no;
     }
 
-    protected void printPaper(boolean printPaper) {
+    protected void printPaper(boolean printPaper, String header) {
 
-        System.out.println(String.format("   Print paper of size x,y=(%2d,%2d). Number of dots (%2d)", noX, noY, getDots() ));
+        logger.printf(Level.INFO, header);
+        logger.printf(Level.INFO, "Print paper of size x,y=(%2d,%2d). Number of dots (%2d)", noX, noY, getDots());
 
         if(printPaper) {
             for(int i = 0; i <= noY; i++) {
-                System.out.print("              ");
+                String line = "              ";
                 for(int j = 0; j <= noX; j++) {
-                    System.out.print(paper[i][j]);
+                    line = line + paper[i][j];
                 }
-                System.out.println();
+                logger.printf(Level.INFO, line);
             }
-            System.out.println();
+            logger.printf(Level.INFO, "");
         }
     }
 
