@@ -63,7 +63,7 @@ public class App {
             System.out.println();
 
         } catch (Exception ex) {
-            logger.log(Level.FATAL, ex.getMessage());
+            logger.printf(Level.FATAL, ex.getMessage());
         }
     }
 

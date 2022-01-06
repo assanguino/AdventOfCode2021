@@ -150,7 +150,7 @@ public class VentsMap implements Executable {
                     c = (map[j][i]).toString();
                 line = line + c;
             }
-            logger.log(Level.DEBUG, line);
+            logger.printf(Level.DEBUG, line);
         }
     }
 

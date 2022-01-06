@@ -64,7 +64,7 @@ public class CavesPath implements Executable {
 
         do
         {
-            logger.log(Level.INFO, String.format("Processing paths of size [%2d]; a total of [%2d] different paths to process.", 
+            logger.printf(Level.INFO, String.format("Processing paths of size [%2d]; a total of [%2d] different paths to process.", 
                 paths_size, paths_to_process.size()));
 
             for(Path path : paths_to_process) {

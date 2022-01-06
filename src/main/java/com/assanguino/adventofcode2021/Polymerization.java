@@ -171,7 +171,7 @@ public class Polymerization implements Executable {
     }
 
     protected void printInsertionRules() {
-        logger.log(Level.INFO, "\n Insertion rules: ");
+        logger.printf(Level.INFO, "\n Insertion rules: ");
         for(var entry : insertionRules.entrySet()) {
             logger.printf(Level.INFO, "     insertion rule: %s -> %s", entry.getKey(), entry.getValue());
         }
@@ -186,7 +186,7 @@ public class Polymerization implements Executable {
 
     protected void printOccurrencesMap(int step) {
         String title = step == 0 ? "Template" : "After iterating " + step + " times:";
-        logger.log(Level.DEBUG, title);
+        logger.printf(Level.DEBUG, title);
         for(var entry : occurrencesMap.entrySet()) {
             logger.printf(Level.DEBUG, "     occurrencesMap [%s] -> repeated [%5d] times.", entry.getKey(), entry.getValue());
         }
