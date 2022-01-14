@@ -16,7 +16,7 @@ public class App {
     public static void main(String[] args) throws Exception {
 
         populateClassMap();
-        execute(16, Part.first);
+        execute(16, Part.second);
     }
 
     protected static void populateClassMap() {

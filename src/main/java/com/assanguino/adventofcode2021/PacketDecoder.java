@@ -1,5 +1,8 @@
 package com.assanguino.adventofcode2021;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.Level;
 
 public class PacketDecoder implements Executable {
@@ -9,9 +12,10 @@ public class PacketDecoder implements Executable {
     protected final int length_literal_value = 5;
 
     protected Part part;
-    protected String hexadecimal;
+    protected String hexadecimal = "";
     protected String processing_row = "";
-    protected long totalSumVersion = -1;
+
+    protected Packet initialPacket = new Packet();
 
     public PacketDecoder(Part part) {
         this.part = part;
@@ -27,24 +31,28 @@ public class PacketDecoder implements Executable {
 
     public void execute() {
         processing_row = DecodeUtils.hexToBinary(hexadecimal);
-        totalSumVersion = 0;
-        processPacket(0);
+        processPacket(0, initialPacket);
     }
 
     public String printDescription() {
         return (part == Part.first) ? 
             "Packet Decoder - What do you get if you add up the version numbers in all packets ?" : 
-            "Packet Decoder - ?";
+            "Packet Decoder - What do you get if you evaluate the expression represented by your hexadecimal-encoded BITS transmission ?";
     }
 
     public void printResult() {
         System.out.println();
-        System.out.println("The version total sum is " + totalSumVersion);
+        if(part == Part.first)
+            System.out.println("The version total sum is " + initialPacket.getAddUpVersion());
+        else
+            System.out.println("The version total value is " + initialPacket.getValue());
         System.out.println();
     }
 
     public String getResult() {
-        return String.valueOf(totalSumVersion);
+        return part == Part.first ?
+            String.valueOf(initialPacket.getAddUpVersion()) :
+            String.valueOf(initialPacket.getValue()) ;
     }
 
     protected Long getVersion(String string) {
@@ -55,42 +63,35 @@ public class PacketDecoder implements Executable {
         return DecodeUtils.binaryToLong(string, 3, length_typeID);
     }
 
-    protected Integer processPacket(Integer index) {
+    protected Integer processPacket(Integer index, Packet packet) {
 
         String string = processing_row.substring(index);
 
         long version = getVersion(string);
         long typeID = getTypeID(string);
 
-        totalSumVersion += version;
-
         String typeDescription = typeID == 4 ? "literal value" : "operator packet";
         logger.printf(Level.INFO, "processing packet - version %d, typeID %d (%s) - index %d - processing from index %d", 
             version, typeID, typeDescription, index, index + length_version + length_typeID);
 
+        packet.version = version;
+        packet.typeID = typeID;
+
         Integer result;
         if(typeID == 4) {
             // literal value
-            result = processLiteralValue(index + length_version + length_typeID);
+            result = processLiteralValue(index + length_version + length_typeID, packet);
         } else {
             // operator
-            result = processOperator(index + length_version + length_typeID);
+            result = processOperator(index + length_version + length_typeID, packet);
         }
 
         return result;
     }
 
-    protected Integer processLiteralValue(Integer index) {
+    protected Integer processLiteralValue(Integer index, Packet packet) {
         Integer init_index = index;
         String sub = "", binaryResult = "";
-
-        // TODO ensure the zero padding at the end
-        /*
-        String tail = string.substring(string.length() / 4);
-        if(tail.length() != string.length() % 4 && !tail.contains("0")) {
-            logger.printf(Level.ERROR, "     processing literal value tail [%s]", tail);
-        }
-        */
 
         while(processing_row.charAt(index++) == '1') {
             sub = processing_row.substring(index, index + length_literal_value - 1);
@@ -108,10 +109,12 @@ public class PacketDecoder implements Executable {
         Long total = DecodeUtils.binaryToLong(binaryResult, 0, binaryResult.length());
         logger.printf(Level.INFO, "     literal value total %d - init index %d - next index %d", total, init_index, index);
 
+        packet.sum = total;
+
         return index;
     }
 
-    protected Integer processOperator(Integer index) {
+    protected Integer processOperator(Integer index, Packet packet) {
 
         long totalLength = -1;
         long noSubPackets = -1;
@@ -126,7 +129,11 @@ public class PacketDecoder implements Executable {
             int init_index = index;
             while(index < init_index + totalLength) {
                 logger.printf(Level.DEBUG, "     * process operator packet, from index %d - length left %d", index, init_index + totalLength - index);
-                index = processPacket(index);
+
+                Packet subPacket = new Packet();
+                packet.packets.add(subPacket);
+    
+                index = processPacket(index, subPacket);
             }
 
         } else {
@@ -137,7 +144,11 @@ public class PacketDecoder implements Executable {
 
             while(noSubPackets > 0) {
                 logger.printf(Level.DEBUG, "     * process operator packet, from index %d - sub-packets to be processed: %d", index, noSubPackets);
-                index = processPacket(index);
+
+                Packet subPacket = new Packet();
+                packet.packets.add(subPacket);
+
+                index = processPacket(index, subPacket);
                 noSubPackets--;
             }
         }
@@ -175,6 +186,91 @@ public class PacketDecoder implements Executable {
             return Long.parseLong(string.substring(index, index + size), 2);
         }
     
+    }
+
+    // Class that represent the packets from the hexadecimal string
+
+    class Packet {
+        public long version;
+        public long typeID;
+        public long sum;
+        public List<Packet> packets;
+
+        public Packet() {
+            version = -1;
+            typeID = -1;
+            sum = 0;
+            packets = new ArrayList<>();
+        }
+
+        public long getAddUpVersion() {
+            if(version == -1)
+                return 0;
+
+            long totalSum = version;
+            for (Packet packet : packets)
+                totalSum += packet.getAddUpVersion();
+
+            return totalSum;
+        }
+
+        public long getValue() {
+            long result = 0;
+
+            if(typeID == 0) {
+                // sum of the sub-packets 
+                for (Packet packet : packets)
+                    result += packet.getValue();
+
+            } else if(typeID == 1) {
+                // product of the sub-packets 
+                result = 1;
+                for (Packet packet : packets)
+                    result *= packet.getValue();
+
+            } else if(typeID == 2) {
+                // minimum
+                result = Long.MAX_VALUE;
+                for (Packet packet : packets)
+                    result = Math.min(result, packet.getValue());
+
+            } else if(typeID == 3) {
+                // maximum
+                result = Long.MIN_VALUE;
+                for (Packet packet : packets)
+                    result = Math.max(result, packet.getValue());
+
+            } else if(typeID == 5) {
+                // greater than
+                if(packets.size() != 2) {
+                    logger.printf(Level.FATAL, "The packet hasn't 2 sub-packets to compare! (%d indeed)", packets.size());
+                    return -1;
+                }
+
+                return (packets.get(0).getValue() > packets.get(1).getValue()) ? 1 : 0;
+
+            } else if(typeID == 6) {
+                // less than
+                if(packets.size() != 2) {
+                    logger.printf(Level.FATAL, "The packet hasn't 2 sub-packets to compare! (%d indeed)", packets.size());
+                    return -1;
+                }
+
+                return (packets.get(0).getValue() < packets.get(1).getValue()) ? 1 : 0;
+
+            } else if(typeID == 7) {
+                // equal to
+                if(packets.size() != 2) {
+                    logger.printf(Level.FATAL, "The packet hasn't 2 sub-packets to compare! (%d indeed)", packets.size());
+                    return -1;
+                }
+
+                return (packets.get(0).getValue() == packets.get(1).getValue()) ? 1 : 0;
+            }
+
+            // Literal values
+            return (typeID == 4) ? sum : result;
+        }
     }
 
 }
