@@ -1,46 +1,32 @@
 package com.assanguino.adventofcode2021;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
-public class SonarSweepTest {
+public class SonarSweepTest extends ExecutableTest<SonarSweep> {
 
-    protected static SonarSweep first;
-    protected static SonarSweep second;
-    protected static String fileName;
-
-    @BeforeClass
-    public static void initProperties() {
+    @Before
+    public void init() {
         first = new SonarSweep(Part.first);
-        second = new SonarSweep(Part.second);
-        
+        second = new SonarSweep(Part.second);        
         fileName = Executable.getInputFile(1, true);
     }
 
     @Test
     public void testFirstPart() {
-        first.processInput(fileName);
-        first.execute();
-
-        assertEquals(first.getResult(), "7");
+        assertTrue(executeFirstPart("7"));
     }
 
     @Test
     public void testSecondPart() {
-        second.processInput(fileName);
-        second.execute();
-
-        assertEquals(second.getResult(), "5");
+        assertTrue(executeSecondPart("5"));
     }
 
     @Test
     public void testPrintDescription() {
-        assertNotEquals(first.printDescription(), "");
-
-        assertNotEquals(second.printDescription(), "");
+        super.testPrintDescription();
     }
 
 }

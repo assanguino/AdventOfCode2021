@@ -5,27 +5,28 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DivingTest extends ExecutableTest<Diving> {
+public class BinaryDiagnosticTest extends ExecutableTest<BinaryDiagnostic> {
 
     @Before
     public void init() {
-        first = new Diving(Part.first);
-        second = new Diving(Part.second);        
-        fileName = Executable.getInputFile(2, true);
+        first = new BinaryDiagnostic(Part.first);
+        second = new BinaryDiagnostic(Part.second);        
+        fileName = Executable.getInputFile(3, true);
     }
 
     @Test
     public void testFirstPart() {
-        assertTrue(executeFirstPart("150"));
+        assertTrue(executeFirstPart("198"));
     }
 
     @Test
     public void testSecondPart() {
-        assertTrue(executeSecondPart("900"));
+        assertTrue(executeSecondPart("230"));
     }
 
     @Test
     public void testPrintDescription() {
         super.testPrintDescription();
     }
+
 }
