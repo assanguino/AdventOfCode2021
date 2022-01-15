@@ -81,9 +81,7 @@ public class Crabs implements Executable {
     }
 
     public String getResult() {
-        return part == Part.first ? 
-            String.valueOf(min_value) :
-            String.valueOf(min_distance);
+        return String.valueOf(min_distance);
     }
 
     protected int calculate_distance(List<Integer> list, int value) {
