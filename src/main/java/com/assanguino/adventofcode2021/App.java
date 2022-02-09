@@ -16,7 +16,7 @@ public class App {
     public static void main(String[] args) throws Exception {
 
         populateClassMap();
-        execute(16, Part.second);
+        execute(17, Part.second);
     }
 
     protected static void populateClassMap() {
@@ -38,6 +38,7 @@ public class App {
         classMap.put(14, Polymerization.class);
         classMap.put(15, Chiton.class);
         classMap.put(16, PacketDecoder.class);
+        classMap.put(17, TrickShot.class);
     }
 
     protected static void execute(int day, Part part) {
@@ -72,7 +73,7 @@ public class App {
     protected static boolean isTestFile(int day, Part part) {
         return (day == 13 && part == Part.first);
         // TODO remove
-        // || (day == 16 && part == Part.first);
+        // || (day == 17 && part == Part.second);
     }
 
 }
