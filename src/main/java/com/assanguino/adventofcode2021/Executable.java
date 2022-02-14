@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 public interface Executable {
 
-    public static final Logger logger = LogManager.getLogger(App.class.getName());
+    public static final Logger logger = LogManager.getLogger(Executable.class.getName());
 
     default void processInput(String input) {
 
