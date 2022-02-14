@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class SnailFishTest extends ExecutableTest<SnailFish> {
@@ -27,9 +26,8 @@ public class SnailFishTest extends ExecutableTest<SnailFish> {
     }
 
     @Test
-    @Ignore
     public void testSecondPart() {
-        assertTrue(executeSecondPart("0"));
+        assertTrue(executeSecondPart("3993"));
     }
 
     @Test
