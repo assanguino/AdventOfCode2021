@@ -12,7 +12,7 @@ public class SnailFish implements Executable {
 
     List<String> numbers = new ArrayList<>();
     Long maximum = Long.MIN_VALUE;
-    
+
     public SnailFish(Part part) {
         this.part = part;
     }
@@ -24,6 +24,7 @@ public class SnailFish implements Executable {
 
         if(part == Part.first) {
             var number = new LiteralSnailFishNumber(row);
+            // var number = new NestedSnailFishNumber(row);
             number.check();
     
             if(cumulative == null) {
@@ -75,6 +76,10 @@ public class SnailFish implements Executable {
                 var b0 = new LiteralSnailFishNumber(numbers.get(j));
                 var a1 = new LiteralSnailFishNumber(numbers.get(i));
                 var b1 = new LiteralSnailFishNumber(numbers.get(j));
+                // var a0 = new NestedSnailFishNumber(numbers.get(i));
+                // var b0 = new NestedSnailFishNumber(numbers.get(j));
+                // var a1 = new NestedSnailFishNumber(numbers.get(i));
+                // var b1 = new NestedSnailFishNumber(numbers.get(j));
 
                 a0.sum(b0);
                 magnitudes[i][j] = a0.magnitude();

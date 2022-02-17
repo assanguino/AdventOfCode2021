@@ -50,15 +50,28 @@ public class SnailFishTest extends ExecutableTest<SnailFish> {
         for (var n : numbers) {
             var snailFishNumber = new LiteralSnailFishNumber(n);
             assertTrue(snailFishNumber.check());
+
+            var nestedSnailFishNumber = new NestedSnailFishNumber(n);
+            assertTrue(nestedSnailFishNumber.check());
         }
     }
 
     @Test
     public void testAddition() {
-        var a = new LiteralSnailFishNumber("[1,2]");
-        var b = new LiteralSnailFishNumber("[[3,4],5]");
-        a.add(b);
-        assertTrue(a.toString().equals("[[1,2],[[3,4],5]]"));
+
+        String a = "[1,2]";
+        String b = "[[3,4],5]";
+        String c = "[[1,2],[[3,4],5]]";
+
+        var literal_a = new LiteralSnailFishNumber(a);
+        var literal_b = new LiteralSnailFishNumber(b);
+        literal_a.add(literal_b);
+        assertTrue(literal_a.toString().equals(c));
+
+        var nested_a = new NestedSnailFishNumber(a);
+        var nested_b = new NestedSnailFishNumber(b);
+        nested_a.add(nested_b);
+        assertTrue(nested_a.toString().equals(c));
     }
 
     @Test
@@ -78,6 +91,12 @@ public class SnailFishTest extends ExecutableTest<SnailFish> {
             Integer index = values.get(0).indexOf(values.get(1));
             snailFishNumber.explode(index);
             assertTrue(values.get(2).equals(snailFishNumber.toString()));
+
+            // new (with nested snailfish numbers)
+            var nestedSnailFishNumber = new NestedSnailFishNumber(values.get(0));
+            var regular = nestedSnailFishNumber.getRegularSnailFishNumber(values.get(1));
+            regular.explode(SnailFishNumber.NESTED_LEVEL+1);
+            assertTrue(values.get(2).equals(nestedSnailFishNumber.toString()));
         }
     }
 
@@ -89,20 +108,34 @@ public class SnailFishTest extends ExecutableTest<SnailFish> {
         numbers.add("[[[[0,7],4],[[7,8],[0,13]]],[1,1]]");
         numbers.add("[[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]]");
 
-        var snailFishNumber = new LiteralSnailFishNumber(numbers.get(0));
-        assertTrue(snailFishNumber.split());
-        assertTrue(snailFishNumber.toString().equals(numbers.get(1)));
-        assertTrue(snailFishNumber.split());
-        assertTrue(snailFishNumber.toString().equals(numbers.get(2)));
+        var literalSnailFishNumber = new LiteralSnailFishNumber(numbers.get(0));
+        assertTrue(literalSnailFishNumber.split());
+        assertTrue(literalSnailFishNumber.toString().equals(numbers.get(1)));
+        assertTrue(literalSnailFishNumber.split());
+        assertTrue(literalSnailFishNumber.toString().equals(numbers.get(2)));
+
+        var nestedSnailFishNumber = new NestedSnailFishNumber(numbers.get(0));
+        assertTrue(nestedSnailFishNumber.split());
+        assertTrue(nestedSnailFishNumber.toString().equals(numbers.get(1)));
+        assertTrue(nestedSnailFishNumber.split());
+        assertTrue(nestedSnailFishNumber.toString().equals(numbers.get(2)));
     }
 
     @Test
     public void testSum1() {
-        var a = new LiteralSnailFishNumber("[[[[4,3],4],4],[7,[[8,4],9]]]");
-        var b = new LiteralSnailFishNumber("[1,1]");
-        a.sum(b);
+        String str_a = "[[[[4,3],4],4],[7,[[8,4],9]]]";
+        String str_b = "[1,1]";
+        String str_result = "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]";
 
-        assertTrue(a.toString().equals("[[[[0,7],4],[[7,8],[6,0]]],[8,1]]"));
+        var literal_a = new LiteralSnailFishNumber(str_a);
+        var literal_b = new LiteralSnailFishNumber(str_b);
+        literal_a.sum(literal_b);
+        assertTrue(literal_a.toString().equals(str_result));
+
+        var nested_a = new NestedSnailFishNumber(str_a);
+        var nested_b = new NestedSnailFishNumber(str_b);
+        nested_a.sum(nested_b);
+        assertTrue(nested_a.toString().equals(str_result));
     }
 
     @Test
@@ -122,11 +155,14 @@ public class SnailFishTest extends ExecutableTest<SnailFish> {
         results.put(6, "[[[[5,0],[7,4]],[5,5]],[6,6]]");
 
         var snailFishNumber = new LiteralSnailFishNumber(numbers.get(0));
+        var nestedSnailFishNumber = new NestedSnailFishNumber(numbers.get(0));
         for(int i = 1; i < numbers.size(); i++) {
             snailFishNumber.sum(new LiteralSnailFishNumber(numbers.get(i)));
+            nestedSnailFishNumber.sum(new NestedSnailFishNumber(numbers.get(i)));
 
             if(results.containsKey(i+1)) {
                 assertTrue(snailFishNumber.toString().equals(results.get(i+1)));
+                assertTrue(nestedSnailFishNumber.toString().equals(results.get(i+1)));
             }
         }
     }
@@ -149,19 +185,27 @@ public class SnailFishTest extends ExecutableTest<SnailFish> {
         numbers.add("[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]");
 
         var snailFishNumber = new LiteralSnailFishNumber(numbers.get(0));
+        var nestedSnailFishNumber = new NestedSnailFishNumber(numbers.get(0));
         for(int i = 1; i < numbers.size()-1; i++) {
             snailFishNumber.sum(new LiteralSnailFishNumber(numbers.get(i)));
+            nestedSnailFishNumber.sum(new NestedSnailFishNumber(numbers.get(i)));
         }
 
         assertTrue(snailFishNumber.toString().equals(numbers.get(numbers.size()-1)));
+        assertTrue(nestedSnailFishNumber.toString().equals(numbers.get(numbers.size()-1)));
     }
 
     protected void testSumAndCompare(String a, String b, String c) {
-        var one = new LiteralSnailFishNumber(a);
-        var two = new LiteralSnailFishNumber(b);
+        var literal_one = new LiteralSnailFishNumber(a);
+        var literal_two = new LiteralSnailFishNumber(b);
 
-        one.sum(two);
-        assertTrue(one.toString().equals(c));
+        var nested_one = new NestedSnailFishNumber(a);
+        var nested_two = new NestedSnailFishNumber(b);
+
+        literal_one.sum(literal_two);
+        assertTrue(literal_one.toString().equals(c));
+        nested_one.sum(nested_two);
+        assertTrue(nested_one.toString().equals(c));
     }
 
     @Test
@@ -249,8 +293,10 @@ public class SnailFishTest extends ExecutableTest<SnailFish> {
         testMap.put("[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]", (long)3488);
 
         for(var e : testMap.entrySet()) {
-            var snailFishNumber = new LiteralSnailFishNumber(e.getKey());
-            assertTrue(snailFishNumber.magnitude().equals(e.getValue()));
+            var literalSnailFishNumber = new LiteralSnailFishNumber(e.getKey());
+            assertTrue(literalSnailFishNumber.magnitude().equals(e.getValue()));
+            var nestedSnailFishNumber = new NestedSnailFishNumber(e.getKey());
+            assertTrue(nestedSnailFishNumber.magnitude().equals(e.getValue()));
         }
         
     }
