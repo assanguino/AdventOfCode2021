@@ -19,10 +19,13 @@ interface SnailFishNumber {
     boolean check();
     String toString();
     void add(SnailFishNumber a);
-    boolean explode(Object obj);
+    boolean doExplode();
     boolean split();
-    void reduce();
     Long magnitude();
+
+    default boolean isNumber(char c) {
+        return !(c == CH_OPEN || c == CH_SEPARATOR || c == CH_CLOSE);
+    }
 
     /**
      * Returns the snailfish number using the canonical string format
@@ -39,11 +42,9 @@ interface SnailFishNumber {
      * @param index
      * @return
      */
-    default boolean isSnailFishRegularNumber(String a, int index) {
+    default boolean isSnailFishRegularNumber(String number) {
 
-        int indexEnd = a.indexOf(CH_CLOSE, index);
-
-        String subnumber = a.substring(index, indexEnd+1);
+        String subnumber = number.substring(0, number.indexOf(CH_CLOSE) + 1);
 
         boolean oneOpenCharacter = subnumber.charAt(0) == CH_OPEN && subnumber.indexOf(CH_OPEN, 1) == -1;
         boolean oneCloseCharacter = subnumber.indexOf(CH_CLOSE) == subnumber.length() - 1;
@@ -52,13 +53,36 @@ interface SnailFishNumber {
         return oneOpenCharacter && oneCloseCharacter && oneSeparator;
     }
 
+    default String getSplittedSnailFishNumber(Integer n) {
+        Integer left = n / 2;
+        Integer right = left + n % 2;
+
+        return format(left.toString(), right.toString());
+    }
+
     /**
      * Sum involves the actions of addition and reduction of the number
      * @param a the snailfish number to be added to this object number
      */
     default void sum(SnailFishNumber a) {
+
+        // Adding two values ...
         add(a);
-        reduce();
+
+        // ... and then, do the reduction
+        logger.printf(Level.DEBUG, "after sum    : %s", toString());
+
+        boolean x = false;
+        do {
+            x = doExplode();
+
+            if(x) logger.printf(Level.DEBUG, "after explode: %s", toString());
+
+            if(!x) {
+                x = split();
+                if(x) logger.printf(Level.DEBUG, "after split  : %s", toString());
+            }
+        } while(x);
     }
 
 }
@@ -68,7 +92,6 @@ class LiteralSnailFishNumber implements SnailFishNumber {
     protected String number;
 
     LiteralSnailFishNumber() {
-        
     }
 
     LiteralSnailFishNumber(String number) {
@@ -116,13 +139,12 @@ class LiteralSnailFishNumber implements SnailFishNumber {
         number = format(number.toString(), a.toString());
     }
 
-    public boolean explode(Object obj) {
-
+    public boolean explode(Integer obj) {
         // The obj reference is an Integer, pointing out the index of the regular snailfish number
-        Integer indexBegin = (Integer)obj;
+        Integer indexBegin = obj;
 
         if(indexBegin == -1) {
-            logger.printf(Level.ERROR, "Trying to explode a snailfish number that doesn't exist.");
+            // logger.printf(Level.ERROR, "Trying to explode a snailfish number that doesn't exist.");
             return false;
         }
 
@@ -137,21 +159,15 @@ class LiteralSnailFishNumber implements SnailFishNumber {
         }
 
         // get the indexes for the snailfish number to explode
-        int indexSeparator = number.indexOf(CH_SEPARATOR, indexBegin);
-        int indexEnd = number.indexOf(CH_CLOSE, indexSeparator);
-
-        // get the numbers within, and replace the number by the exploded one
-        Integer left  = Integer.parseInt(number.substring(indexBegin+1, indexSeparator));
-        Integer right = Integer.parseInt(number.substring(indexSeparator+1, indexEnd));
-
-        number = collapse(number, indexBegin, indexEnd, STR_EXPLODED);
+        Integer[] numberValues = getNumbersFromRegularSnailFishNumber(number, indexBegin);
+        number = collapse(number, indexBegin, numberValues[2], STR_EXPLODED);
 
         // replace the number on the right
         Integer rightIndex = -1;
         String strRightChar = "";
         for(int i = indexBegin+1; i < number.length(); i++) {
             char c = number.charAt(i);
-            if(isRegularNumber(c)) {
+            if(isNumber(c)) {
                 if(rightIndex == -1)
                     rightIndex = i;
 
@@ -162,8 +178,8 @@ class LiteralSnailFishNumber implements SnailFishNumber {
         }
 
         if(rightIndex != -1) {
-            right += Integer.parseInt(strRightChar);
-            number = number.substring(0, rightIndex) + right.toString() + number.substring(rightIndex + strRightChar.length());
+            numberValues[1] += Integer.parseInt(strRightChar);
+            number = collapse(number, rightIndex, rightIndex + strRightChar.length() - 1, numberValues[1].toString());
         }
 
         // replace the number on the left
@@ -171,7 +187,7 @@ class LiteralSnailFishNumber implements SnailFishNumber {
         String strLeftChar = "";
         for(int i = indexBegin-1; i >= 0; i--) {
             char c = number.charAt(i);
-            if(isRegularNumber(c)) {
+            if(isNumber(c)) {
                 leftIndex = i;
                 strLeftChar = c + strLeftChar;
             } else if(!strLeftChar.isEmpty()) {
@@ -180,11 +196,15 @@ class LiteralSnailFishNumber implements SnailFishNumber {
         }
 
         if(leftIndex != -1) {
-            left += Integer.parseInt(strLeftChar);
-            number = number.substring(0, leftIndex) + left.toString() + number.substring(leftIndex + strLeftChar.length());
+            numberValues[0] += Integer.parseInt(strLeftChar);
+            number = collapse(number, leftIndex, leftIndex + strLeftChar.length() - 1, numberValues[0].toString());
         }
 
         return true;
+    }
+
+    public boolean doExplode() {
+        return explode(getNestedIndex());
     }
 
     public boolean split() {
@@ -192,7 +212,7 @@ class LiteralSnailFishNumber implements SnailFishNumber {
         String str = "";
         for(int i = 0; i < number.length(); i++) {
             char c = number.charAt(i);
-            if(isRegularNumber(c)) {
+            if(isNumber(c)) {
                 if(index == -1) index = i;
                 str += c;
             } else if(!str.equals("")) {
@@ -201,9 +221,7 @@ class LiteralSnailFishNumber implements SnailFishNumber {
                     index = -1;
                     str = "";
                 } else {
-                    Integer left = n / 2;
-                    Integer right = left + n % 2;
-                    number = number.substring(0, index) + format(left.toString(), right.toString()) + number.substring(index + str.length());
+                    number = collapse(number, index, index+str.length()-1, getSplittedSnailFishNumber(n));
                     return true;
                 }
             }
@@ -212,44 +230,18 @@ class LiteralSnailFishNumber implements SnailFishNumber {
         return false;
     }
 
-    public void reduce() {
-        Integer index = -1;
-        String previous_number = "";
-
-        logger.printf(Level.DEBUG, "after sum    : %s", toString());
-
-        do {
-            previous_number = new String(number);
-
-            while((index = getNestedPair()) != -1) {
-                explode(index);
-                logger.printf(Level.DEBUG, "after explode: %s (index %d)", toString(), index);
-            }
-    
-            split();
-            logger.printf(Level.DEBUG, "after split  : %s", toString());
-
-        } while(!number.equals(previous_number));
-    }
-
     public Long magnitude() {
         String str_magnitude = new String(number);
 
         do {
             int indexBegin = 0;
             do {
-                if(isSnailFishRegularNumber(str_magnitude, indexBegin)) {
-                    // get the indexes for the snailfish number to explode
-                    int indexSeparator = str_magnitude.indexOf(CH_SEPARATOR, indexBegin);
-                    int indexEnd = str_magnitude.indexOf(CH_CLOSE, indexSeparator);
-    
-                    // get the numbers within, and replace the number by the exploded one
-                    Integer left  = Integer.parseInt(str_magnitude.substring(indexBegin+1, indexSeparator));
-                    Integer right = Integer.parseInt(str_magnitude.substring(indexSeparator+1, indexEnd));
-    
-                    Long current_magnitude = (long)(LEFT_FACTOR*left + RIGHT_FACTOR*right);
+                if(isSnailFishRegularNumber(str_magnitude.substring(indexBegin))) {
 
-                    str_magnitude = collapse(str_magnitude, indexBegin, indexEnd, current_magnitude.toString());
+                    // get the numbers within, and replace the number by the exploded one
+                    Integer[] values = getNumbersFromRegularSnailFishNumber(str_magnitude, indexBegin);
+                    Long current_magnitude = (long)(LEFT_FACTOR*values[0] + RIGHT_FACTOR*values[1]);
+                    str_magnitude = collapse(str_magnitude, indexBegin, values[2], current_magnitude.toString());
                     break;
                 }
                 
@@ -259,12 +251,29 @@ class LiteralSnailFishNumber implements SnailFishNumber {
         return Long.parseLong(str_magnitude);
     }
 
-    protected boolean isRegularNumber(char c) {
-        return !(c == CH_OPEN || c == CH_SEPARATOR || c == CH_CLOSE);
-    }
-
     protected String collapse(String a, int index_begin, int index_end, String replace_str) {
         return new String(a.substring(0, index_begin) + replace_str + a.substring(index_end+1));
+    }
+
+    /**
+     * Obtain left & right values from the regular snailfish number string
+     * (and also the end index, that is usually required next)
+     * @param index of the regular snailfish number within the whole number
+     * @return an array with [left, right, endIndex] values
+     */
+    protected Integer[] getNumbersFromRegularSnailFishNumber(String n, Integer index) {
+        Integer[] values = new Integer[3];
+
+        // get the indexes for the snailfish number to explode
+        int indexSeparator = n.indexOf(CH_SEPARATOR, index);
+        int indexEnd = n.indexOf(CH_CLOSE, indexSeparator);
+
+        // get the numbers within, and replace the number by the exploded one
+        values[0] = Integer.parseInt(n.substring(index+1, indexSeparator));
+        values[1] = Integer.parseInt(n.substring(indexSeparator+1, indexEnd));
+        values[2] = indexEnd;
+
+        return values;
     }
 
     /**
@@ -272,7 +281,7 @@ class LiteralSnailFishNumber implements SnailFishNumber {
      * @param depth
      * @return The single snailfish number index with two regular numbers (in case of)
      */
-    protected Integer getNestedPair() {
+    protected Integer getNestedIndex() {
 
         int current_depth = 0;
         for(int i = 0; i < number.length(); i++) {
@@ -282,7 +291,7 @@ class LiteralSnailFishNumber implements SnailFishNumber {
             if(c == CH_CLOSE) current_depth--;
 
             // check if it is a snailfish number with two single regular numbers
-            if(current_depth > NESTED_LEVEL && isSnailFishRegularNumber(number, i)) {
+            if(current_depth > NESTED_LEVEL && isSnailFishRegularNumber(number.substring(i))) {
                 return i;
             }
         }
@@ -381,12 +390,12 @@ class NestedSnailFishNumber implements SnailFishNumber {
             mini_rightSnailFishNumber.rightSnailFish.father = mini_rightSnailFishNumber;
     }
 
-    public boolean explode(Object obj) {
+    public boolean explode(Integer obj) {
         boolean result = false;
 
-        Integer depth = (Integer)obj;
+        Integer depth = obj;
         
-        if(depth > NESTED_LEVEL && isSnailFishRegularNumber(toString(), 0)) {
+        if(depth > NESTED_LEVEL && isSnailFishRegularNumber(toString())) {
             result = explodeRegularNumber();
         }
 
@@ -401,6 +410,10 @@ class NestedSnailFishNumber implements SnailFishNumber {
         return result;
     }
 
+    public boolean doExplode() {
+        return explode(1);
+    }
+
     public boolean split() {
 
         boolean splitted = false;
@@ -408,10 +421,7 @@ class NestedSnailFishNumber implements SnailFishNumber {
         // left side first
         if(left != null) {
             if(left >= SPLIT_LIMIT) {
-                Integer new_left = left / 2;
-                Integer new_right = new_left + left % 2;
-    
-                leftSnailFish = new NestedSnailFishNumber(format(new_left.toString(), new_right.toString()));
+                leftSnailFish = new NestedSnailFishNumber(getSplittedSnailFishNumber(left));
                 leftSnailFish.father = this;
                 left = null;
                 splitted = true;
@@ -424,10 +434,7 @@ class NestedSnailFishNumber implements SnailFishNumber {
             // then, right side
             if(right != null) {
                 if(right >= SPLIT_LIMIT) {
-                    Integer new_left = right / 2;
-                    Integer new_right = new_left + right % 2;
-        
-                    rightSnailFish = new NestedSnailFishNumber(format(new_left.toString(), new_right.toString()));
+                    rightSnailFish = new NestedSnailFishNumber(getSplittedSnailFishNumber(right));
                     rightSnailFish.father = this;
                     right = null;
                     splitted = true;
@@ -440,22 +447,6 @@ class NestedSnailFishNumber implements SnailFishNumber {
         return splitted;
     }
 
-    public void reduce() {
-        logger.printf(Level.DEBUG, "after sum    : %s", toString());
-
-        boolean x = false;
-        do {
-            x = explode(1);
-
-            if(x) logger.printf(Level.DEBUG, "after explode: %s", toString());
-
-            if(!x) {
-                x = split();
-                if(x) logger.printf(Level.DEBUG, "after split  : %s", toString());
-            }
-        } while(x);
-    }
-
     public Long magnitude() {
         Long left_magnitude  = (leftSnailFish != null)  ? leftSnailFish.magnitude()  : (long)left;
         Long right_magnitude = (rightSnailFish != null) ? rightSnailFish.magnitude() : (long)right;
@@ -465,16 +456,35 @@ class NestedSnailFishNumber implements SnailFishNumber {
 
     public NestedSnailFishNumber getRegularSnailFishNumber(String number) {
         // Assume that the 'number' is a regular number
-        if(!isSnailFishRegularNumber(number, 0)) {
+        if(!isSnailFishRegularNumber(number)) {
             return null;
         }
 
         return getRecursiveRegularSnailFishNumber(new NestedSnailFishNumber(number));
     }
 
+    protected NestedSnailFishNumber getRecursiveRegularSnailFishNumber(NestedSnailFishNumber ref) {
+
+        NestedSnailFishNumber result = null;
+
+        if(result == null && this.equals(ref)) {
+            result = this;
+        }
+
+        if(result == null && leftSnailFish != null) {
+            result = leftSnailFish.getRecursiveRegularSnailFishNumber(ref);
+        }
+
+        if(result == null && rightSnailFish != null) {
+            result = rightSnailFish.getRecursiveRegularSnailFishNumber(ref);
+        }
+
+        return result;
+    }
+
     protected boolean explodeRegularNumber() {
         // Trying to explode a snailfish number with no regular numbers
-        if(!isSnailFishRegularNumber(this.toString(), 0)) {
+        if(!isSnailFishRegularNumber(toString())) {
             return false;
         }
 
@@ -532,25 +542,6 @@ class NestedSnailFishNumber implements SnailFishNumber {
         }
 
         return true;
-    }
-
-    protected NestedSnailFishNumber getRecursiveRegularSnailFishNumber(NestedSnailFishNumber ref) {
-
-        NestedSnailFishNumber result = null;
-
-        if(result == null && this.equals(ref)) {
-            result = this;
-        }
-
-        if(result == null && leftSnailFish != null) {
-            result = leftSnailFish.getRecursiveRegularSnailFishNumber(ref);
-        }
-
-        if(result == null && rightSnailFish != null) {
-            result = rightSnailFish.getRecursiveRegularSnailFishNumber(ref);
-        }
-
-        return result;
     }
 
     protected void createNestedSnailFishNumber(String number) {
