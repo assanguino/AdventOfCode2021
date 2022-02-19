@@ -1,10 +1,13 @@
 package com.assanguino.adventofcode2021;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-interface SnailFishNumber {
+public interface SnailFishNumber {
     public static final Logger logger = LogManager.getLogger(SnailFishNumber.class.getName());
 
     final char CH_OPEN = '[';
@@ -87,10 +90,10 @@ class LiteralSnailFishNumber implements SnailFishNumber {
 
     private String number;
 
-    LiteralSnailFishNumber() {
+    public LiteralSnailFishNumber() {
     }
 
-    LiteralSnailFishNumber(String number) {
+    public LiteralSnailFishNumber(String number) {
         this.number = number;
     }
 
@@ -306,14 +309,14 @@ class NestedSnailFishNumber implements SnailFishNumber {
     private NestedSnailFishNumber father;
     private boolean isConsistent = true;
 
-    NestedSnailFishNumber() { 
+    public NestedSnailFishNumber() { 
     }
 
     /**
      * Copy constructor
      * @param copy
      */
-    NestedSnailFishNumber(NestedSnailFishNumber copy) {
+    public NestedSnailFishNumber(NestedSnailFishNumber copy) {
         this.left = copy.left;
         this.right = copy.right;
         this.leftSnailFish = copy.leftSnailFish;
@@ -327,7 +330,7 @@ class NestedSnailFishNumber implements SnailFishNumber {
      * so the purpose of the constructor is split it, and keep on calling constructors recursively
      * @param number
      */
-    NestedSnailFishNumber(String number) {
+    public NestedSnailFishNumber(String number) {
         createNestedSnailFishNumber(number);
     }
 
@@ -593,3 +596,43 @@ class NestedSnailFishNumber implements SnailFishNumber {
     }
 
 }
+
+class SnailFishFactory {
+    public static final Logger logger = LogManager.getLogger(SnailFishFactory.class.getName());
+    private List<Class<? extends SnailFishNumber>> snailfishClasses = new ArrayList<>();
+    private int snailfishType;
+
+    public SnailFishFactory(Integer type) {
+        populate();
+
+        if(type == null || type > snailfishClasses.size()) {
+            logger.printf(Level.ERROR, "The SnailFishNumber class is not valid. Get the default one");
+            snailfishType = chooseType();
+        } else {
+            snailfishType = type;
+        }
+    }
+    
+    private void populate() {
+        snailfishClasses.add(LiteralSnailFishNumber.class);
+        snailfishClasses.add(NestedSnailFishNumber.class);
+    }
+
+    private Integer chooseType() {
+        return (int)Math.floor(Math.random() * snailfishClasses.size());
+    }
+
+    public SnailFishNumber getNewSnailFishNumber(String string) {
+        SnailFishNumber object = null;
+        try {
+            Class<?>[] constructorParams = { String.class };
+            Class<? extends SnailFishNumber> dayClass = snailfishClasses.get(snailfishType);
+            object = dayClass.getConstructor(constructorParams).newInstance(string);
+        } catch (Exception ex) {
+            logger.printf(Level.FATAL, ex.getMessage());
+        }
+
+        return object;
+    }
+}
+
