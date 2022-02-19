@@ -44,6 +44,8 @@ public class App {
 
     protected static void execute(int day, Part part) {
         try {
+            final String separation = "************************************************";
+
             // Get an instance of the corresponding task to execute (dayObject)
             Class<?>[] constructorParams = { Part.class };
             Class<? extends Executable> dayClass = classMap.get(day);
@@ -52,16 +54,16 @@ public class App {
             System.out.println();
             System.out.println();
             System.out.println();
-            System.out.println("************************************************ Advent of Code 2021");
-            System.out.println("************************************************ Day " + day + ", " + part.toString() + " part");
-            System.out.println("************************************************ " + dayObject.printDescription() );
+            System.out.println(separation + " Advent of Code 2021");
+            System.out.println(separation + " Day " + day + ", " + part.toString() + " part");
+            System.out.println(separation + " " + dayObject.printDescription() );
 
             String fileName = Executable.getInputFile(day, isTestFile(day, part));
             dayObject.processInput(fileName);
             dayObject.execute();
             dayObject.printResult();
 
-            System.out.println("************************************************");
+            System.out.println(separation);
             System.out.println();
             System.out.println();
             System.out.println();
