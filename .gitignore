@@ -2,8 +2,8 @@
 #ignore all compiled stuff
 **/target
 #ignore stuff from system & IDE
-.DS_Store/
-.vscode/
+**/.DS_Store/
+**/.vscode
 
 #ignore the TODO.md file
 TODO.md
