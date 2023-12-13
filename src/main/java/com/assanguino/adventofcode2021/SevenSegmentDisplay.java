@@ -6,15 +6,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.apache.logging.log4j.Level;
-
 public class SevenSegmentDisplay implements Executable {
     
     protected static final int INPUT_NUMBERS = 10;
     protected static final int OUTPUT_NUMBERS = 4;
 
+    protected static final String BAD_DIGIT = "BAD_DIGIT";
+
     protected Part part;
-    protected List<String> decodedDigits = new ArrayList<String>();
+    protected List<String> decodedDigits = new ArrayList<>();
     protected int noRows = 0;
     protected long counterFirst = 0;
     protected long outputSum = 0;
@@ -40,27 +40,16 @@ public class SevenSegmentDisplay implements Executable {
 
             List<String> input = new ArrayList<>();
     
-            for(int i = 0; i < INPUT_NUMBERS; i++) {
-                input.add(strings[i]);
-            }
+            input.addAll(Arrays.asList(Arrays.copyOf(strings, INPUT_NUMBERS)));
 
             // decoded digits
             decodeDigits(input);
     
-            String number_str = "";
-            for(int i = 0; i < OUTPUT_NUMBERS; i++) {
-                String sorted = sortCharacters(strings[strings.length - 1 - i]);
+            String strNumber = buildNumber(strings);
+
+            outputSum += Integer.parseInt(strNumber);
     
-                for(int j = 0; j < decodedDigits.size(); j++) {
-                    if(decodedDigits.get(j).equals(sorted)) {
-                        number_str = String.format("%d%s", j, number_str);
-                    }
-                }
-            }
-    
-            outputSum += Integer.parseInt(number_str);
-    
-            logger.printf(Level.INFO, "Decoding each number. Measure #" + noRows + ". Number: " + number_str + ". Sum: " + outputSum);
+            logger.info("Decoding each number. Measure #%d. Number: %s. Sum: %ld", noRows, strNumber, outputSum);
         }
 
     }
@@ -76,11 +65,11 @@ public class SevenSegmentDisplay implements Executable {
     }
 
     public void printResult() {
-        System.out.println("number of measurements: " + noRows);
+        logger.info("number of measurements: %ld", noRows);
         if(part == Part.first) {
-            System.out.println("number of 1, 4, 7 and 8 outputs: " + counterFirst);
+            logger.info("number of 1, 4, 7 and 8 outputs: %ld", counterFirst);
         } else {
-            System.out.println("sum of all outputs: " + outputSum);
+            logger.info("sum of all outputs: %ld", outputSum);
         }
     }
 
@@ -96,22 +85,22 @@ public class SevenSegmentDisplay implements Executable {
         decodedDigits.addAll(Collections.nCopies(10, ""));
 
         // get the "1" -> length 2
-        String one = input.stream().filter(n -> n.length() == 2).findFirst().get();
+        String one = input.stream().filter(n -> n.length() == 2).findFirst().orElse(BAD_DIGIT);
         decodedDigits.set(1, sortCharacters(one));
         input.removeIf(n -> n.length() == 2);
 
         // get the "7" -> length 3
-        String seven = input.stream().filter(n -> n.length() == 3).findFirst().get();
+        String seven = input.stream().filter(n -> n.length() == 3).findFirst().orElse(BAD_DIGIT);
         decodedDigits.set(7, sortCharacters(seven));
         input.removeIf(n -> n.length() == 3);
 
         // get the "4" -> length 4
-        String four = input.stream().filter(n -> n.length() == 4).findFirst().get();
+        String four = input.stream().filter(n -> n.length() == 4).findFirst().orElse(BAD_DIGIT);
         decodedDigits.set(4, sortCharacters(four));
         input.removeIf(n -> n.length() == 4);
 
         // get the "8" -> length 7
-        String eigth = input.stream().filter(n -> n.length() == 7).findFirst().get();
+        String eigth = input.stream().filter(n -> n.length() == 7).findFirst().orElse(BAD_DIGIT);
         decodedDigits.set(8, sortCharacters(eigth));
         input.removeIf(n -> n.length() == 7);
 
@@ -119,37 +108,37 @@ public class SevenSegmentDisplay implements Executable {
 
         // Number "3" is like seven with more elements (and has 5 length)
         Predicate<String> threeCondition = (n -> n.length() == 5 && containsAllCharacters(decodedDigits.get(7), n));
-        String three = input.stream().filter(threeCondition).findFirst().get();
+        String three = input.stream().filter(threeCondition).findFirst().orElse(BAD_DIGIT);
         decodedDigits.set(3, sortCharacters(three));
         input.removeIf(threeCondition);
 
         // Number "6" has length 6, and has not all the "1" elements
         Predicate<String> sixCondition = (n -> n.length() == 6 && !containsAllCharacters(decodedDigits.get(1), n));
-        String six = input.stream().filter(sixCondition).findFirst().get();
+        String six = input.stream().filter(sixCondition).findFirst().orElse(BAD_DIGIT);
         decodedDigits.set(6, sortCharacters(six));
         input.removeIf(sixCondition);
 
         // Number "5" has length 5, and has all the elements of number "6"
         Predicate<String> fiveCondition = (n -> n.length() == 5 && containsAllCharacters(n, decodedDigits.get(6)));
-        String five = input.stream().filter(fiveCondition).findFirst().get();
+        String five = input.stream().filter(fiveCondition).findFirst().orElse(BAD_DIGIT);
         decodedDigits.set(5, sortCharacters(five));
         input.removeIf(fiveCondition);
 
         // Now, number "2" is the only one with length 5
         Predicate<String> twoCondition = (n -> n.length() == 5);
-        String two = input.stream().filter(twoCondition).findFirst().get();
+        String two = input.stream().filter(twoCondition).findFirst().orElse(BAD_DIGIT);
         decodedDigits.set(2, sortCharacters(two));
         input.removeIf(twoCondition);
 
         // Now just left "0" and "9". It's needed to compare with number "3"
         // ("9" has all the elements of "3", but "0" don't)
         Predicate<String> nineCondition = (n -> containsAllCharacters(decodedDigits.get(3), n));
-        String nine = input.stream().filter(nineCondition).findFirst().get();
+        String nine = input.stream().filter(nineCondition).findFirst().orElse(BAD_DIGIT);
         decodedDigits.set(9, sortCharacters(nine));
         input.removeIf(nineCondition);
 
         // "0"
-        String zero = input.stream().findFirst().get();
+        String zero = input.stream().findFirst().orElse(BAD_DIGIT);
         decodedDigits.set(0, sortCharacters(zero));
         input.removeIf(n -> n.length() == 6);
     }
@@ -158,9 +147,7 @@ public class SevenSegmentDisplay implements Executable {
 
         char[] chars = in.toCharArray();
         Arrays.sort(chars);
-        String out = new String(chars);
-
-        return out;
+        return new String(chars);
     }
 
     protected boolean containsAllCharacters(String lessCharacters, String moreCharacters) {
@@ -171,6 +158,22 @@ public class SevenSegmentDisplay implements Executable {
         }
 
         return true;
+    }
+
+    protected String buildNumber(String[] strings) {
+        StringBuilder builtNumber = new StringBuilder("");
+
+        for(int i = 0; i < OUTPUT_NUMBERS; i++) {
+            String sorted = sortCharacters(strings[strings.length - 1 - i]);
+
+            for(int j = 0; j < decodedDigits.size(); j++) {
+                if(decodedDigits.get(j).equals(sorted)) {
+                    builtNumber.insert(0, j);
+                }
+            }
+        }
+
+        return builtNumber.toString();
     }
 
 }

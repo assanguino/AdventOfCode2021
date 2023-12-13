@@ -9,22 +9,22 @@ public class Chiton implements Executable {
 
     protected Part part;
     protected int noRows = 0;
-    protected int row_length = 0;
-    protected int[][] risk_level_map;
-    int[] tentative_distance;
+    protected int rowLength = 0;
+    protected int[][] riskLevelMap;
+    int[] tentativeDistance;
 
     public Chiton(Part part) {
         this.part = part;
     }
 
     public void processRow(String row) {
-        if(row_length == 0) {
-            row_length = row.length();
-            risk_level_map = new int[row_length][row_length];
+        if(rowLength == 0) {
+            rowLength = row.length();
+            riskLevelMap = new int[rowLength][rowLength];
         }
 
-        for(int i = 0; i < row_length; i++) {
-            risk_level_map[noRows][i] = row.charAt(i) - '0';
+        for(int i = 0; i < rowLength; i++) {
+            riskLevelMap[noRows][i] = row.charAt(i) - '0';
         }
 
         noRows++;
@@ -32,12 +32,12 @@ public class Chiton implements Executable {
 
     public void execute() {
         if(part == Part.first) {
-            dijkstra(risk_level_map, 0);
+            dijkstra(riskLevelMap, 0);
         } else if(part == Part.second) {
             int factor = 5;
-            int[][] larger_risk_level_map = createLargerRiskLevelMap(risk_level_map, factor);
-            dijkstra(larger_risk_level_map, 0);
-            row_length *= factor;
+            int[][] largerRiskLevelMap = createLargerRiskLevelMap(riskLevelMap, factor);
+            dijkstra(largerRiskLevelMap, 0);
+            rowLength *= factor;
         }
     }
 
@@ -46,13 +46,14 @@ public class Chiton implements Executable {
     }
 
     public void printResult() {
-        int lastIndex = row_length * row_length - 1;
-        System.out.println();
-        System.out.println(String.format("The distance from node %d to node %d is: %d", 0, lastIndex, tentative_distance[lastIndex]));
+        int lastIndex = rowLength * rowLength - 1;
+
+        logger.info("");
+        logger.info("The distance from node %d to node %d is: %d", 0, lastIndex, tentativeDistance[lastIndex]);
     }
 
     public String getResult() {
-        return String.valueOf(tentative_distance[row_length*row_length - 1]);
+        return String.valueOf(tentativeDistance[rowLength*rowLength - 1]);
     }
 
     /**
@@ -66,35 +67,35 @@ public class Chiton implements Executable {
      */
     protected int calcDistance(int[][] matrix, int i, int j) {
 
-        int final_matrix_length = matrix.length;
+        int finalMatrixLength = matrix.length;
 
-        int i_X = i / final_matrix_length;
-        int i_Y = i % final_matrix_length;
-        int j_X = j / final_matrix_length;
-        int j_Y = j % final_matrix_length;
+        int iX = i / finalMatrixLength;
+        int iY = i % finalMatrixLength;
+        int jX = j / finalMatrixLength;
+        int jY = j % finalMatrixLength;
 
         // The node itself (no distance)
         if(i == j)
             return 0;
 
         // distance of the node on the right
-        if(i_X == j_X && j_Y == i_Y + 1) {
-            return matrix[j_X][j_Y];
+        if(iX == jX && jY == iY + 1) {
+            return matrix[jX][jY];
         }
 
         // distance of the node on the left
-        if(i_X == j_X && j_Y == i_Y - 1) {
-            return matrix[j_X][j_Y];
+        if(iX == jX && jY == iY - 1) {
+            return matrix[jX][jY];
         }
 
         // distance of the node above
-        if(i_X == j_X + 1 && j_Y == i_Y) {
-            return matrix[j_X][j_Y];
+        if(iX == jX + 1 && jY == iY) {
+            return matrix[jX][jY];
         }
 
         // distance of the node below
-        if(i_X == j_X - 1 && j_Y == i_Y) {
-            return matrix[j_X][j_Y];
+        if(iX == jX - 1 && jY == iY) {
+            return matrix[jX][jY];
         }
 
         // else, the distance is bigger than 1, or diagonal, so infinite
@@ -104,65 +105,68 @@ public class Chiton implements Executable {
     /**
      * Dijkstra algorithm implementation
      * @param input matrix
-     * @param init_node
+     * @param initNode
      */
-    protected void dijkstra(int[][] input, int init_node) {
+    protected void dijkstra(int[][] input, int initNode) {
 
         // init variables
-        int no_nodes = input.length * input.length;
-        tentative_distance = new int[no_nodes];
-        Set<Integer> unvisited_nodes = new HashSet<Integer>();
-        for(int i = 0; i < no_nodes; i++) {
-            tentative_distance[i] = (i == init_node) ? 0 : Integer.MAX_VALUE;
-            unvisited_nodes.add(i);
+        int noNodes = input.length * input.length;
+        tentativeDistance = new int[noNodes];
+        Set<Integer> unvisitedNodes = new HashSet<>();
+        for(int i = 0; i < noNodes; i++) {
+            tentativeDistance[i] = (i == initNode) ? 0 : Integer.MAX_VALUE;
+            unvisitedNodes.add(i);
         }
-        int current_node = init_node;
+        int currentNode = initNode;
 
         // loop over the unvisited nodes
-        while(unvisited_nodes.size() > 0) {
+        while(!unvisitedNodes.isEmpty()) {
 
             int min = Integer.MAX_VALUE;
-            int min_index = current_node;
+            int minIndex = currentNode;
 
-            for(int i = 0; i < no_nodes; i++) {
-                if(tentative_distance[i] < min && unvisited_nodes.contains(i)) {
-                    min = tentative_distance[i];
-                    min_index = i;
+            for(int i = 0; i < noNodes; i++) {
+                if(tentativeDistance[i] < min && unvisitedNodes.contains(i)) {
+                    min = tentativeDistance[i];
+                    minIndex = i;
                 }
             }
     
-            unvisited_nodes.remove(min_index);
+            unvisitedNodes.remove(minIndex);
 
             logger.printf(Level.DEBUG, "Current node [%3d] tentative_distance [%3d] unvisited_nodes size [%3d]", 
-                current_node, tentative_distance[no_nodes - 1], unvisited_nodes.size());
+                currentNode, tentativeDistance[noNodes - 1], unvisitedNodes.size());
 
             // recalculate the tentative distance
-            for(int j = 0; j < no_nodes; j++) {
-                int distance = calcDistance(input, min_index, j);
-                if(distance > 0 && unvisited_nodes.contains(j) && tentative_distance[j] > tentative_distance[min_index] + distance) {
-                    tentative_distance[j] = tentative_distance[min_index] + distance;
-                }
-            }
-
+            recalculateTentativeDistance(noNodes, input, minIndex, unvisitedNodes);
         }
 
         // print the solution
         printTentativeDistances();
     }
 
-    protected int[][] createLargerRiskLevelMap(int[][] risk_level_map, int factor) {
+    protected void recalculateTentativeDistance(int noNodes, int[][] input, int minIndex, Set<Integer> unvisitedNodes) {
+        for(int j = 0; j < noNodes; j++) {
+            int distance = calcDistance(input, minIndex, j);
+            if(distance > 0 && unvisitedNodes.contains(j) && tentativeDistance[j] > tentativeDistance[minIndex] + distance) {
+                tentativeDistance[j] = tentativeDistance[minIndex] + distance;
+            }
+        }
+    }
 
-        int size = risk_level_map.length;
-        int new_size = factor * size;
-        int[][] result = new int[new_size][new_size];
+    protected int[][] createLargerRiskLevelMap(int[][] riskLevelMap, int factor) {
+
+        int size = riskLevelMap.length;
+        int newSize = factor * size;
+        int[][] result = new int[newSize][newSize];
 
         // We're assuming there are square maps
-        for(int i = 0; i < new_size; i++) {
-            for(int j = 0; j < new_size; j++) {
-                int low_i = i % size;
-                int low_j = j % size;
+        for(int i = 0; i < newSize; i++) {
+            for(int j = 0; j < newSize; j++) {
+                int iLow = i % size;
+                int jLow = j % size;
                 int offset = i/size + j/size;
-                result[i][j] = risk_level_map[low_i][low_j] + offset;
+                result[i][j] = riskLevelMap[iLow][jLow] + offset;
                 if(result[i][j] > 9) result[i][j] -= 9;
             }
         }
@@ -177,13 +181,13 @@ public class Chiton implements Executable {
             for(int j = 0; j < map.length; j++) {
                 line = String.format("%s%1d", line, map[i][j]);
             }
-            logger.printf(Level.ERROR, line);
+            logger.error(line);
         }
     }
 
     protected void printTentativeDistances() {
-        for(int i = 0; i < tentative_distance.length; i++) {
-            logger.printf(Level.INFO, "node " + i + " distance " + tentative_distance[i]);
+        for(int i = 0; i < tentativeDistance.length; i++) {
+            logger.info("node %d distance %d", i, tentativeDistance[i]);
         }
     }
 

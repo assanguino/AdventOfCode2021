@@ -8,11 +8,11 @@ import org.apache.logging.log4j.Level;
 
 public class Lanternfish implements Executable {
     
-    protected final int DAYS_PROCESSED_FIRST = 80;
-    protected final int DAYS_PROCESSED_SECOND = 256;
+    protected static final int DAYS_PROCESSED_FIRST = 80;
+    protected static final int DAYS_PROCESSED_SECOND = 256;
 
     protected Part part;
-    protected int initial_lanternfishes = 0;
+    protected int initialLanternfishes = 0;
     protected long totalFishes = 0;
 
     /**
@@ -21,18 +21,18 @@ public class Lanternfish implements Executable {
      * the amount (the value) of lanternfish_day.get(day) is the number
      * of fishes
      */
-    protected List<Long> lanternfish_day = new ArrayList<>();
+    protected List<Long> lanternfishDay = new ArrayList<>();
 
     public Lanternfish(Part part) {
         this.part = part;
-        lanternfish_day.addAll(Collections.nCopies(9, (long)0));
+        lanternfishDay.addAll(Collections.nCopies(9, (long)0));
     }
 
     public void processRow(String row) {
         for(String c : row.split(",")) {
             int value = Integer.parseInt(c);
-            lanternfish_day.set(value, lanternfish_day.get(value)+1);
-            initial_lanternfishes++;
+            lanternfishDay.set(value, lanternfishDay.get(value)+1);
+            initialLanternfishes++;
         }
     }
 
@@ -40,22 +40,22 @@ public class Lanternfish implements Executable {
 
         for(int day = 1; day <= getNumberOfDays(); day++) {
             // lanternfish_day
-            long newFishes = lanternfish_day.get(0);
-            lanternfish_day.remove(0);
-            lanternfish_day.set(6, lanternfish_day.get(6) + newFishes);
-            lanternfish_day.add(newFishes);
+            long newFishes = lanternfishDay.get(0);
+            lanternfishDay.remove(0);
+            lanternfishDay.set(6, lanternfishDay.get(6) + newFishes);
+            lanternfishDay.add(newFishes);
 
-            long totalFishes = 0;
-            for(int i = 0; i < lanternfish_day.size(); i++) {
-                totalFishes += lanternfish_day.get(i);
+            long lanternfishes = 0;
+            for(int i = 0; i < lanternfishDay.size(); i++) {
+                lanternfishes += lanternfishDay.get(i);
             }
 
-            logger.printf(Level.INFO, "      day #%3d, number of lanternfishes: %d", day, totalFishes);
+            logger.printf(Level.INFO, "      day #%3d, number of lanternfishes: %d", day, lanternfishes);
         }
 
         totalFishes = 0;
-        for(int i = 0; i < lanternfish_day.size(); i++) {
-            totalFishes += lanternfish_day.get(i);
+        for(int i = 0; i < lanternfishDay.size(); i++) {
+            totalFishes += lanternfishDay.get(i);
         }
     }
 
@@ -64,10 +64,10 @@ public class Lanternfish implements Executable {
     }
 
     public void printResult() {
-        System.out.println();
-        System.out.println("number of initial lanternfishes: " + initial_lanternfishes);
-        System.out.println("number of days: " + getNumberOfDays());
-        System.out.println("number of final lanternfishes: " + totalFishes);
+        logger.info("");
+        logger.info("number of initial lanternfishes: %d", initialLanternfishes);
+        logger.info("number of days: %d", getNumberOfDays());
+        logger.info("number of final lanternfishes: %d", totalFishes);
     }
 
     public String getResult() {

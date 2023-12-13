@@ -11,9 +11,9 @@ public class Polymerization implements Executable {
     
     protected Part part;
     protected String polymerTemplate = "";
-    protected Map<String, String> insertionRules = new HashMap<String, String>();
-    protected Map<String, ArrayList<String>> occurrencesGrowthRules = new HashMap<String, ArrayList<String>>();
-    protected Map<String, Long> occurrencesMap = new HashMap<String, Long>();
+    protected Map<String, String> insertionRules = new HashMap<>();
+    protected Map<String, ArrayList<String>> occurrencesGrowthRules = new HashMap<>();
+    protected Map<String, Long> occurrencesMap = new HashMap<>();
 
     protected long occurrencesDisparity = -1;
     protected long mostCommon = -1;
@@ -61,7 +61,7 @@ public class Polymerization implements Executable {
     }
 
     public void printResult() {
-        System.out.println(String.format("Occurrence disparity is: %3d - %3d = %3d", mostCommon, lessCommon, occurrencesDisparity));
+        logger.info("Occurrence disparity is: %3d - %3d = %3d", mostCommon, lessCommon, occurrencesDisparity);
     }
 
     public String getResult() {
@@ -80,7 +80,7 @@ public class Polymerization implements Executable {
             String firstOutput = key.charAt(0) + entry.getValue();
             String secondOutput = entry.getValue() + key.charAt(1);
 
-            occurrencesGrowthRules.put(key, new ArrayList<String>(List.of(firstOutput, secondOutput)));
+            occurrencesGrowthRules.put(key, new ArrayList<>(List.of(firstOutput, secondOutput)));
         }
     }
 
@@ -147,7 +147,7 @@ public class Polymerization implements Executable {
                 letterMap.put(first, entry.getValue());
             }
 
-            logger.printf(Level.DEBUG, "     occurrences of %s: %d", entry.getKey(), entry.getValue());
+            logger.debug("     occurrences of %s: %d", entry.getKey(), entry.getValue());
         }
 
         // Add at the end the last letter of the polymer:
@@ -171,14 +171,14 @@ public class Polymerization implements Executable {
     }
 
     protected void printInsertionRules() {
-        logger.printf(Level.INFO, "\n Insertion rules: ");
+        logger.info("%n Insertion rules: ");
         for(var entry : insertionRules.entrySet()) {
-            logger.printf(Level.INFO, "     insertion rule: %s -> %s", entry.getKey(), entry.getValue());
+            logger.info("     insertion rule: %s -> %s", entry.getKey(), entry.getValue());
         }
     }
 
     protected void printOccurrencesGrowthRules() {
-        logger.printf(Level.INFO, "\n Occurrences growth rules (A total of %d rules): ", occurrencesGrowthRules.size());
+        logger.info("%n Occurrences growth rules (A total of %d rules): ", occurrencesGrowthRules.size());
         for(var entry : occurrencesGrowthRules.entrySet()) {
             logger.printf(Level.INFO, "     key [%s] values [%s %s]", entry.getKey(), entry.getValue().get(0), entry.getValue().get(1));
         }
@@ -186,9 +186,9 @@ public class Polymerization implements Executable {
 
     protected void printOccurrencesMap(int step) {
         String title = step == 0 ? "Template" : "After iterating " + step + " times:";
-        logger.printf(Level.DEBUG, title);
+        logger.debug(title);
         for(var entry : occurrencesMap.entrySet()) {
-            logger.printf(Level.DEBUG, "     occurrencesMap [%s] -> repeated [%5d] times.", entry.getKey(), entry.getValue());
+            logger.debug("     occurrencesMap [%s] -> repeated [%5d] times.", entry.getKey(), entry.getValue());
         }
     }
 

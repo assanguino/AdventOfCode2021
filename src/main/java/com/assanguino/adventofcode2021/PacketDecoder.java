@@ -7,13 +7,13 @@ import org.apache.logging.log4j.Level;
 
 public class PacketDecoder implements Executable {
     
-    protected final int length_version = 3;
-    protected final int length_typeID = 3;
-    protected final int length_literal_value = 5;
+    protected static final int LENGTH_VERSION = 3;
+    protected static final int LENGTH_TYPE_ID = 3;
+    protected static final int LENGTH_LITERAL_VALUE = 5;
 
     protected Part part;
     protected String hexadecimal = "";
-    protected String processing_row = "";
+    protected String processingRow = "";
 
     protected Packet initialPacket = new Packet();
 
@@ -30,7 +30,7 @@ public class PacketDecoder implements Executable {
     }
 
     public void execute() {
-        processing_row = DecodeUtils.hexToBinary(hexadecimal);
+        processingRow = DecodeUtils.hexToBinary(hexadecimal);
         processPacket(0, initialPacket);
     }
 
@@ -41,12 +41,14 @@ public class PacketDecoder implements Executable {
     }
 
     public void printResult() {
-        System.out.println();
+        logger.info("");
         if(part == Part.first)
-            System.out.println("The version total sum is " + initialPacket.getAddUpVersion());
+            logger.info("The version total sum is %ld", initialPacket.getAddUpVersion());
         else
-            System.out.println("The version total value is " + initialPacket.getValue());
-        System.out.println();
+            logger.info("The version total value is %ld", initialPacket.getValue());
+        logger.info("");
+
+        logger.info("");
     }
 
     public String getResult() {
@@ -56,23 +58,23 @@ public class PacketDecoder implements Executable {
     }
 
     protected Long getVersion(String string) {
-        return DecodeUtils.binaryToLong(string, 0, length_version);
+        return DecodeUtils.binaryToLong(string, 0, LENGTH_VERSION);
     }
 
     protected Long getTypeID(String string) {
-        return DecodeUtils.binaryToLong(string, 3, length_typeID);
+        return DecodeUtils.binaryToLong(string, 3, LENGTH_TYPE_ID);
     }
 
     protected Integer processPacket(Integer index, Packet packet) {
 
-        String string = processing_row.substring(index);
+        String string = processingRow.substring(index);
 
         long version = getVersion(string);
         long typeID = getTypeID(string);
 
         String typeDescription = typeID == 4 ? "literal value" : "operator packet";
         logger.printf(Level.INFO, "processing packet - version %d, typeID %d (%s) - index %d - processing from index %d", 
-            version, typeID, typeDescription, index, index + length_version + length_typeID);
+            version, typeID, typeDescription, index, index + LENGTH_VERSION + LENGTH_TYPE_ID);
 
         packet.version = version;
         packet.typeID = typeID;
@@ -80,34 +82,36 @@ public class PacketDecoder implements Executable {
         Integer result;
         if(typeID == 4) {
             // literal value
-            result = processLiteralValue(index + length_version + length_typeID, packet);
+            result = processLiteralValue(index + LENGTH_VERSION + LENGTH_TYPE_ID, packet);
         } else {
             // operator
-            result = processOperator(index + length_version + length_typeID, packet);
+            result = processOperator(index + LENGTH_VERSION + LENGTH_TYPE_ID, packet);
         }
 
         return result;
     }
 
     protected Integer processLiteralValue(Integer index, Packet packet) {
-        Integer init_index = index;
-        String sub = "", binaryResult = "";
+        Integer initIndex = index;
+        String sub = "";
+        StringBuilder binaryResult = new StringBuilder();
 
-        while(processing_row.charAt(index++) == '1') {
-            sub = processing_row.substring(index, index + length_literal_value - 1);
+        while(processingRow.charAt(index++) == '1') {
+            sub = processingRow.substring(index, index + LENGTH_LITERAL_VALUE - 1);
             logger.printf(Level.DEBUG, "     literal value substring [%s]", sub);
-            binaryResult += sub;
-            index += (length_literal_value-1);
-        };
+            binaryResult.append(sub);
+            index += (LENGTH_LITERAL_VALUE-1);
+        }
 
         // Just get the last group (headed with '0')
-        sub = processing_row.substring(index, index + length_literal_value - 1);
+        sub = processingRow.substring(index, index + LENGTH_LITERAL_VALUE - 1);
         logger.printf(Level.DEBUG, "     literal value substring [%s]", sub);
-        binaryResult += sub;
-        index += (length_literal_value-1);
+        binaryResult.append(sub);
+        index += (LENGTH_LITERAL_VALUE-1);
 
-        Long total = DecodeUtils.binaryToLong(binaryResult, 0, binaryResult.length());
-        logger.printf(Level.INFO, "     literal value total %d - init index %d - next index %d", total, init_index, index);
+        String result = binaryResult.toString();
+        Long total = DecodeUtils.binaryToLong(result, 0, result.length());
+        logger.printf(Level.INFO, "     literal value total %d - init index %d - next index %d", total, initIndex, index);
 
         packet.sum = total;
 
@@ -120,15 +124,15 @@ public class PacketDecoder implements Executable {
         long noSubPackets = -1;
 
         // checking the length type ID
-        if(processing_row.charAt(index++) == '0') {
-            totalLength = DecodeUtils.binaryToLong(processing_row, index, 15);
+        if(processingRow.charAt(index++) == '0') {
+            totalLength = DecodeUtils.binaryToLong(processingRow, index, 15);
             index += 15;
 
             logger.printf(Level.INFO, "     process operator labeled I = '0' - length of sub-packets %d - index %d", totalLength, index);
 
-            int init_index = index;
-            while(index < init_index + totalLength) {
-                logger.printf(Level.DEBUG, "     * process operator packet, from index %d - length left %d", index, init_index + totalLength - index);
+            int initIndex = index;
+            while(index < initIndex + totalLength) {
+                logger.printf(Level.DEBUG, "     * process operator packet, from index %d - length left %d", index, initIndex + totalLength - index);
 
                 Packet subPacket = new Packet();
                 packet.packets.add(subPacket);
@@ -137,7 +141,7 @@ public class PacketDecoder implements Executable {
             }
 
         } else {
-            noSubPackets = DecodeUtils.binaryToLong(processing_row, index, 11);
+            noSubPackets = DecodeUtils.binaryToLong(processingRow, index, 11);
             index += 11;
 
             logger.printf(Level.INFO, "     process operator labeled I = '1' - total amount of sub-packets %d - index %d", noSubPackets, index);
@@ -158,26 +162,30 @@ public class PacketDecoder implements Executable {
 
     protected static class DecodeUtils {
 
+        private DecodeUtils() {
+            throw new IllegalStateException("Utility class");
+        }
+        
         public static String hexToBinary(String hex) {
 
             String binary = hex;
     
-            binary = binary.replaceAll("0", "0000");
-            binary = binary.replaceAll("1", "0001");
-            binary = binary.replaceAll("2", "0010");
-            binary = binary.replaceAll("3", "0011");
-            binary = binary.replaceAll("4", "0100");
-            binary = binary.replaceAll("5", "0101");
-            binary = binary.replaceAll("6", "0110");
-            binary = binary.replaceAll("7", "0111");
-            binary = binary.replaceAll("8", "1000");
-            binary = binary.replaceAll("9", "1001");
-            binary = binary.replaceAll("A", "1010");
-            binary = binary.replaceAll("B", "1011");
-            binary = binary.replaceAll("C", "1100");
-            binary = binary.replaceAll("D", "1101");
-            binary = binary.replaceAll("E", "1110");
-            binary = binary.replaceAll("F", "1111");
+            binary = binary.replace("0", "0000");
+            binary = binary.replace("1", "0001");
+            binary = binary.replace("2", "0010");
+            binary = binary.replace("3", "0011");
+            binary = binary.replace("4", "0100");
+            binary = binary.replace("5", "0101");
+            binary = binary.replace("6", "0110");
+            binary = binary.replace("7", "0111");
+            binary = binary.replace("8", "1000");
+            binary = binary.replace("9", "1001");
+            binary = binary.replace("A", "1010");
+            binary = binary.replace("B", "1011");
+            binary = binary.replace("C", "1100");
+            binary = binary.replace("D", "1101");
+            binary = binary.replace("E", "1110");
+            binary = binary.replace("F", "1111");
 
             return binary;
         }
@@ -188,13 +196,29 @@ public class PacketDecoder implements Executable {
     
     }
 
+    // enum of comparison operations
+    public enum PacketComparisonOps {
+        GREATER_THAN(5),
+        LESS_THAN(6),
+        EQUAL_TO(7);
+
+        public final long value;
+
+        private PacketComparisonOps(long value) {
+            this.value = value;
+        }
+    }
+
     // Class that represent the packets from the hexadecimal string
 
     class Packet {
-        public long version;
-        public long typeID;
-        public long sum;
-        public List<Packet> packets;
+
+        private static final String FATAL_MSG = "The packet hasn't 2 sub-packets to compare! (%d indeed)";
+
+        protected long version;
+        protected long typeID;
+        protected long sum;
+        protected List<Packet> packets;
 
         public Packet() {
             version = -1;
@@ -215,62 +239,92 @@ public class PacketDecoder implements Executable {
         }
 
         public long getValue() {
+
             long result = 0;
 
             if(typeID == 0) {
-                // sum of the sub-packets 
-                for (Packet packet : packets)
-                    result += packet.getValue();
+                // sum of the sub-packets
+                result = subPacketsSum();
 
             } else if(typeID == 1) {
                 // product of the sub-packets 
-                result = 1;
-                for (Packet packet : packets)
-                    result *= packet.getValue();
+                result = subPacketsProduct();
 
             } else if(typeID == 2) {
                 // minimum
-                result = Long.MAX_VALUE;
-                for (Packet packet : packets)
-                    result = Math.min(result, packet.getValue());
+                result = subPacketsMin();
 
             } else if(typeID == 3) {
                 // maximum
-                result = Long.MIN_VALUE;
-                for (Packet packet : packets)
-                    result = Math.max(result, packet.getValue());
+                result = subPacketsMax();
 
-            } else if(typeID == 5) {
-                // greater than
-                if(packets.size() != 2) {
-                    logger.printf(Level.FATAL, "The packet hasn't 2 sub-packets to compare! (%d indeed)", packets.size());
-                    return -1;
-                }
+            } else if(typeID == 5 || typeID == 6 || typeID == 7) {
 
-                return (packets.get(0).getValue() > packets.get(1).getValue()) ? 1 : 0;
-
-            } else if(typeID == 6) {
-                // less than
-                if(packets.size() != 2) {
-                    logger.printf(Level.FATAL, "The packet hasn't 2 sub-packets to compare! (%d indeed)", packets.size());
-                    return -1;
-                }
-
-                return (packets.get(0).getValue() < packets.get(1).getValue()) ? 1 : 0;
-
-            } else if(typeID == 7) {
-                // equal to
-                if(packets.size() != 2) {
-                    logger.printf(Level.FATAL, "The packet hasn't 2 sub-packets to compare! (%d indeed)", packets.size());
-                    return -1;
-                }
-
-                return (packets.get(0).getValue() == packets.get(1).getValue()) ? 1 : 0;
+                return compareListHead(typeID);
             }
 
             // Literal values
             return (typeID == 4) ? sum : result;
         }
+
+        protected long subPacketsSum() {
+            long result = 0;
+
+            for (Packet packet : packets)
+                result += packet.getValue();
+
+            return result;
+        }
+
+        protected long subPacketsProduct() {
+            long result = 0;
+
+            for (Packet packet : packets)
+                result *= packet.getValue();
+
+            return result;
+        }
+
+        protected long subPacketsMin() {
+            long result = Long.MAX_VALUE;
+
+            for (Packet packet : packets)
+                result = Math.min(result, packet.getValue());
+
+            return result;
+        }
+
+        protected long subPacketsMax() {
+            long result = Long.MIN_VALUE;
+
+            for (Packet packet : packets)
+                result = Math.max(result, packet.getValue());
+
+            return result;
+        }
+
+        protected long compareListHead(long iOp) {
+            long result = -1;
+
+            if(packets.size() != 2) {
+                logger.fatal(FATAL_MSG, packets.size());
+                return result;
+            }
+
+            long value0 = packets.get(0).getValue();
+            long value1 = packets.get(1).getValue();
+
+            if(PacketComparisonOps.GREATER_THAN.value == iOp) {
+                result = value0 > value1 ? 1 : 0;
+            } else if(PacketComparisonOps.LESS_THAN.value == iOp) {
+                result = value0 < value1 ? 1 : 0;
+            } else if(PacketComparisonOps.EQUAL_TO.value == iOp) {
+                result = value0 == value1 ? 1 : 0;
+            }
+
+            return result;
+        }
+
     }
 
 }

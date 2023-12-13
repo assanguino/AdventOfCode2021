@@ -14,8 +14,8 @@ public class CavesPath implements Executable {
     protected Part part;
     protected boolean verbose;
 
-    protected Map<String, ArrayList<String>> cavesMap = new HashMap<String, ArrayList<String>>();
-    protected List<Path> paths = new ArrayList<Path>();       
+    protected Map<String, ArrayList<String>> cavesMap = new HashMap<>();
+    protected List<Path> paths = new ArrayList<>();
 
     public CavesPath(Part part) {
         this.part = part;
@@ -59,15 +59,15 @@ public class CavesPath implements Executable {
 
         printCavesMap();
 
-        int paths_size = 1;
-        var paths_to_process = paths.stream().filter(getPathsOfSize(paths_size)).collect(Collectors.toList());
+        int pathsSize = 1;
+        var pathsToProcess = paths.stream().filter(getPathsOfSize(pathsSize)).collect(Collectors.toList());
 
         do
         {
             logger.printf(Level.INFO, String.format("Processing paths of size [%2d]; a total of [%2d] different paths to process.", 
-                paths_size, paths_to_process.size()));
+                pathsSize, pathsToProcess.size()));
 
-            for(Path path : paths_to_process) {
+            for(Path path : pathsToProcess) {
                 List<Path> newPaths = new ArrayList<>();
                 for (String node : cavesMap.get(path.getLastCave())) {
                     if(path.canVisitCave(node, part)) {
@@ -75,15 +75,16 @@ public class CavesPath implements Executable {
                         newPath.add(node);
                         newPaths.add(newPath);
 
-                        logger.printf(Level.DEBUG, "   path: " + String.join(",", newPath.getPath()));
+                        String strNewPath = String.join(",", newPath.getPathList());
+                        logger.debug("   path: %s", strNewPath );
                     }
                 }
                 paths.addAll(newPaths);
             }
 
-            paths_to_process = paths.stream().filter(getPathsOfSize(++paths_size)).collect(Collectors.toList());
+            pathsToProcess = paths.stream().filter(getPathsOfSize(++pathsSize)).collect(Collectors.toList());
         }
-        while(paths_to_process.size() > 0);
+        while(!pathsToProcess.isEmpty());
 
         // prune invalid paths
         paths.removeIf(p -> !p.getLastCave().equals(Path.END_CAVE));
@@ -96,13 +97,13 @@ public class CavesPath implements Executable {
     }
 
     public void printResult() {
-        System.out.println();
+        logger.info("");
         if(verbose) {
-            System.out.println("Final paths: ");
-            paths.forEach(p -> System.out.println(String.join(",", p.getPath())));
+            logger.info("Final paths: ");
+            paths.forEach(p -> logger.info("%s", String.join(",", p.getPathList())));
         }
-        System.out.println("Final paths are (" + paths.size() + "):");
-        System.out.println();
+        logger.info("Final paths are (%d):", paths.size());
+        logger.info("");
     }
 
     public String getResult() {
@@ -114,10 +115,10 @@ public class CavesPath implements Executable {
     }
 
     protected void printCavesMap() {
-        logger.printf(Level.INFO, "");
-        logger.printf(Level.INFO, "Caves map:");
-        cavesMap.entrySet().forEach(entry -> logger.printf(Level.INFO , entry.getKey() + " -> " + String.join(",", entry.getValue()) ));
-        logger.printf(Level.INFO, "");
+        logger.info("");
+        logger.info("Caves map:");
+        cavesMap.entrySet().forEach(entry -> logger.info("%s -> %s", entry.getKey(), String.join(",", entry.getValue()) ));
+        logger.info("");
     }
 
 }

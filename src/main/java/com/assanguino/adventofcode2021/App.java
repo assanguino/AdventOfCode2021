@@ -13,7 +13,7 @@ public class App {
 
     protected static Map<Integer, Class<? extends Executable>> classMap = new HashMap<>();
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
         populateClassMap();
         execute(18, Part.second);
@@ -51,22 +51,26 @@ public class App {
             Class<? extends Executable> dayClass = classMap.get(day);
             Executable dayObject = dayClass.getConstructor(constructorParams).newInstance(part);
 
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println(separation + " Advent of Code 2021");
-            System.out.println(separation + " Day " + day + ", " + part.toString() + " part");
-            System.out.println(separation + " " + dayObject.printDescription() );
+            String strPart = part.toString();
+            String strDay = dayObject.printDescription();
+
+            logger.info("");
+            logger.info("");
+            logger.info("");
+
+            logger.info("%s Advent of Code 2021", separation);
+            logger.info("%s  Day %s, part %s", separation, day, strPart);
+            logger.info("%s %s", separation, strDay);
 
             String fileName = Executable.getInputFile(day, isTestFile(day, part));
             dayObject.processInput(fileName);
             dayObject.execute();
             dayObject.printResult();
 
-            System.out.println(separation);
-            System.out.println();
-            System.out.println();
-            System.out.println();
+            logger.info(separation);
+            logger.info("");
+            logger.info("");
+            logger.info("");
 
         } catch (Exception ex) {
             logger.printf(Level.FATAL, ex.getMessage());

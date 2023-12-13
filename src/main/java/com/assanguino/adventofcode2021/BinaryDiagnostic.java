@@ -2,8 +2,7 @@ package com.assanguino.adventofcode2021;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
-import org.apache.logging.log4j.Level;
+import java.util.List;
 
 public class BinaryDiagnostic implements Executable {
 
@@ -15,16 +14,17 @@ public class BinaryDiagnostic implements Executable {
     protected ArrayList<Integer> zeros = new ArrayList<>();
     protected ArrayList<Integer> ones = new ArrayList<>();
 
-    protected String gamma_rate_binary = "", epsilon_rate_binary = "";
-    protected int gamma_rate = -1;
-    protected int epsilon_rate = -1;
+    protected StringBuilder gammaRateBinary = new StringBuilder();
+    protected StringBuilder epsilonRateBinary = new StringBuilder();
+    protected int gammaRate = -1;
+    protected int epsilonRate = -1;
 
     // second part properties
-    protected ArrayList<String> oxygen_generator_list = new ArrayList<>();
-    protected ArrayList<String> CO2_scrubber_list = new ArrayList<>();
+    protected ArrayList<String> oxygenGeneratorList = new ArrayList<>();
+    protected ArrayList<String> listCO2scrubber = new ArrayList<>();
 
-    protected int oxygen_generator_rating = -1;
-    protected int CO2_scrubber_rating = -1;
+    protected int oxygenGeneratorRating = -1;
+    protected int ratingCO2scrubber = -1;
 
     public BinaryDiagnostic(Part part) {
         this.part = part;
@@ -53,8 +53,8 @@ public class BinaryDiagnostic implements Executable {
             }
         } else {
 
-            oxygen_generator_list.add(row);
-            CO2_scrubber_list.add(row);
+            oxygenGeneratorList.add(row);
+            listCO2scrubber.add(row);
         }
 
         noRows++;
@@ -75,42 +75,54 @@ public class BinaryDiagnostic implements Executable {
     }
 
     public void printResult() {
-        System.out.println();
-        System.out.println("measurements: " + noRows);
+        logger.info("");
+        logger.info("measurements: %d", noRows);
 
         if(part == Part.first) {
-            System.out.println("gamma_rate_binary:   " + gamma_rate_binary +  " - gamma_rate: " + gamma_rate);
-            System.out.println("epsilon_rate_binary: " + epsilon_rate_binary +  " - epsilon_rate: " + epsilon_rate);
-            System.out.println("final value (multiplication): " + gamma_rate * epsilon_rate);
+            logger.info("gamma_rate_binary:   %s - gamma_rate: %d", gammaRateBinary, gammaRate);
+            logger.info("epsilon_rate_binary: %s  - epsilon_rate: %d", epsilonRateBinary, epsilonRate);
+            logger.info("final value (multiplication): %d", gammaRate * epsilonRate);
         } else {
-            System.out.println("oxygen_generator_rating: " + oxygen_generator_rating);
-            System.out.println("CO2_scrubber_rating:     " + CO2_scrubber_rating);
-            System.out.println("life_support_rating (multiplication): " + oxygen_generator_rating * CO2_scrubber_rating);
+            logger.info("oxygen_generator_rating: %d", oxygenGeneratorRating);
+            logger.info("CO2_scrubber_rating: %d", ratingCO2scrubber);
+            logger.info("life_support_rating (multiplication): %d", oxygenGeneratorRating * ratingCO2scrubber);
         }    
     }
 
     public String getResult() {
         return part == Part.first ? 
-            String.valueOf(gamma_rate * epsilon_rate) :
-            String.valueOf(oxygen_generator_rating * CO2_scrubber_rating);
+            String.valueOf(gammaRate * epsilonRate) :
+            String.valueOf(oxygenGeneratorRating * ratingCO2scrubber);
     }
 
     protected void getGammaEpsilonRates() {
-        gamma_rate_binary = "";
-        epsilon_rate_binary = "";
-        
         for(int i = 0; i < binaryLength; i++) {
             if(zeros.get(i) > ones.get(i)) {
-                gamma_rate_binary = gamma_rate_binary + "0";
-                epsilon_rate_binary = epsilon_rate_binary + "1";
+                gammaRateBinary.append('0');
+                epsilonRateBinary.append('1');
             } else {
-                gamma_rate_binary = gamma_rate_binary + "1";
-                epsilon_rate_binary = epsilon_rate_binary + "0";
+                gammaRateBinary.append('1');
+                epsilonRateBinary.append('0');
             }
         }
 
-        gamma_rate = Integer.parseInt(gamma_rate_binary, 2);
-        epsilon_rate = Integer.parseInt(epsilon_rate_binary, 2);       
+        gammaRate = Integer.parseInt(gammaRateBinary.toString(), 2);
+        epsilonRate = Integer.parseInt(epsilonRateBinary.toString(), 2);       
+    }
+
+    private boolean countMoreOnesThanZeros(int index, List<String> list) {
+
+        int noZeros = 0;
+        int noOnes = 0;
+        for(String str : list) {
+            if(str.charAt(index) == '0') {
+                noZeros++;
+            } else {
+                noOnes++;
+            }
+        }
+
+        return noOnes >= noZeros;
     }
 
     protected void getLifeSupportRating() {
@@ -118,68 +130,49 @@ public class BinaryDiagnostic implements Executable {
         int index = 0;
         do {
 
-            int noZeros = 0, noOnes = 0;
-            for(String str : oxygen_generator_list) {
-                if(str.charAt(index) == '0') {
-                    noZeros++;
-                } else {
-                    noOnes++;
-                }
-            }
-
             final int finalIndex = index;
-            if(noOnes >= noZeros) {
-                oxygen_generator_list.removeIf(str -> str.charAt(finalIndex) == '0');
+            if(countMoreOnesThanZeros(index, oxygenGeneratorList)) {
+                oxygenGeneratorList.removeIf(str -> str.charAt(finalIndex) == '0');
             } else {
-                oxygen_generator_list.removeIf(str -> str.charAt(finalIndex) == '1');
+                oxygenGeneratorList.removeIf(str -> str.charAt(finalIndex) == '1');
             }
 
             // Iteration
-            logger.printf(Level.INFO, "oxygen_generator_list - Iteration #" + index + " list size " + oxygen_generator_list.size() + " elements.");
+            logger.info("oxygen_generator_list - Iteration #%d list size %d elements.", index, oxygenGeneratorList.size());
 
             index++;
 
-        } while(oxygen_generator_list.size() > 1 && index < binaryLength);
+        } while(oxygenGeneratorList.size() > 1 && index < binaryLength);
 
         // Middle report
-        logger.printf(Level.INFO, "oxygen_generator_list size: " + oxygen_generator_list.size());
-        logger.printf(Level.INFO, "oxygen_generator_list first value: " + (oxygen_generator_list.size() > 0 ? oxygen_generator_list.get(0) : "[No value]"));
-        logger.printf(Level.INFO, "index reached: " + index + " / " + binaryLength + " bits.");
+        String oxygenGeneratorValue = oxygenGeneratorList.isEmpty() ? "[No value]" : oxygenGeneratorList.get(0);
+        logger.info("oxygen_generator_list size: %d", oxygenGeneratorList.size());
+        logger.info("oxygen_generator_list first value: %s", oxygenGeneratorValue);
+        logger.info("index reached: %d / %d bits.", index, binaryLength);
 
         index = 0;
         do {
 
-            int noZeros = 0, noOnes = 0;
-            for(String str : CO2_scrubber_list) {
-                if(str.charAt(index) == '0') {
-                    noZeros++;
-                } else {
-                    noOnes++;
-                }
-            }
-
             final int finalIndex = index;
-            if(noOnes >= noZeros) {
-                CO2_scrubber_list.removeIf(str -> str.charAt(finalIndex) == '1');
+            if(countMoreOnesThanZeros(index, listCO2scrubber)) {
+                listCO2scrubber.removeIf(str -> str.charAt(finalIndex) == '1');
             } else {
-                CO2_scrubber_list.removeIf(str -> str.charAt(finalIndex) == '0');
+                listCO2scrubber.removeIf(str -> str.charAt(finalIndex) == '0');
             }
 
             // Iteration
-            logger.printf(Level.INFO, "CO2_scrubber_list - Iteration #" + index + " list size " + CO2_scrubber_list.size() + " elements.");
+            logger.info("CO2_scrubber_list - Iteration #%d list size %d elements.", index, listCO2scrubber.size());
 
             index++;
 
-        // } while(index < binaryLength);
-        } while(CO2_scrubber_list.size() > 1 && index < binaryLength);
+        } while(listCO2scrubber.size() > 1 && index < binaryLength);
 
         // Middle report
-        logger.printf(Level.INFO, "CO2_scrubber_list size: " + CO2_scrubber_list.size());
-        logger.printf(Level.INFO, "CO2_scrubber_list first value: " + (CO2_scrubber_list.size() > 0 ? CO2_scrubber_list.get(0) : "[No value]"));
-        logger.printf(Level.INFO, "index reached: " + index + " / " + binaryLength + " bits.");
+        logger.info("CO2_scrubber_list size: %d", listCO2scrubber.size());
+        logger.info("CO2_scrubber_list first value: %s", (listCO2scrubber.isEmpty() ? "[No value]" : listCO2scrubber.get(0)));
+        logger.info("index reached: %d / %d bits.", index, binaryLength);
 
-        oxygen_generator_rating = Integer.parseInt(oxygen_generator_list.get(0), 2);
-        CO2_scrubber_rating = Integer.parseInt(CO2_scrubber_list.get(0), 2);
-
+        oxygenGeneratorRating = Integer.parseInt(oxygenGeneratorList.get(0), 2);
+        ratingCO2scrubber = Integer.parseInt(listCO2scrubber.get(0), 2);
     }
 }

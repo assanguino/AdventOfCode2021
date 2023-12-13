@@ -3,7 +3,7 @@
 **/target
 #ignore stuff from system & IDE
 **/.DS_Store/
-**/.vscode
+.vscode/
 
 #ignore the TODO.md file
 TODO.md

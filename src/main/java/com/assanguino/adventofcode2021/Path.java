@@ -6,34 +6,34 @@ import java.util.ArrayList;
 
 public class Path {
 
-    public final static String START_CAVE = "start";
-    public final static String END_CAVE = "end";
+    public static final String START_CAVE = "start";
+    public static final String END_CAVE = "end";
    
-    protected List<String> path = new ArrayList<String>();
-    protected List<String> small_caves = new ArrayList<String>();
+    protected List<String> pathList = new ArrayList<>();
+    protected List<String> smallCaves = new ArrayList<>();
     // store the name if the small cave that has benn visited twice
-    protected String repeated_small_cave = "";
+    protected String repeatedSmallCave = "";
 
     public Path() { }
 
     public Path(String cave) {
-        path.add(cave);
+        pathList.add(cave);
     }
 
     // copy constructor
     public Path(Path path) {
-        for(String node : path.getPath()) {
-            this.path.add(node);
+        for(String node : path.getPathList()) {
+            this.pathList.add(node);
             addSmallCave(node);
         }
     }
 
-    public List<String> getPath() {
-        return path;
+    public List<String> getPathList() {
+        return pathList;
     }
 
     public void add(String cave) {
-        path.add(cave);
+        pathList.add(cave);
         addSmallCave(cave);
     }
 
@@ -64,33 +64,33 @@ public class Path {
     protected void addSmallCave(String cave) {
         if(isSmallCave(cave) && !isBoundCave(cave)) {
 
-            if(small_caves.contains(cave) && repeated_small_cave.equals("")) {
-                repeated_small_cave = cave;
+            if(smallCaves.contains(cave) && repeatedSmallCave.equals("")) {
+                repeatedSmallCave = cave;
             }
 
-            small_caves.add(cave);
+            smallCaves.add(cave);
         }
     }
 
     public int size() {
-        return path.size();
+        return pathList.size();
     }
 
     public String getLastCave() {
-        return path.get(path.size()-1);
+        return pathList.get(pathList.size()-1);
     }
 
     public boolean canVisitCave(String cave, Part part) {
 
         if(part == Part.first) {
-            return !(cave.equals(cave.toLowerCase()) && path.contains(cave));
-        } else /* if(part == Part.second) */ {
+            return !(cave.equals(cave.toLowerCase()) && pathList.contains(cave));
+        } else {
 
             if(isBoundCave(cave)) {
-                return !path.contains(cave);
+                return !pathList.contains(cave);
             } else {
                 // in case of be a big cave, or else be a new small cave, or else, there is no repeated small caves visited yet
-                return !isSmallCave(cave) || !path.contains(cave) || repeated_small_cave.equals("");
+                return !isSmallCave(cave) || !pathList.contains(cave) || repeatedSmallCave.equals("");
             }
         }
     }
