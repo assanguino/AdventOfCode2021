@@ -9,16 +9,16 @@ public class TrickShot implements Executable {
 
     protected Part part;
 
-    protected final String target_area_definition = "target area";
+    protected static final String TARGET_AREA_DEFINITION = "target area";
 
-    Coordinate target_bound_up;                             // right & up target square
-    Coordinate target_bound_bottom;                         // left & down target square
-    boolean shot_to_the_right;
+    Coordinate targetBoundUp;                             // right & up target square
+    Coordinate targetBoundBottom;                         // left & down target square
+    boolean shotToTheRight;
     Map<Coordinate, Long> attemps = new HashMap<>();
 
-    Coordinate final_vel = new Coordinate(-1, -1);
-    long final_max_height = -1;
-    int amount_velocities = 0;
+    Coordinate finalVel = new Coordinate(-1, -1);
+    long finalMaxHeight = -1;
+    int amountVelocities = 0;
 
     public TrickShot(Part part) {
         this.part = part;
@@ -26,37 +26,37 @@ public class TrickShot implements Executable {
 
     public void processRow(String row) {
 
-        int index_x = row.indexOf("x=");
-        int index_separator = row.indexOf(",");
-        int index_y = row.indexOf("y=");
+        int indexX = row.indexOf("x=");
+        int indexSeparator = row.indexOf(",");
+        int indexY = row.indexOf("y=");
 
-        String x_interval = row.substring(index_x + 2, index_separator);
-        String y_interval = row.substring(index_y + 2);
+        String xInterval = row.substring(indexX + 2, indexSeparator);
+        String yInterval = row.substring(indexY + 2);
 
-        int index_dot_x = x_interval.indexOf("..");
-        var x0 = Integer.parseInt(x_interval.substring(0, index_dot_x));
-        var x1 = Integer.parseInt(x_interval.substring(index_dot_x + 2));
-        int index_dot_y = y_interval.indexOf("..");
-        var y0 = Integer.parseInt(y_interval.substring(0, index_dot_y));
-        var y1 = Integer.parseInt(y_interval.substring(index_dot_y + 2));
+        int indexDotX = xInterval.indexOf("..");
+        var x0 = Integer.parseInt(xInterval.substring(0, indexDotX));
+        var x1 = Integer.parseInt(xInterval.substring(indexDotX + 2));
+        int indexDotY = yInterval.indexOf("..");
+        var y0 = Integer.parseInt(yInterval.substring(0, indexDotY));
+        var y1 = Integer.parseInt(yInterval.substring(indexDotY + 2));
 
-        target_bound_up = new Coordinate(Math.max(x0, x1), Math.max(y0, y1));
-        target_bound_bottom = new Coordinate(Math.min(x0, x1), Math.min(y0, y1));
+        targetBoundUp = new Coordinate(Math.max(x0, x1), Math.max(y0, y1));
+        targetBoundBottom = new Coordinate(Math.min(x0, x1), Math.min(y0, y1));
 
         // shot direction
         if (x0 > 0 && x1 > 0)
-            shot_to_the_right = true;
+            shotToTheRight = true;
         else if (x0 < 0 && x1 < 0)
-            shot_to_the_right = false;
+            shotToTheRight = false;
         else
-            logger.printf(Level.INFO, "The target zone is in the middle of the axis. So maximum height is infinite");
+            logger.info("The target zone is in the middle of the axis. So maximum height is infinite");
     }
 
     public void execute() {
-        var xMax = target_bound_up.X;
-        var yMin = target_bound_bottom.Y;
+        var xMax = targetBoundUp.x;
+        var yMin = targetBoundBottom.y;
 
-        logger.printf(Level.DEBUG, "TARGET ZONE - From bottom %s to up %s", target_bound_bottom.toString(), target_bound_up.toString());
+        logger.printf(Level.DEBUG, "TARGET ZONE - From bottom %s to up %s", targetBoundBottom.toString(), targetBoundUp.toString());
         logger.printf(Level.DEBUG, "SHOT ZONE   - X from %d to %d", 0, xMax);
         logger.printf(Level.DEBUG, "SHOT ZONE   - Y from %d to %d", yMin, -1*yMin);
 
@@ -67,128 +67,128 @@ public class TrickShot implements Executable {
         }
 
         // check all the successful attemps
-        final_max_height = -1;
+        finalMaxHeight = -1;
         for(var a : attemps.entrySet()) {
-            if(a.getValue() > final_max_height) {
-                final_max_height = a.getValue();
-                final_vel = a.getKey();
+            if(a.getValue() > finalMaxHeight) {
+                finalMaxHeight = a.getValue();
+                finalVel = a.getKey();
             }
         }
 
-        amount_velocities = attemps.size();
+        amountVelocities = attemps.size();
     }
 
-    protected ShotResults executeOneShot(Coordinate vel_init) {
+    protected ShotResults executeOneShot(Coordinate velInit) {
 
-        Coordinate last_position = new Coordinate(0, 0);
-        var vel_current = new Coordinate(vel_init);
-        long max_height = Long.MIN_VALUE;
+        Coordinate lastPosition = new Coordinate(0, 0);
+        var velCurrent = new Coordinate(velInit);
+        long maxHeight = Long.MIN_VALUE;
 
-        ShotResults shot_type = ShotResults.Undefined;
+        ShotResults shotType;
         do {
             // Calculate new position
-            var pos_current = last_position;
-            pos_current.add(vel_current);
+            var posCurrent = lastPosition;
+            posCurrent.add(velCurrent);
 
             // Update maximum height
-            max_height = Math.max(max_height, pos_current.Y);
+            maxHeight = Math.max(maxHeight, posCurrent.y);
 
             // Calculate new velocity
-            vel_current.updateVelocity();
+            velCurrent.updateVelocity();
 
-            shot_type = checkShot(pos_current);
+            shotType = checkShot(posCurrent);
 
-            last_position = pos_current;
+            lastPosition = posCurrent;
 
-        } while(shot_type == ShotResults.Undefined);
+        } while(shotType == ShotResults.UNDEFINED);
 
-        if(shot_type == ShotResults.Targeted) {
-            attemps.put(vel_init, max_height);
-            logger.printf(Level.DEBUG, "Targeted with velocity %s to a max. height of %d", vel_init.toString(), max_height);
+        if(shotType == ShotResults.TARGETED) {
+            attemps.put(velInit, maxHeight);
+            logger.printf(Level.DEBUG, "Targeted with velocity %s to a max. height of %d", velInit.toString(), maxHeight);
         }
 
-        return shot_type;
+        return shotType;
     }
 
     public String printDescription() {
-        return (part == Part.first) ? 
+        return (part == Part.FIRST) ? 
             "Trick Shot - What is the highest y position it reaches on this trajectory ?" : 
             "How many distinct initial velocity values cause the probe to be within the target area after any step ?";
     }
 
     public void printResult() {
-        System.out.println("");
-        if (part == Part.first) {
-            System.out.println(String.format("The final height is %d (coming from a velocity of %s", final_max_height, final_vel.toString()));
-        } else if(part == Part.second) {
-            System.out.println(String.format("The amount of velocities that fit the target are %d", amount_velocities));
+        logger.info("");
+        if (part == Part.FIRST) {
+            logger.info("The final height is %d (coming from a velocity of %s)", finalMaxHeight, finalVel.toString());
+        } else if(part == Part.SECOND) {
+            logger.info("The amount of velocities that fit the target are %d", amountVelocities);
         }
-        System.out.println("");
+        logger.info("");
     }
 
     public String getResult() {
-        return (part == Part.first) ? Long.toString(final_max_height) : Integer.toString(amount_velocities);
+        return (part == Part.FIRST) ? Long.toString(finalMaxHeight) : Integer.toString(amountVelocities);
     }
 
     protected ShotResults checkShot(Coordinate coord) {
-        ShotResults result = ShotResults.Undefined;
+        ShotResults result = ShotResults.UNDEFINED;
 
-        boolean short_shot_condition = coord.Y < target_bound_bottom.Y;
+        boolean shortShotCondition = coord.y < targetBoundBottom.y;
 
-        boolean long_shot_condition = 
-                (shot_to_the_right && coord.X > target_bound_up.X) || 
-                (!shot_to_the_right && coord.X < target_bound_bottom.X);
+        boolean longShotCondition = 
+                (shotToTheRight && coord.x > targetBoundUp.x) || 
+                (!shotToTheRight && coord.x < targetBoundBottom.x);
 
-        boolean is_targeted = coord.X >= target_bound_bottom.X && 
-                              coord.X <= target_bound_up.X &&
-                              coord.Y >= target_bound_bottom.Y && 
-                              coord.Y <= target_bound_up.Y;
+        boolean isTargeted = coord.x >= targetBoundBottom.x && 
+                              coord.x <= targetBoundUp.x &&
+                              coord.y >= targetBoundBottom.y && 
+                              coord.y <= targetBoundUp.y;
 
-        if(is_targeted) {
-            result = ShotResults.Targeted;
-        } else if(short_shot_condition) {
-            result = ShotResults.Short;
-        } else if(long_shot_condition) {
-            result = ShotResults.Long;
+        if(isTargeted) {
+            result = ShotResults.TARGETED;
+        } else if(shortShotCondition) {
+            result = ShotResults.SHORT;
+        } else if(longShotCondition) {
+            result = ShotResults.LONG;
         }
 
         return result;
     }
 
     enum ShotResults {
-        Undefined,
-        Targeted,
-        Short,
-        Long
+        UNDEFINED,
+        TARGETED,
+        SHORT,
+        LONG
     }
 
     class Coordinate {
-        long X;
-        long Y;
+        long x;
+        long y;
 
         Coordinate(Coordinate coord) {
-            this.X = coord.X;
-            this.Y = coord.Y;
+            this.x = coord.x;
+            this.y = coord.y;
         }
 
         Coordinate(long x, long y) {
-            this.X = x;
-            this.Y = y;
+            this.x = x;
+            this.y = y;
         }
 
         public void add(Coordinate coord) {
-            X += coord.X;
-            Y += coord.Y;
+            x += coord.x;
+            y += coord.y;
         }
 
         public void updateVelocity() {
-            X = Math.max(0, X - 1);
-            Y--;
+            x = Math.max(0, x - 1);
+            y--;
         }
 
         @Override
         public String toString() {
-            return String.format("(%4d,%4d)", X, Y);
+            return String.format("(%4d,%4d)", x, y);
         }
 
     }

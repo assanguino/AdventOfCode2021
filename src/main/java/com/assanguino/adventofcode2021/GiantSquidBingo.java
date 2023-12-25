@@ -6,9 +6,9 @@ import java.util.List;
 public class GiantSquidBingo implements Executable {
 
     protected Part part;
-    protected List<Integer> random_numbers = new ArrayList<>();
+    protected List<Integer> randomNumbers = new ArrayList<>();
     protected List<BingoBoard> boardList = new ArrayList<>();
-    protected int board_row_counter = 0;
+    protected int boardRowCounter = 0;
 
     protected int currentRandomNumber = -1;
     protected BingoBoard currentBoard = null;
@@ -20,35 +20,35 @@ public class GiantSquidBingo implements Executable {
     public void processRow(String row) {
 
         // Populate the random numbers list
-        if(random_numbers.size() == 0) {
+        if(randomNumbers.isEmpty()) {
             for(String str : row.split(",")) {
-                random_numbers.add(Integer.parseInt(str));
+                randomNumbers.add(Integer.parseInt(str));
             }
             
         } else if (row.length() == 0) {
             // Reinit counter
-            board_row_counter = 0;
+            boardRowCounter = 0;
         } else {
             // Populate all the bingo boards
-            if(board_row_counter == 0) {
+            if(boardRowCounter == 0) {
                 BingoBoard board = new BingoBoard();
                 boardList.add(board);
-                board.populateRow(board_row_counter, row);
+                board.populateRow(boardRowCounter, row);
             } else {
                 BingoBoard last = boardList.get(boardList.size()-1);
-                last.populateRow(board_row_counter, row);
+                last.populateRow(boardRowCounter, row);
             }
 
             // By the way ...
-            if(++board_row_counter == BingoBoard.BOARD_SIZE)
-                board_row_counter = 0;
+            if(++boardRowCounter == BingoBoard.BOARD_SIZE)
+                boardRowCounter = 0;
         }
     }
 
     public void execute() {
         // Play!
-        if(part == Part.first) {
-            for(Integer random : random_numbers) {
+        if(part == Part.FIRST) {
+            for(Integer random : randomNumbers) {
                 for(BingoBoard board : boardList) {
 
                     board.mark(random);
@@ -62,19 +62,17 @@ public class GiantSquidBingo implements Executable {
         } else {
 
             int loserBoards = boardList.size();
-            for(Integer random : random_numbers) {
+            for(Integer random : randomNumbers) {
                 for(BingoBoard board : boardList) {
                     // do not process the already winning boards
                     if(board.hasWon())
                         continue;
                     
                     board.mark(random);
-                    if(board.checkBingo()) {
-                        if(-- loserBoards == 0) {
-                            currentRandomNumber = random;
-                            currentBoard = board;
-                            return;
-                        }
+                    if(board.checkBingo() && --loserBoards == 0) {
+                        currentRandomNumber = random;
+                        currentBoard = board;
+                        return;
                     }
                 }
             }
@@ -82,22 +80,22 @@ public class GiantSquidBingo implements Executable {
     }
 
     public String printDescription() {
-        return (part == Part.first) ? 
+        return (part == Part.FIRST) ? 
             "Giant Squid - What will your final score be if you choose that board ?" : 
             "Giant Squid - Figure out which board will win last. Once it wins, what would its final score be ?";
     }
 
     public void printResult() {
         if(currentBoard == null) {
-            System.out.println("There is no final result! No bingo board has been chosen!");
+            logger.info("There is no final result! No bingo board has been chosen!");
             return;
         }
 
-        System.out.println("number of random numbers: " + random_numbers.size());
-        System.out.println("number of bingo boards: " + boardList.size());
-        System.out.println("winning random number: " + currentRandomNumber);
+        logger.info("number of random numbers: %d", randomNumbers.size());
+        logger.info("number of bingo boards: %d", boardList.size());
+        logger.info("winning random number: %d", currentRandomNumber);
         currentBoard.printBoard();
-        System.out.println("final score: " + currentRandomNumber * currentBoard.getScore());
+        logger.info("final score: %ld", currentRandomNumber * currentBoard.getScore());
     }
 
     public String getResult() {

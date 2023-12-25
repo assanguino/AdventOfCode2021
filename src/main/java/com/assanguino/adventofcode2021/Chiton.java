@@ -31,9 +31,9 @@ public class Chiton implements Executable {
     }
 
     public void execute() {
-        if(part == Part.first) {
+        if(part == Part.FIRST) {
             dijkstra(riskLevelMap, 0);
-        } else if(part == Part.second) {
+        } else if(part == Part.SECOND) {
             int factor = 5;
             int[][] largerRiskLevelMap = createLargerRiskLevelMap(riskLevelMap, factor);
             dijkstra(largerRiskLevelMap, 0);

@@ -9,8 +9,8 @@ public class VentsMapTest extends ExecutableTest<VentsMap> {
 
     @Before
     public void init() {
-        first = new VentsMap(Part.first);
-        second = new VentsMap(Part.second);        
+        first = new VentsMap(Part.FIRST);
+        second = new VentsMap(Part.SECOND);        
         fileName = Executable.getInputFile(5, true);
     }
 

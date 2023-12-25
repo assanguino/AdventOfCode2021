@@ -9,8 +9,8 @@ public class ChitonTest extends ExecutableTest<Chiton> {
 
     @Before
     public void init() {
-        first = new Chiton(Part.first);
-        second = new Chiton(Part.second);        
+        first = new Chiton(Part.FIRST);
+        second = new Chiton(Part.SECOND);        
         fileName = Executable.getInputFile(15, true);
     }
 

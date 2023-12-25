@@ -9,8 +9,8 @@ public class DivingTest extends ExecutableTest<Diving> {
 
     @Before
     public void init() {
-        first = new Diving(Part.first);
-        second = new Diving(Part.second);        
+        first = new Diving(Part.FIRST);
+        second = new Diving(Part.SECOND);        
         fileName = Executable.getInputFile(2, true);
     }
 

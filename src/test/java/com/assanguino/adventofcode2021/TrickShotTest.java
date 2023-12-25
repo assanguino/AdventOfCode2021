@@ -9,8 +9,8 @@ public class TrickShotTest extends ExecutableTest<TrickShot> {
 
     @Before
     public void init() {
-        first = new TrickShot(Part.first);
-        second = new TrickShot(Part.second);        
+        first = new TrickShot(Part.FIRST);
+        second = new TrickShot(Part.SECOND);        
         fileName = Executable.getInputFile(17, true);
     }
 

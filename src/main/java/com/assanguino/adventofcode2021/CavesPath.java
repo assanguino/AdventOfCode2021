@@ -91,7 +91,7 @@ public class CavesPath implements Executable {
     }
 
     public String printDescription() {
-        return (part == Part.first) ? 
+        return (part == Part.FIRST) ? 
             "Passage Pathing - How many paths ?" : 
             "Passage Pathing - How many paths visiting small caves twice ?";
     }

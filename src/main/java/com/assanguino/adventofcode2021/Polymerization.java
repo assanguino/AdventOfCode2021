@@ -69,7 +69,7 @@ public class Polymerization implements Executable {
     }
 
     protected int getSteps() {
-        return part == Part.first ? 10 : 40;
+        return part == Part.FIRST ? 10 : 40;
     }
 
     protected void generateOccurrencesGrowthRules() {

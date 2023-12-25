@@ -22,7 +22,7 @@ public class SnailFish implements Executable {
         if(row.length() == 0 || row.charAt(0) == '#')
             return;
 
-        if(part == Part.first) {
+        if(part == Part.FIRST) {
             var number = factory.getNewSnailFishNumber(row);
             number.check();
     
@@ -31,38 +31,38 @@ public class SnailFish implements Executable {
             } else {
                 cumulative.sum(number);
             }
-        } else if(part == Part.second) {
+        } else if(part == Part.SECOND) {
             numbers.add(row);
         }
 
     }
 
     public void execute() {
-        if(part == Part.first) {
+        if(part == Part.FIRST) {
             magnitude = cumulative.magnitude();
-        } else if(part == Part.second) {
+        } else if(part == Part.SECOND) {
             getMaximumSum();
         }
     }
 
     public String printDescription() {
-        return part == Part.first ? 
+        return part == Part.FIRST ? 
             "What is the magnitude of the final sum ?" :
             "What is the largest magnitude of any sum of two different snailfish numbers from the homework assignment ?";
     }
 
     public void printResult() {
-        System.out.println();
-        if(part == Part.first) {
-            System.out.println("result of the cumulative sum: " + cumulative.toString());
-            System.out.println("magnitude: " + getResult());
+        logger.info("");
+        if(part == Part.FIRST) {
+            logger.info("result of the cumulative sum: %s", cumulative.toString());
+            logger.info("magnitude: %s", getResult());
         } else {
-            System.out.println("maximum: " + getResult());
+            logger.info("maximum: %s", getResult());
         }
     }
 
     public String getResult() {
-        return part == Part.first ? magnitude.toString() : maximum.toString();
+        return part == Part.FIRST ? magnitude.toString() : maximum.toString();
     }
 
     protected void getMaximumSum() {

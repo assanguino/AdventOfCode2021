@@ -9,8 +9,8 @@ public class BinaryDiagnosticTest extends ExecutableTest<BinaryDiagnostic> {
 
     @Before
     public void init() {
-        first = new BinaryDiagnostic(Part.first);
-        second = new BinaryDiagnostic(Part.second);        
+        first = new BinaryDiagnostic(Part.FIRST);
+        second = new BinaryDiagnostic(Part.SECOND);        
         fileName = Executable.getInputFile(3, true);
     }
 

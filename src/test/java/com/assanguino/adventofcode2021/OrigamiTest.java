@@ -9,8 +9,8 @@ public class OrigamiTest extends ExecutableTest<Origami> {
 
     @Before
     public void init() {
-        first = new Origami(Part.first);
-        second = new Origami(Part.second);        
+        first = new Origami(Part.FIRST);
+        second = new Origami(Part.SECOND);        
         fileName = Executable.getInputFile(13, true);
     }
 

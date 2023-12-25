@@ -75,7 +75,7 @@ public class Lanternfish implements Executable {
     }
 
     protected int getNumberOfDays() {
-        return part == Part.first ? DAYS_PROCESSED_FIRST : DAYS_PROCESSED_SECOND;
+        return part == Part.FIRST ? DAYS_PROCESSED_FIRST : DAYS_PROCESSED_SECOND;
     }
 
 }

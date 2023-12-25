@@ -9,8 +9,8 @@ public class SonarSweepTest extends ExecutableTest<SonarSweep> {
 
     @Before
     public void init() {
-        first = new SonarSweep(Part.first);
-        second = new SonarSweep(Part.second);        
+        first = new SonarSweep(Part.FIRST);
+        second = new SonarSweep(Part.SECOND);        
         fileName = Executable.getInputFile(1, true);
     }
 

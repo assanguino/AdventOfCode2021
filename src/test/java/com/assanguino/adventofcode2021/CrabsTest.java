@@ -9,8 +9,8 @@ public class CrabsTest extends ExecutableTest<Crabs> {
 
     @Before
     public void init() {
-        first = new Crabs(Part.first);
-        second = new Crabs(Part.second);        
+        first = new Crabs(Part.FIRST);
+        second = new Crabs(Part.SECOND);        
         fileName = Executable.getInputFile(7, true);
     }
 

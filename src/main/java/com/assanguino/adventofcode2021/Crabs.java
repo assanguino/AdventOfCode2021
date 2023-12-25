@@ -9,9 +9,9 @@ import org.apache.logging.log4j.Level;
 public class Crabs implements Executable {
     
     protected Part part;
-    protected List<Integer> crabs_input = new ArrayList<>();
-    protected int min_value = -1;
-    protected long min_distance = -1;
+    protected List<Integer> crabsInput = new ArrayList<>();
+    protected int minValue = -1;
+    protected long minDistance = -1;
 
     public Crabs(Part part) {
         this.part = part;
@@ -19,88 +19,88 @@ public class Crabs implements Executable {
 
     public void processRow(String row) {
         for(String c : row.split(",")) {
-            crabs_input.add(Integer.parseInt(c));
+            crabsInput.add(Integer.parseInt(c));
         }
     }
 
     public void execute() {
-        Collections.sort(crabs_input);
+        Collections.sort(crabsInput);
 
         // begin in the middle...
-        int middle_index = (int)((crabs_input.size() - 1) / 2);
-        min_value = crabs_input.get(middle_index);
-        min_distance = calculate_distance(crabs_input, min_value);
+        int middleIndex = ((crabsInput.size() - 1) / 2);
+        minValue = crabsInput.get(middleIndex);
+        minDistance = calculateDistance(crabsInput, minValue);
 
-        logger.printf(Level.INFO, "Iterating MIDDLE position %d, fuel cost %d", min_value, min_distance);
+        logger.printf(Level.INFO, "Iterating MIDDLE position %d, fuel cost %d", minValue, minDistance);
 
         // going up
-        int upper_value = crabs_input.get(middle_index);
+        int upperValue = crabsInput.get(middleIndex);
         do {
-            upper_value++;
-            long upper_distance = calculate_distance(crabs_input, upper_value);
+            upperValue++;
+            long upperDistance = calculateDistance(crabsInput, upperValue);
 
-            logger.printf(Level.DEBUG, "Iterating UP position %d, fuel cost %d", upper_value, upper_distance);
+            logger.printf(Level.DEBUG, "Iterating UP position %d, fuel cost %d", upperValue, upperDistance);
 
-            if(upper_distance <= min_distance) {
-                min_value = upper_value;
-                min_distance = upper_distance;
+            if(upperDistance <= minDistance) {
+                minValue = upperValue;
+                minDistance = upperDistance;
             } else {
                 break;
             }
 
-        } while (upper_value < crabs_input.get(crabs_input.size() - 1));
+        } while (upperValue < crabsInput.get(crabsInput.size() - 1));
 
         // going down
-        int lower_value = crabs_input.get(middle_index);
+        int lowerValue = crabsInput.get(middleIndex);
         do {
-            lower_value--;
-            long lower_distance = calculate_distance(crabs_input, lower_value);
+            lowerValue--;
+            long lowerDistance = calculateDistance(crabsInput, lowerValue);
 
-            logger.printf(Level.DEBUG, "Iterating DOWN position %d, fuel cost %d", lower_value, lower_distance);
+            logger.printf(Level.DEBUG, "Iterating DOWN position %d, fuel cost %d", lowerValue, lowerDistance);
 
-            if(lower_distance <= min_distance) {
-                min_value = lower_value;
-                min_distance = lower_distance;
+            if(lowerDistance <= minDistance) {
+                minValue = lowerValue;
+                minDistance = lowerDistance;
             } else {
                 break;
             }
 
-        } while (lower_value > crabs_input.get(0));
+        } while (lowerValue > crabsInput.get(0));
     }
 
     public String printDescription() {
-        return (part == Part.first) ? 
+        return (part == Part.FIRST) ? 
             "The Treachery of Whales - Position with less fuel consumption ?" : 
             "The Treachery of Whales - Total of fuel consumption ?";
     }
 
     public void printResult() {
-        System.out.println("number of crabs: " + crabs_input.size());
-        System.out.println("position with less fuel consumption: " + min_value);
-        System.out.println("total of fuel consumption: " + min_distance);
+        logger.info("number of crabs: %d", crabsInput.size());
+        logger.info("position with less fuel consumption: %d", minValue);
+        logger.info("total of fuel consumption: %d", minDistance);
     }
 
     public String getResult() {
-        return String.valueOf(min_distance);
+        return String.valueOf(minDistance);
     }
 
-    protected int calculate_distance(List<Integer> list, int value) {
-        int total_distance = 0;
+    protected int calculateDistance(List<Integer> list, int value) {
+        int totalDistance = 0;
 
         for(int i = 0; i < list.size(); i++) {
 
             int distance = Math.abs(list.get(i) - value);
-            if(part == Part.second) {
-                int progressive_distance = 0;
+            if(part == Part.SECOND) {
+                int progressiveDistance = 0;
                 for(int x = distance; x > 0; x--) {
-                    progressive_distance += x;
+                    progressiveDistance += x;
                 }
-                distance = progressive_distance;
+                distance = progressiveDistance;
             }
-            total_distance += distance;
+            totalDistance += distance;
         }
 
-        return total_distance;
+        return totalDistance;
     }
 
 }

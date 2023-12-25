@@ -22,7 +22,7 @@ public class Diving implements Executable {
 
         int value = Integer.parseInt(chains[1]);
 
-        if (part == Part.first) {
+        if (part == Part.FIRST) {
             if (chains[0].equals("forward")) {
                 horizontal += value;
             } else if (chains[0].equals("up")) {
@@ -47,16 +47,16 @@ public class Diving implements Executable {
     }
 
     public String printDescription() {
-        return (part == Part.first) ? 
+        return (part == Part.FIRST) ? 
             "Dive! - What do you get if you multiply your final horizontal position by your final depth ?" : 
             "Dumbo Octopus - What do you get if you multiply your final horizontal position by your final depth ?";
     }
 
     public void printResult() {
-        System.out.println("measurements: " + noRows);
-        System.out.println("horizontal position: " + horizontal);
-        System.out.println("depth position: " + depth);
-        System.out.println("final value (multiplication): " + horizontal * depth);
+        logger.info("measurements: %d", noRows);
+        logger.info("horizontal position: %d", horizontal);
+        logger.info("depth position: %d", depth);
+        logger.info("final value (multiplication): %ld", horizontal * depth);
     }
 
     public String getResult() {

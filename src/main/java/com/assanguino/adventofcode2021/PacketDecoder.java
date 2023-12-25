@@ -35,14 +35,14 @@ public class PacketDecoder implements Executable {
     }
 
     public String printDescription() {
-        return (part == Part.first) ? 
+        return (part == Part.FIRST) ? 
             "Packet Decoder - What do you get if you add up the version numbers in all packets ?" : 
             "Packet Decoder - What do you get if you evaluate the expression represented by your hexadecimal-encoded BITS transmission ?";
     }
 
     public void printResult() {
         logger.info("");
-        if(part == Part.first)
+        if(part == Part.FIRST)
             logger.info("The version total sum is %ld", initialPacket.getAddUpVersion());
         else
             logger.info("The version total value is %ld", initialPacket.getValue());
@@ -52,7 +52,7 @@ public class PacketDecoder implements Executable {
     }
 
     public String getResult() {
-        return part == Part.first ?
+        return part == Part.FIRST ?
             String.valueOf(initialPacket.getAddUpVersion()) :
             String.valueOf(initialPacket.getValue()) ;
     }

@@ -52,18 +52,18 @@ public class Origami implements Executable {
     }
 
     public String printDescription() {
-        return (part == Part.first) ? 
+        return (part == Part.FIRST) ? 
             "Transparent Origami - How many visible dots after completing the first fold instruction ?" : 
             "Transparent Origami - What code do you use to activate the infrared thermal imaging camera system ?";
     }
 
     public void printResult() {
         logger.info("After folding there are %2d dots:", getDots());
-        printPaper(part == Part.second, "");
+        printPaper(part == Part.SECOND, "");
     }
 
     public String getResult() {
-        return part == Part.first ? 
+        return part == Part.FIRST ? 
             String.valueOf(getDots()) :
             String.valueOf(HARDCODED_RESULT_SECOND);
     }
@@ -104,11 +104,11 @@ public class Origami implements Executable {
                 foldHorizontally(value);
             }
 
-            printPaper(part == Part.second, String.format("After folding as follows: (%s)", f));
+            printPaper(part == Part.SECOND, String.format("After folding as follows: (%s)", f));
 
             // Cut the iterations
             noFolds++;
-            if(noFolds == 1 && part == Part.first)
+            if(noFolds == 1 && part == Part.FIRST)
                 return;
         }
     }

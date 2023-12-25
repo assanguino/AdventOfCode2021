@@ -9,8 +9,8 @@ public class HeightMapTest extends ExecutableTest<HeightMap> {
 
     @Before
     public void init() {
-        first = new HeightMap(Part.first);
-        second = new HeightMap(Part.second);        
+        first = new HeightMap(Part.FIRST);
+        second = new HeightMap(Part.SECOND);        
         fileName = Executable.getInputFile(9, true);
     }
 

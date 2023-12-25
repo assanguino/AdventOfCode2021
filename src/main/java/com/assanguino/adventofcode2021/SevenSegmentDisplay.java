@@ -28,7 +28,7 @@ public class SevenSegmentDisplay implements Executable {
         noRows++;
         String[] strings = row.split(" ");
 
-        if(part == Part.first) {
+        if(part == Part.FIRST) {
 
             for(int i = strings.length - 1; i > strings.length - 5; i--) {
                 int len = strings[i].length();
@@ -59,14 +59,14 @@ public class SevenSegmentDisplay implements Executable {
     }
 
     public String printDescription() {
-        return (part == Part.first) ? 
+        return (part == Part.FIRST) ? 
             "Seven Segment Search - How many times do digits 1, 4, 7, or 8 appear ?" : 
             "Seven Segment Search - What do you get if you add up all of the output values ?";
     }
 
     public void printResult() {
         logger.info("number of measurements: %ld", noRows);
-        if(part == Part.first) {
+        if(part == Part.FIRST) {
             logger.info("number of 1, 4, 7 and 8 outputs: %ld", counterFirst);
         } else {
             logger.info("sum of all outputs: %ld", outputSum);
@@ -74,7 +74,7 @@ public class SevenSegmentDisplay implements Executable {
     }
 
     public String getResult() {
-        return part == Part.first ? 
+        return part == Part.FIRST ? 
             String.valueOf(counterFirst) :
             String.valueOf(outputSum);
     }

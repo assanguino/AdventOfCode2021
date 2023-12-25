@@ -9,8 +9,8 @@ public class CavesPathTest extends ExecutableTest<CavesPath> {
 
     @Before
     public void init() {
-        first = new CavesPath(Part.first);
-        second = new CavesPath(Part.second);        
+        first = new CavesPath(Part.FIRST);
+        second = new CavesPath(Part.SECOND);        
         fileName = Executable.getInputFile(12, true);
     }
 

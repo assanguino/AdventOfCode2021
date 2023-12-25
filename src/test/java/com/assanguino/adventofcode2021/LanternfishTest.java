@@ -9,8 +9,8 @@ public class LanternfishTest extends ExecutableTest<Lanternfish> {
 
     @Before
     public void init() {
-        first = new Lanternfish(Part.first);
-        second = new Lanternfish(Part.second);        
+        first = new Lanternfish(Part.FIRST);
+        second = new Lanternfish(Part.SECOND);        
         fileName = Executable.getInputFile(6, true);
     }
 

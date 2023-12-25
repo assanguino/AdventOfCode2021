@@ -9,8 +9,8 @@ public class SevenSegmentDisplayTest extends ExecutableTest<SevenSegmentDisplay>
 
     @Before
     public void init() {
-        first = new SevenSegmentDisplay(Part.first);
-        second = new SevenSegmentDisplay(Part.second);        
+        first = new SevenSegmentDisplay(Part.FIRST);
+        second = new SevenSegmentDisplay(Part.SECOND);        
         fileName = Executable.getInputFile(8, true);
     }
 

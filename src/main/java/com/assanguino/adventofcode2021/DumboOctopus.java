@@ -32,12 +32,12 @@ public class DumboOctopus implements Executable {
     public void execute() {
         flashes = 0;
         stepNumber = 0;
-        if(part == Part.first) {
+        if(part == Part.FIRST) {
             while(stepNumber < 100) {
                 nextStep();
             }
 
-        } else {        // if(part == Part.second)
+        } else {
             do {
                 nextStep();
             } while(!isFlashSync());
@@ -45,21 +45,21 @@ public class DumboOctopus implements Executable {
     }
 
     public String printDescription() {
-        return (part == Part.first) ? 
+        return (part == Part.FIRST) ? 
             "Dumbo Octopus - How many flashes are there after 100 steps ?" : 
             "Dumbo Octopus - What is the first step during which all octopuses flash ?";
     }
 
     public void printResult() {
-        System.out.println("After step " + stepNumber + ": ");
+        logger.info("After step %d: ", stepNumber);
         printMap();
-        System.out.println();
-        System.out.println(String.format("number of measurements (lines): %2d", noRows));
-        System.out.println(String.format("number of flashes: %2d", flashes ));
+        logger.info("");
+        logger.info("number of measurements (lines): %2d", noRows);
+        logger.info("number of flashes: %2d", flashes);
     }
 
     public String getResult() {
-        return part == Part.first ? 
+        return part == Part.FIRST ? 
             String.valueOf(flashes) :
             String.valueOf(stepNumber);
     }
@@ -124,11 +124,12 @@ public class DumboOctopus implements Executable {
     }
 
     protected void printMap() {
+        StringBuilder line = new StringBuilder("");
         for(int i = 0; i < mapSize; i++) {
             for(int j = 0; j < mapSize; j++) {
-                System.out.print(map[i][j]);
+                line.append(map[i][j]);
             }
-            System.out.println();
+            logger.info("%s", line.toString());
         }
     }
 

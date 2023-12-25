@@ -9,8 +9,8 @@ public class ChunkReaderTest extends ExecutableTest<ChunkReader> {
 
     @Before
     public void init() {
-        first = new ChunkReader(Part.first);
-        second = new ChunkReader(Part.second);        
+        first = new ChunkReader(Part.FIRST);
+        second = new ChunkReader(Part.SECOND);        
         fileName = Executable.getInputFile(10, true);
     }
 

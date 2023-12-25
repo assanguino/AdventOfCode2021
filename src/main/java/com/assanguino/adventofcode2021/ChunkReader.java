@@ -8,20 +8,20 @@ import org.apache.logging.log4j.Level;
 
 public class ChunkReader implements Executable {
     
-    protected static final String openChunks = "([{<";
-    protected static final String closeChunks = ")]}>";
-    protected static final int[] syntax_error_points = {3, 57, 1197, 25137};
-    protected static final int[] incompletion_points = {1, 2, 3, 4};
+    protected static final String OPEN_CHUNKS = "([{<";
+    protected static final String CLOSE_CHUNKS = ")]}>";
+    protected static final int[] SYNTAX_ERROR_POINTS = {3, 57, 1197, 25137};
+    protected static final int[] INCOMPLETION_POINTS = {1, 2, 3, 4};
 
     protected Part part;
     protected int[] chunkCounter;
-    protected int syntax_error_score;
+    protected int syntaxErrorScore;
     protected List<Long> completionScoreList;
     protected int noRows = 0;
 
     public ChunkReader(Part part) {
         this.part = part;
-        syntax_error_score = 0;
+        syntaxErrorScore = 0;
         completionScoreList = new ArrayList<>();
         noRows = 0;
     }
@@ -29,16 +29,16 @@ public class ChunkReader implements Executable {
     public void processRow(String row) {
 
         // It's a counter matrix
-        // first row, related to ( )
-        // second row, related to [ ]
-        // third row, related to { }
-        // fourth row, related to < >
+        // first row, related to '( )'
+        // second row, related to '[ ]'
+        // third row, related to '{ }'
+        // fourth row, related to '< >'
         chunkCounter = new int[4];
         chunkCounter[0] = chunkCounter[1] = 0;
         chunkCounter[2] = chunkCounter[3] = 0;
 
         // It's the future chunk string, expected to be at the end ...
-        String expectedChunks = "";
+        StringBuilder expectedChunks = new StringBuilder();
 
         noRows++;
         char[] lineArray = row.toCharArray();
@@ -48,19 +48,20 @@ public class ChunkReader implements Executable {
             char c = lineArray[i];
 
             // open chunks
-            int openChunckIndex = openChunks.indexOf(c);
+            int openChunckIndex = OPEN_CHUNKS.indexOf(c);
             if(openChunckIndex != -1) {
                 // It's a close chunk, so add its open chunk to the expected chunks (at the end of)
-                expectedChunks = closeChunks.charAt(openChunckIndex) + expectedChunks;
-            } else if(closeChunks.indexOf(c) != -1) {
+                expectedChunks.insert(0, CLOSE_CHUNKS.charAt(openChunckIndex));
+            } else if(CLOSE_CHUNKS.indexOf(c) != -1) {
                 // It's an open chunk, so substract its corresponding close chunk from the expected, or declare it as corrupted
                 if(c == expectedChunks.charAt(0)) {
-                    expectedChunks = expectedChunks.substring(1);
+                    expectedChunks.deleteCharAt(0);
+
                 } else {
                     // Corrupted
                     logger.printf(Level.DEBUG, "Expected %c, but found %c instead", expectedChunks.charAt(0), c);
 
-                    syntax_error_score += getIllegarCharacterScore(c);
+                    syntaxErrorScore += getIllegarCharacterScore(c);
 
                     return;
                 }
@@ -69,7 +70,7 @@ public class ChunkReader implements Executable {
 
         // Here there are no corrupted lines, but maybe incompletes
         if(expectedChunks.length() > 0) {
-            addCompletionStringScore(expectedChunks);
+            addCompletionStringScore(expectedChunks.toString());
             logger.printf(Level.DEBUG, "Incomplete line - Complete by adding %s.", expectedChunks);
         }
 
@@ -80,24 +81,24 @@ public class ChunkReader implements Executable {
     }
 
     public String printDescription() {
-        return (part == Part.first) ? 
+        return (part == Part.FIRST) ? 
             "Syntax Scoring - What is the total syntax error ?" : 
             "Syntax Scoring - What is the middle score ?";
     }
 
     public void printResult() {
-        System.out.println(String.format("number of measurements (lines): %2d", noRows));
+        logger.info("number of measurements (lines): %2d", noRows);
 
-        if(part == Part.first) {
-            System.out.println(String.format("syntax error score: %2d", syntax_error_score ));
+        if(part == Part.FIRST) {
+            logger.info("syntax error score: %2d", syntaxErrorScore);
         } else {
-            System.out.println(String.format("competion middle score: %2d", getCompletionStringScore()));
+            logger.info("competion middle score: %2d", getCompletionStringScore());
         }
     }
 
     public String getResult() {
-        return part == Part.first ?
-            String.valueOf(syntax_error_score) :
+        return part == Part.FIRST ?
+            String.valueOf(syntaxErrorScore) :
             String.valueOf(getCompletionStringScore());
     }
 
@@ -117,17 +118,17 @@ public class ChunkReader implements Executable {
         Object[] arrayCompletion = completionScoreList.toArray();
         Arrays.sort(arrayCompletion);
 
-        int middle = (int)(arrayCompletion.length-1)/2;
+        int middle = (arrayCompletion.length-1)/2;
 
         return (long)arrayCompletion[middle];
     }
 
     protected int getIllegarCharacterScore(char c) {
-        return syntax_error_points[closeChunks.indexOf(c)];
+        return SYNTAX_ERROR_POINTS[CLOSE_CHUNKS.indexOf(c)];
     }
 
     protected int getIncompleteCharacterScore(char c) {
-        return incompletion_points[closeChunks.indexOf(c)];
+        return INCOMPLETION_POINTS[CLOSE_CHUNKS.indexOf(c)];
     }
 
 }

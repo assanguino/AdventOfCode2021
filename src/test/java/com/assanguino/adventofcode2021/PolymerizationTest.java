@@ -9,8 +9,8 @@ public class PolymerizationTest extends ExecutableTest<Polymerization> {
 
     @Before
     public void init() {
-        first = new Polymerization(Part.first);
-        second = new Polymerization(Part.second);        
+        first = new Polymerization(Part.FIRST);
+        second = new Polymerization(Part.SECOND);        
         fileName = Executable.getInputFile(14, true);
     }
 

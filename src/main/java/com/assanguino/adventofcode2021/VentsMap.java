@@ -14,7 +14,7 @@ public class VentsMap implements Executable {
     protected static final int Y2 = 3;
 
     protected Part part;
-    protected List<Integer[]> ventList = new ArrayList<Integer[]>();
+    protected List<Integer[]> ventList = new ArrayList<>();
     protected Integer[][] map;
     protected int maximum = 0;
     protected int dangerousAreas = -1;
@@ -24,15 +24,15 @@ public class VentsMap implements Executable {
     }
 
     public void processRow(String row) {
-        String[] vent_coordinates_str = row.split(" -> ");
-        String[] vent_end_1 = vent_coordinates_str[0].split(",");
-        String[] vent_end_2 = vent_coordinates_str[1].split(",");
+        String[] ventCoordinatesStr = row.split(" -> ");
+        String[] ventEnd1 = ventCoordinatesStr[0].split(",");
+        String[] ventEnd2 = ventCoordinatesStr[1].split(",");
 
         Integer[] coordinates = new Integer[4];
-        coordinates[X1] = Integer.parseInt(vent_end_1[0]);
-        coordinates[Y1] = Integer.parseInt(vent_end_1[1]);
-        coordinates[X2] = Integer.parseInt(vent_end_2[0]);
-        coordinates[Y2] = Integer.parseInt(vent_end_2[1]);
+        coordinates[X1] = Integer.parseInt(ventEnd1[0]);
+        coordinates[Y1] = Integer.parseInt(ventEnd1[1]);
+        coordinates[X2] = Integer.parseInt(ventEnd2[0]);
+        coordinates[Y2] = Integer.parseInt(ventEnd2[1]);
         ventList.add(coordinates);
 
         // calculate maximum
@@ -46,7 +46,7 @@ public class VentsMap implements Executable {
         maximum++;
         map = new Integer[maximum][maximum];
 
-        ventList.forEach(c -> addVent(c));
+        ventList.forEach(this::addVent);
         dangerousAreas = getDangerousAreas();
     }
 
@@ -55,9 +55,9 @@ public class VentsMap implements Executable {
     }
 
     public void printResult() {
-        System.out.println("number of vents: " + ventList.size());
-        System.out.println("size of the map: " + maximum);
-        System.out.println("number of dangerous areas: " + dangerousAreas);
+        logger.info("number of vents: %d", ventList.size());
+        logger.info("size of the map: %d", maximum);
+        logger.info("number of dangerous areas: %d", dangerousAreas);
     }
 
     public String getResult() {
@@ -93,7 +93,7 @@ public class VentsMap implements Executable {
         } else {
 
             // diagonals (if this is the case)
-            if(part == Part.second) {
+            if(part == Part.SECOND) {
 
                 if((c[X1] < c[X2] && c[Y1] < c[Y2]) || (c[X1] > c[X2] && c[Y1] > c[Y2])) {
                     // \\ this way diagonal 
@@ -143,14 +143,14 @@ public class VentsMap implements Executable {
 
     protected void printMap() {
         for(int i = 0; i < map.length; i++) {
-            String line = "";
+            StringBuilder line = new StringBuilder();
             for(int j = 0; j < map.length; j++) {
                 String c = ".";
                 if(map[j][i] != null)
                     c = (map[j][i]).toString();
-                line = line + c;
+                line.append(c);
             }
-            logger.printf(Level.DEBUG, line);
+            logger.printf(Level.DEBUG, line.toString());
         }
     }
 

@@ -9,8 +9,8 @@ public class GiantSquidBingoTest extends ExecutableTest<GiantSquidBingo> {
 
     @Before
     public void init() {
-        first = new GiantSquidBingo(Part.first);
-        second = new GiantSquidBingo(Part.second);        
+        first = new GiantSquidBingo(Part.FIRST);
+        second = new GiantSquidBingo(Part.SECOND);        
         fileName = Executable.getInputFile(4, true);
     }
 

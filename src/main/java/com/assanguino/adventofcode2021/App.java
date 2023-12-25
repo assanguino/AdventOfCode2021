@@ -16,7 +16,7 @@ public class App {
     public static void main(String[] args) {
 
         populateClassMap();
-        execute(18, Part.second);
+        execute(18, Part.SECOND);
     }
 
     protected static void populateClassMap() {
@@ -78,7 +78,7 @@ public class App {
     }
 
     protected static boolean isTestFile(int day, Part part) {
-        return (day == 13 && part == Part.first);
+        return (day == 13 && part == Part.FIRST);
         // TODO remove
         // || (day == 18 && part == Part.second);
     }

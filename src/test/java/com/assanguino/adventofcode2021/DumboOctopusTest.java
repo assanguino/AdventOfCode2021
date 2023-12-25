@@ -9,8 +9,8 @@ public class DumboOctopusTest extends ExecutableTest<DumboOctopus> {
 
     @Before
     public void init() {
-        first = new DumboOctopus(Part.first);
-        second = new DumboOctopus(Part.second);        
+        first = new DumboOctopus(Part.FIRST);
+        second = new DumboOctopus(Part.SECOND);        
         fileName = Executable.getInputFile(11, true);
     }
 

@@ -82,7 +82,7 @@ public class Path {
 
     public boolean canVisitCave(String cave, Part part) {
 
-        if(part == Part.first) {
+        if(part == Part.FIRST) {
             return !(cave.equals(cave.toLowerCase()) && pathList.contains(cave));
         } else {
 

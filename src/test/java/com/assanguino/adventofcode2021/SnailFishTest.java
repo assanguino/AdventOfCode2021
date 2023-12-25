@@ -16,8 +16,8 @@ public class SnailFishTest extends ExecutableTest<SnailFish> {
 
     @Before
     public void init() {
-        first = new SnailFish(Part.first);
-        second = new SnailFish(Part.second);        
+        first = new SnailFish(Part.FIRST);
+        second = new SnailFish(Part.SECOND);        
         fileName = Executable.getInputFile(18, true);
     }
 

@@ -36,13 +36,13 @@ public class BinaryDiagnostic implements Executable {
         if (binaryLength == 0) {
             binaryLength = row.length();
 
-            if(part == Part.first) {
+            if(part == Part.FIRST) {
                 zeros.addAll(Collections.nCopies(binaryLength, 0));
                 ones.addAll(Collections.nCopies(binaryLength, 0));
             }
         }
 
-        if(part == Part.first) {
+        if(part == Part.FIRST) {
 
             for (int i = 0; i < binaryLength; i++) {
                 if (row.charAt(i) == '0') {
@@ -61,7 +61,7 @@ public class BinaryDiagnostic implements Executable {
     }
 
     public void execute() { 
-        if(part == Part.first) {
+        if(part == Part.FIRST) {
             getGammaEpsilonRates();
         } else {
             getLifeSupportRating();
@@ -69,7 +69,7 @@ public class BinaryDiagnostic implements Executable {
     }
 
     public String printDescription() {
-        return (part == Part.first) ? 
+        return (part == Part.FIRST) ? 
             "Binary Diagnostic - What is the power consumption of the submarine ?" : 
             "Binary Diagnostic - What is the life support rating of the submarine ?";
     }
@@ -78,7 +78,7 @@ public class BinaryDiagnostic implements Executable {
         logger.info("");
         logger.info("measurements: %d", noRows);
 
-        if(part == Part.first) {
+        if(part == Part.FIRST) {
             logger.info("gamma_rate_binary:   %s - gamma_rate: %d", gammaRateBinary, gammaRate);
             logger.info("epsilon_rate_binary: %s  - epsilon_rate: %d", epsilonRateBinary, epsilonRate);
             logger.info("final value (multiplication): %d", gammaRate * epsilonRate);
@@ -90,7 +90,7 @@ public class BinaryDiagnostic implements Executable {
     }
 
     public String getResult() {
-        return part == Part.first ? 
+        return part == Part.FIRST ? 
             String.valueOf(gammaRate * epsilonRate) :
             String.valueOf(oxygenGeneratorRating * ratingCO2scrubber);
     }
