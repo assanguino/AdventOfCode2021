@@ -1,6 +1,7 @@
 package com.assanguino.adventofcode2021;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,12 +67,12 @@ public class SnailFishTest extends ExecutableTest<SnailFish> {
         var literal_a = new LiteralSnailFishNumber(a);
         var literal_b = new LiteralSnailFishNumber(b);
         literal_a.add(literal_b);
-        assertTrue(literal_a.toString().equals(c));
+        assertEquals(literal_a.toString(), c);
 
         var nested_a = new NestedSnailFishNumber(a);
         var nested_b = new NestedSnailFishNumber(b);
         nested_a.add(nested_b);
-        assertTrue(nested_a.toString().equals(c));
+        assertEquals(nested_a.toString(), c);
     }
 
     @Test
@@ -90,13 +91,13 @@ public class SnailFishTest extends ExecutableTest<SnailFish> {
             var snailFishNumber = new LiteralSnailFishNumber(values.get(0));
             Integer index = values.get(0).indexOf(values.get(1));
             snailFishNumber.explode(index);
-            assertTrue(values.get(2).equals(snailFishNumber.toString()));
+            assertEquals(values.get(2), snailFishNumber.toString());
 
             // new (with nested snailfish numbers)
             var nestedSnailFishNumber = new NestedSnailFishNumber(values.get(0));
             var regular = nestedSnailFishNumber.getRegularSnailFishNumber(values.get(1));
             regular.explode(SnailFishNumber.NESTED_LEVEL+1);
-            assertTrue(values.get(2).equals(nestedSnailFishNumber.toString()));
+            assertEquals(values.get(2), nestedSnailFishNumber.toString());
         }
     }
 
@@ -110,15 +111,15 @@ public class SnailFishTest extends ExecutableTest<SnailFish> {
 
         var literalSnailFishNumber = new LiteralSnailFishNumber(numbers.get(0));
         assertTrue(literalSnailFishNumber.split());
-        assertTrue(literalSnailFishNumber.toString().equals(numbers.get(1)));
+        assertEquals(literalSnailFishNumber.toString(), numbers.get(1));
         assertTrue(literalSnailFishNumber.split());
-        assertTrue(literalSnailFishNumber.toString().equals(numbers.get(2)));
+        assertEquals(literalSnailFishNumber.toString(), numbers.get(2));
 
         var nestedSnailFishNumber = new NestedSnailFishNumber(numbers.get(0));
         assertTrue(nestedSnailFishNumber.split());
-        assertTrue(nestedSnailFishNumber.toString().equals(numbers.get(1)));
+        assertEquals(nestedSnailFishNumber.toString(), numbers.get(1));
         assertTrue(nestedSnailFishNumber.split());
-        assertTrue(nestedSnailFishNumber.toString().equals(numbers.get(2)));
+        assertEquals(nestedSnailFishNumber.toString(), numbers.get(2));
     }
 
     @Test
@@ -130,12 +131,12 @@ public class SnailFishTest extends ExecutableTest<SnailFish> {
         var literal_a = new LiteralSnailFishNumber(str_a);
         var literal_b = new LiteralSnailFishNumber(str_b);
         literal_a.sum(literal_b);
-        assertTrue(literal_a.toString().equals(str_result));
+        assertEquals(literal_a.toString(), str_result);
 
         var nested_a = new NestedSnailFishNumber(str_a);
         var nested_b = new NestedSnailFishNumber(str_b);
         nested_a.sum(nested_b);
-        assertTrue(nested_a.toString().equals(str_result));
+        assertEquals(nested_a.toString(), str_result);
     }
 
     @Test
@@ -161,8 +162,8 @@ public class SnailFishTest extends ExecutableTest<SnailFish> {
             nestedSnailFishNumber.sum(new NestedSnailFishNumber(numbers.get(i)));
 
             if(results.containsKey(i+1)) {
-                assertTrue(snailFishNumber.toString().equals(results.get(i+1)));
-                assertTrue(nestedSnailFishNumber.toString().equals(results.get(i+1)));
+                assertEquals(snailFishNumber.toString(), results.get(i+1));
+                assertEquals(nestedSnailFishNumber.toString(), results.get(i+1));
             }
         }
     }
@@ -191,8 +192,8 @@ public class SnailFishTest extends ExecutableTest<SnailFish> {
             nestedSnailFishNumber.sum(new NestedSnailFishNumber(numbers.get(i)));
         }
 
-        assertTrue(snailFishNumber.toString().equals(numbers.get(numbers.size()-1)));
-        assertTrue(nestedSnailFishNumber.toString().equals(numbers.get(numbers.size()-1)));
+        assertEquals(snailFishNumber.toString(), numbers.get(numbers.size()-1));
+        assertEquals(nestedSnailFishNumber.toString(), numbers.get(numbers.size()-1));
     }
 
     protected void testSumAndCompare(String a, String b, String c) {
@@ -203,9 +204,9 @@ public class SnailFishTest extends ExecutableTest<SnailFish> {
         var nested_two = new NestedSnailFishNumber(b);
 
         literal_one.sum(literal_two);
-        assertTrue(literal_one.toString().equals(c));
+        assertEquals(literal_one.toString(), c);
         nested_one.sum(nested_two);
-        assertTrue(nested_one.toString().equals(c));
+        assertEquals(nested_one.toString(), c);
     }
 
     @Test
@@ -294,9 +295,9 @@ public class SnailFishTest extends ExecutableTest<SnailFish> {
 
         for(var e : testMap.entrySet()) {
             var literalSnailFishNumber = new LiteralSnailFishNumber(e.getKey());
-            assertTrue(literalSnailFishNumber.magnitude().equals(e.getValue()));
+            assertEquals(literalSnailFishNumber.magnitude(), e.getValue());
             var nestedSnailFishNumber = new NestedSnailFishNumber(e.getKey());
-            assertTrue(nestedSnailFishNumber.magnitude().equals(e.getValue()));
+            assertEquals(nestedSnailFishNumber.magnitude(), e.getValue());
         }
         
     }
