@@ -79,8 +79,6 @@ public class App {
 
     protected static boolean isTestFile(int day, Part part) {
         return (day == 13 && part == Part.FIRST);
-        // TODO remove
-        // || (day == 18 && part == Part.second);
     }
 
 }

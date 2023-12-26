@@ -98,8 +98,6 @@ public class TrickShot implements Executable {
 
             shotType = checkShot(posCurrent);
 
-            lastPosition = posCurrent;
-
         } while(shotType == ShotResults.UNDEFINED);
 
         if(shotType == ShotResults.TARGETED) {
@@ -119,7 +117,8 @@ public class TrickShot implements Executable {
     public void printResult() {
         logger.info("");
         if (part == Part.FIRST) {
-            logger.info("The final height is %d (coming from a velocity of %s)", finalMaxHeight, finalVel.toString());
+            String finalVelStr = finalVel.toString();
+            logger.info("The final height is %d (coming from a velocity of %s)", finalMaxHeight, finalVelStr);
         } else if(part == Part.SECOND) {
             logger.info("The amount of velocities that fit the target are %d", amountVelocities);
         }

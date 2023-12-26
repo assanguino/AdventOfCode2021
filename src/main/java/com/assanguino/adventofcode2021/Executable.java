@@ -16,10 +16,10 @@ public interface Executable {
         try {
             var resource = App.class.getClassLoader().getResource(input);
             Path path = Path.of(resource.getPath());
-            Files.readAllLines(path).forEach(row -> processRow(row));
+            Files.readAllLines(path).forEach(this::processRow);
 
         } catch (Exception e) {
-            logger.printf(Level.FATAL, "Exception while reading [%s] file: ", input, e.getMessage());
+            logger.printf(Level.FATAL, "Exception while reading [%s] file: %s", input, e.getMessage());
         }
     }
 

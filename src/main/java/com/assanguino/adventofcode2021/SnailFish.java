@@ -54,7 +54,8 @@ public class SnailFish implements Executable {
     public void printResult() {
         logger.info("");
         if(part == Part.FIRST) {
-            logger.info("result of the cumulative sum: %s", cumulative.toString());
+            String cumulativeStr = cumulative.toString();
+            logger.info("result of the cumulative sum: %s", cumulativeStr);
             logger.info("magnitude: %s", getResult());
         } else {
             logger.info("maximum: %s", getResult());

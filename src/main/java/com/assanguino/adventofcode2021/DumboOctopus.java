@@ -129,7 +129,8 @@ public class DumboOctopus implements Executable {
             for(int j = 0; j < mapSize; j++) {
                 line.append(map[i][j]);
             }
-            logger.info("%s", line.toString());
+            String lineStr = line.toString();
+            logger.info("%s", lineStr);
         }
     }
 

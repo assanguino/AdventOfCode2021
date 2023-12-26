@@ -48,26 +48,33 @@ public class GiantSquidBingo implements Executable {
     public void execute() {
         // Play!
         if(part == Part.FIRST) {
-            for(Integer random : randomNumbers) {
-                for(BingoBoard board : boardList) {
+            executeFirstPart();
+        } else {
+            executeSecondPart();
+        }
+    }
 
-                    board.mark(random);
-                    if(board.checkBingo()) {
-                        currentRandomNumber = random;
-                        currentBoard = board;
-                        return;
-                    }
+    private void executeFirstPart() {
+        for(Integer random : randomNumbers) {
+            for(BingoBoard board : boardList) {
+
+                board.mark(random);
+                if(board.checkBingo()) {
+                    currentRandomNumber = random;
+                    currentBoard = board;
+                    return;
                 }
             }
-        } else {
+        }
+    }
 
-            int loserBoards = boardList.size();
-            for(Integer random : randomNumbers) {
-                for(BingoBoard board : boardList) {
-                    // do not process the already winning boards
-                    if(board.hasWon())
-                        continue;
-                    
+    private void executeSecondPart() {
+        int loserBoards = boardList.size();
+        for(Integer random : randomNumbers) {
+            for(BingoBoard board : boardList) {
+
+                // do not process the already winning boards
+                if(!board.hasWon()) {
                     board.mark(random);
                     if(board.checkBingo() && --loserBoards == 0) {
                         currentRandomNumber = random;
@@ -75,6 +82,7 @@ public class GiantSquidBingo implements Executable {
                         return;
                     }
                 }
+
             }
         }
     }

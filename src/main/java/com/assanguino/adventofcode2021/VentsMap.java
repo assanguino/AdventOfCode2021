@@ -65,67 +65,54 @@ public class VentsMap implements Executable {
     }
 
     protected void addVent(Integer[] c) {
+
+        int minX = Math.min(c[X1], c[X2]);
+        int maxX = Math.max(c[X1], c[X2]);
+        int minY = Math.min(c[Y1], c[Y2]);
+        int maxY = Math.max(c[Y1], c[Y2]);
+
         if(c[X1].equals(c[X2])) {
-
             // case of horizontal vent
-            int min = Math.min(c[Y1], c[Y2]);
-            int max = Math.max(c[Y1], c[Y2]);
-            for(int i = min; i <= max; i++) {
-                if(map[c[X1]][i] == null) {
-                    map[c[X1]][i] = 1;
-                } else {
-                    map[c[X1]][i]++;                    
-                }
-            }
+            horizontalVent(minY, maxY, c[X1]);
         } else if(c[Y1].equals(c[Y2])) {
-
             // case of vertical vent
-            int min = Math.min(c[X1], c[X2]);
-            int max = Math.max(c[X1], c[X2]);
-            for(int j = min; j <= max; j++) {
-                if(map[j][c[Y1]] == null) {
-                    map[j][c[Y1]] = 1;
-                } else {
-                    map[j][c[Y1]]++;
-                }
-
-            }
-        } else {
-
+            verticalVent(minX, maxX, c[Y1]);
+        } else if(part == Part.SECOND) {
             // diagonals (if this is the case)
-            if(part == Part.SECOND) {
+            boolean isBackslashDirection = isBackslashDirection(c);
+            diagonalVent(minX, maxX, minY, isBackslashDirection);
+        }
+    }
 
-                if((c[X1] < c[X2] && c[Y1] < c[Y2]) || (c[X1] > c[X2] && c[Y1] > c[Y2])) {
-                    // \\ this way diagonal 
-                    int minX = Math.min(c[X1], c[X2]);
-                    int maxX = Math.max(c[X1], c[X2]);
-                    int minY = Math.min(c[Y1], c[Y2]);
-                    int length = maxX - minX;
+    private boolean isBackslashDirection(Integer[] c) {
+        return (c[X1] < c[X2] && c[Y1] < c[Y2]) || (c[X1] > c[X2] && c[Y1] > c[Y2]);
+    }
 
-                    for(int i = 0; i <= length; i++) {
-                        if(map[minX + i][minY + i] == null) {
-                            map[minX + i][minY + i] = 1;
-                        } else {
-                            map[minX + i][minY + i]++;                    
-                        }
-                    }    
-                } else {
-                    // // this way diagonal 
-                    int minX = Math.min(c[X1], c[X2]);
-                    int maxX = Math.max(c[X1], c[X2]);
-                    int minY = Math.min(c[Y1], c[Y2]);
-                    int length = maxX - minX;
-    
-                    for(int i = 0; i <= length; i++) {
-                        if(map[maxX - i][minY + i] == null) {
-                            map[maxX - i][minY + i] = 1;
-                        } else {
-                            map[maxX - i][minY + i]++;                    
-                        }
-                    }
-                }
-            }
+    private void proccessMapValue(int x, int y) {
+        if(map[x][y] == null) {
+            map[x][y] = 1;
+        } else {
+            map[x][y]++;
+        }
+    }
 
+    private void horizontalVent(int min, int max, int constantValue) {
+        for(int i = min; i <= max; i++) {
+            proccessMapValue(constantValue, i);
+        }
+    }
+
+    private void verticalVent(int min, int max, int constantValue) {
+        for(int i = min; i <= max; i++) {
+            proccessMapValue(i, constantValue);
+        }
+    }
+
+    private void diagonalVent(int minX, int maxX, int yValue, boolean isBackslashDirection) {
+        int length = maxX - minX;
+        for(int i = 0; i <= length; i++) {
+            int xValue = isBackslashDirection ? minX + i : maxX - i;
+            proccessMapValue(xValue, yValue + i);
         }
     }
 

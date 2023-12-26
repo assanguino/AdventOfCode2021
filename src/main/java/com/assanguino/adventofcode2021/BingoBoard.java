@@ -1,6 +1,11 @@
 package com.assanguino.adventofcode2021;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class BingoBoard {
+    
+    public static final Logger logger = LogManager.getLogger(BingoBoard.class.getName());
     
     public static final int BOARD_SIZE = 5;
 
@@ -63,7 +68,7 @@ public class BingoBoard {
      */
     protected boolean checkRow(int row) {
         for(int j = 0; j < BOARD_SIZE; j++) {
-            if(!marked[row][j])
+            if(!marked[row][j].booleanValue())
                 return false;
         }
         return true;
@@ -76,7 +81,7 @@ public class BingoBoard {
      */
     protected boolean checkColumn(int column) {
         for(int i = 0; i < BOARD_SIZE; i++) {
-            if(!marked[i][column])
+            if(!marked[i][column].booleanValue())
                 return false;
         }
         return true;
@@ -118,9 +123,9 @@ public class BingoBoard {
         for(int i = 0; i < BOARD_SIZE; i++) {
             for(int j = 0; j < BOARD_SIZE; j++) {
                 line = String.format("%s %2d", line, board[i][j]);
-                marksLine = String.format("%s %s", marksLine, marked[i][j] ? "X" : "O");
+                marksLine = String.format("%s %s", marksLine, marked[i][j].booleanValue() ? "X" : "O");
             }
-            System.out.println(String.format(" |%s |%s | ", line, marksLine));
+            logger.info(" |%s |%s | ", line, marksLine);
             line = marksLine = "";
         }
     }
@@ -134,7 +139,7 @@ public class BingoBoard {
         int score = 0;
         for(int i = 0; i < BOARD_SIZE; i++) {
             for(int j = 0; j < BOARD_SIZE; j++) {
-                if(!marked[i][j])
+                if(!marked[i][j].booleanValue())
                     score += board[i][j];
             }
         }
