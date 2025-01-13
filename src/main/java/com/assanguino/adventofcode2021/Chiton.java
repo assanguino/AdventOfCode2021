@@ -5,6 +5,8 @@ import java.util.Set;
 
 import org.apache.logging.log4j.Level;
 
+import com.assanguino.adventofcode2021.util.Part;
+
 public class Chiton implements Executable {
 
     protected Part part;

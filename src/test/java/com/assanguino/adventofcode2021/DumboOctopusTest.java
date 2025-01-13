@@ -1,9 +1,9 @@
 package com.assanguino.adventofcode2021;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
-import org.junit.Test;
+
+import com.assanguino.adventofcode2021.util.ClassMap;
+import com.assanguino.adventofcode2021.util.Part;
 
 public class DumboOctopusTest extends ExecutableTest<DumboOctopus> {
 
@@ -11,22 +11,8 @@ public class DumboOctopusTest extends ExecutableTest<DumboOctopus> {
     public void init() {
         first = new DumboOctopus(Part.FIRST);
         second = new DumboOctopus(Part.SECOND);        
-        fileName = Executable.getInputFile(11, true);
-    }
-
-    @Test
-    public void testFirstPart() {
-        assertTrue(executeFirstPart("1656"));
-    }
-
-    @Test
-    public void testSecondPart() {
-        assertTrue(executeSecondPart("195"));
-    }
-
-    @Test
-    public void testPrintDescription() {
-        super.testPrintDescription();
+        day = ClassMap.getInstance().getDay(DumboOctopus.class);
+        fileName = Executable.getInputFile(day, true);
     }
 
 }

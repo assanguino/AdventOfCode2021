@@ -1,9 +1,9 @@
 package com.assanguino.adventofcode2021;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
-import org.junit.Test;
+
+import com.assanguino.adventofcode2021.util.ClassMap;
+import com.assanguino.adventofcode2021.util.Part;
 
 public class VentsMapTest extends ExecutableTest<VentsMap> {
 
@@ -11,22 +11,8 @@ public class VentsMapTest extends ExecutableTest<VentsMap> {
     public void init() {
         first = new VentsMap(Part.FIRST);
         second = new VentsMap(Part.SECOND);        
-        fileName = Executable.getInputFile(5, true);
-    }
-
-    @Test
-    public void testFirstPart() {
-        assertTrue(executeFirstPart("5"));
-    }
-
-    @Test
-    public void testSecondPart() {
-        assertTrue(executeSecondPart("12"));
-    }
-
-    @Test
-    public void testPrintDescription() {
-        super.testPrintDescription();
+        day = ClassMap.getInstance().getDay(VentsMap.class);
+        fileName = Executable.getInputFile(day, true);
     }
 
 }

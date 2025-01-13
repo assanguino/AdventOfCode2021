@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.assanguino.adventofcode2021.util.Part;
+
 public class BinaryDiagnostic implements Executable {
 
     protected Part part;

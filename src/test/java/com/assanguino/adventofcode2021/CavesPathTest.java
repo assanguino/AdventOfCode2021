@@ -1,9 +1,9 @@
 package com.assanguino.adventofcode2021;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
-import org.junit.Test;
+
+import com.assanguino.adventofcode2021.util.ClassMap;
+import com.assanguino.adventofcode2021.util.Part;
 
 public class CavesPathTest extends ExecutableTest<CavesPath> {
 
@@ -11,22 +11,8 @@ public class CavesPathTest extends ExecutableTest<CavesPath> {
     public void init() {
         first = new CavesPath(Part.FIRST);
         second = new CavesPath(Part.SECOND);        
-        fileName = Executable.getInputFile(12, true);
-    }
-
-    @Test
-    public void testFirstPart() {
-        assertTrue(executeFirstPart("10"));
-    }
-
-    @Test
-    public void testSecondPart() {
-        assertTrue(executeSecondPart("36"));
-    }
-
-    @Test
-    public void testPrintDescription() {
-        super.testPrintDescription();
+        day = ClassMap.getInstance().getDay(CavesPath.class);
+        fileName = Executable.getInputFile(day, true);
     }
 
 }

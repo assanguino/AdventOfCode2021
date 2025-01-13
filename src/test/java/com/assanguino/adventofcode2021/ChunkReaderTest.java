@@ -1,9 +1,9 @@
 package com.assanguino.adventofcode2021;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
-import org.junit.Test;
+
+import com.assanguino.adventofcode2021.util.ClassMap;
+import com.assanguino.adventofcode2021.util.Part;
 
 public class ChunkReaderTest extends ExecutableTest<ChunkReader> {
 
@@ -11,22 +11,8 @@ public class ChunkReaderTest extends ExecutableTest<ChunkReader> {
     public void init() {
         first = new ChunkReader(Part.FIRST);
         second = new ChunkReader(Part.SECOND);        
-        fileName = Executable.getInputFile(10, true);
-    }
-
-    @Test
-    public void testFirstPart() {
-        assertTrue(executeFirstPart("26397"));
-    }
-
-    @Test
-    public void testSecondPart() {
-        assertTrue(executeSecondPart("288957"));
-    }
-
-    @Test
-    public void testPrintDescription() {
-        super.testPrintDescription();
+        day = ClassMap.getInstance().getDay(ChunkReader.class);
+        fileName = Executable.getInputFile(day, true);
     }
 
 }

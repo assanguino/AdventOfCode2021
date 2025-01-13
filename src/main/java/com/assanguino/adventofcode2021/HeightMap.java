@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.logging.log4j.Level;
 
+import com.assanguino.adventofcode2021.util.Part;
+
 public class HeightMap implements Executable {
     
     protected List<String> heightRows = new ArrayList<>();

@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.assanguino.adventofcode2021.util.Part;
+
 public class SevenSegmentDisplay implements Executable {
     
     protected static final int INPUT_NUMBERS = 10;

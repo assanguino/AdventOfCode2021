@@ -2,6 +2,8 @@ package com.assanguino.adventofcode2021;
 
 import java.util.ArrayList;
 
+import com.assanguino.adventofcode2021.util.Part;
+
 public class SonarSweep implements Executable {
     
     protected Part part;

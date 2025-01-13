@@ -3,6 +3,8 @@ package com.assanguino.adventofcode2021;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.assanguino.adventofcode2021.util.Part;
+
 public class GiantSquidBingo implements Executable {
 
     protected Part part;

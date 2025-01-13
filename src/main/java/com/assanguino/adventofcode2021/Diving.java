@@ -1,5 +1,7 @@
 package com.assanguino.adventofcode2021;
 
+import com.assanguino.adventofcode2021.util.Part;
+
 public class Diving implements Executable {
 
     protected Part part;

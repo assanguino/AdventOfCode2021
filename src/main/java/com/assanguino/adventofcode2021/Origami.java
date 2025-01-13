@@ -6,6 +6,8 @@ import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.javatuples.Pair;
 
+import com.assanguino.adventofcode2021.util.Part;
+
 public class Origami implements Executable {
     
     protected static final char EMPTY_CHAR = '.';

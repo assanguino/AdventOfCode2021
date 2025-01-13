@@ -3,6 +3,7 @@
     "java.format.settings.url": "eclipse-formatter.xml",
     "sonarlint.connectedMode.project": {
         "connectionId": "My SonarQube Connection",
-        "projectKey": "AdventOfCode2021"
-    }
+        "projectKey": "com.assanguino:adventofcode2021"
+    },
+    "java.debug.settings.onBuildFailureProceed": true
 }

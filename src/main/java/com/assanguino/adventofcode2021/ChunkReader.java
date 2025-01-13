@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.logging.log4j.Level;
 
+import com.assanguino.adventofcode2021.util.Part;
+
 public class ChunkReader implements Executable {
     
     protected static final String OPEN_CHUNKS = "([{<";
